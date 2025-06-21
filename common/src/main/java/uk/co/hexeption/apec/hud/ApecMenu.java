@@ -22,6 +22,8 @@ import uk.co.hexeption.apec.hud.elements.health.HPBar;
 import uk.co.hexeption.apec.hud.elements.health.HPText;
 import uk.co.hexeption.apec.hud.elements.mana.MPBar;
 import uk.co.hexeption.apec.hud.elements.mana.MPText;
+import uk.co.hexeption.apec.hud.elements.skill.SkillBar;
+import uk.co.hexeption.apec.hud.elements.skill.SkillText;
 import uk.co.hexeption.apec.hud.elements.xp.XPBar;
 import uk.co.hexeption.apec.hud.elements.xp.XPText;
 import uk.co.hexeption.apec.settings.SettingID;
@@ -42,7 +44,9 @@ public class ApecMenu implements MC {
                     new ExtraInfo(),
                     new BottomBar(),
                     new ItemHotBar(),
-                    new ToolTipText()
+                    new ToolTipText(),
+                    new SkillBar(),
+                    new SkillText()
             ));
         }
     };

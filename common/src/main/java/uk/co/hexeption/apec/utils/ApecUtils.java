@@ -1,5 +1,6 @@
 package uk.co.hexeption.apec.utils;
 
+import java.util.HashMap;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,6 +11,27 @@ import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.settings.SettingID;
 
 public class ApecUtils {
+
+    private static HashMap <String,Integer> multipleNotations = new HashMap<String, Integer>() {{
+        put("k",1000);
+        put("m",1000000);
+    }};
+
+    /**
+     * @brief Converts values strings which contain values represented in short form (ex: "20k") to float
+     * @param s = input string
+     * @return Converted output
+     */
+    public static float hypixelShortValueFormattingToFloat(String s) {
+        s = s.replace(",","");
+        for (String notation : multipleNotations.keySet()) {
+            if (s.contains(notation)) {
+                s = s.replace(notation,"");
+                return Float.parseFloat(s) * multipleNotations.get(notation);
+            }
+        }
+        return Float.parseFloat(s);
+    }
 
     public static boolean isContainedIn(String s1, String s2) {
         char[] targetChars = s2.toCharArray();

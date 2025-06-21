@@ -17,10 +17,12 @@ import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
+import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.EventIDs;
 import uk.co.hexeption.apec.MC;
 import uk.co.hexeption.apec.api.SBAPI;
 import uk.co.hexeption.apec.mixins.accessors.PlayerTabOverlayAccessor;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
 public class SkyBlockInfo implements SBAPI, MC {
@@ -198,6 +200,11 @@ public class SkyBlockInfo implements SBAPI, MC {
         int play_overflow = 0;
         int play_base_overflow = 0;
         int play_defence = 0;
+        String lastSkillXp = "";
+        float skill_xp_percentage = -1f;
+        String skill_info = "";
+        boolean skill_shown = false;
+
 
         // HP
         {
@@ -293,6 +300,39 @@ public class SkyBlockInfo implements SBAPI, MC {
 
         }
 
+        try {
+            // Skill
+            String segmentString = ApecUtils.segmentString(actionBar, ")", '+', ' ', 1, 1, ApecUtils.SegmentationOptions.ALL_INSTANCES_LEFT);
+
+            String inBetweenBrackets = null;
+
+
+            if (segmentString != null) {
+                inBetweenBrackets = ApecUtils.segmentString(segmentString, "(", '(', ')', 1, 1, ApecUtils.SegmentationOptions.TOTALLY_EXCLUSIVE);
+            }
+
+            if (inBetweenBrackets != null) {
+                skill_xp_percentage = praseSkillPercentage(inBetweenBrackets);
+            }
+
+            if (skill_xp_percentage != -1f) {
+                lastSkillXp = segmentString;
+                skill_info = ApecUtils.removeAllColourCodes(segmentString);
+                skill_shown = true;
+            } else {
+                if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.ALWAYS_SHOW_SKILL) && !lastSkillXp.equals("")) {
+                    skill_info = ApecUtils.removeAllColourCodes(lastSkillXp);
+                    skill_xp_percentage = praseSkillPercentage(ApecUtils.segmentString(lastSkillXp, "(", '(', ')', 1, 1, ApecUtils.SegmentationOptions.TOTALLY_EXCLUSIVE));
+                    skill_shown = true;
+                }
+            }
+
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+
+        // Create a new PlayerStats record instance with all the updated values
         this.playerStats = new PlayerStats(
                 play_hp,
                 play_base_hp,
@@ -305,9 +345,9 @@ public class SkyBlockInfo implements SBAPI, MC {
                 play_mp,
                 play_base_mp,
                 play_defence,
-                "",
-                0,
-                false,
+                skill_info,
+                skill_xp_percentage,
+                skill_shown,
                 false);
     }
 
@@ -376,6 +416,24 @@ public class SkyBlockInfo implements SBAPI, MC {
 
         return otherData;
 
+    }
+
+    /**
+     * @param skillInfo = The text between brackets of the skill xp string
+     * @return the precentege of completion until next skill level
+     */
+    float praseSkillPercentage(String skillInfo) {
+        if (skillInfo == null) return -1f;
+        if (skillInfo.contains("%")) {
+            skillInfo = skillInfo.replace("%","");
+            return Float.parseFloat(skillInfo) / 100f;
+        } else if (skillInfo.contains("/")){
+            String[] twoValues = skillInfo.split("/");
+            float first = ApecUtils.hypixelShortValueFormattingToFloat(twoValues[0]);
+            float second = ApecUtils.hypixelShortValueFormattingToFloat(twoValues[1]);
+            return first / second;
+        }
+        return -1f;
     }
 
     public Tuple<Integer, Integer> formatStringFractI(String s) {
