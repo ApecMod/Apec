@@ -33,6 +33,24 @@ public class ApecUtils {
         return Float.parseFloat(s);
     }
 
+    /**
+     * @brief This is made since there is this weird character in the purse text that im too lazy to see what unicode it has so now we have this
+     * @return Returns a string that has all non numerical characters removed from a string
+     */
+
+    public static String removeNonNumericalChars(String s) {
+
+        StringBuilder _s = new StringBuilder();
+
+        for (int i = 0;i < s.length();i++) {
+            char c = s.charAt(i);
+            if (Character.isDigit(c) || c == '.') _s.append(c);
+        }
+
+        return _s.toString();
+
+    }
+
     public static boolean isContainedIn(String s1, String s2) {
         char[] targetChars = s2.toCharArray();
         char[] sourceChars = s1.toCharArray();

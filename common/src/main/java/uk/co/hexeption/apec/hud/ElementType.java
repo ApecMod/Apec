@@ -17,5 +17,6 @@ public enum ElementType {
     TOOL_TIP_TEXT,
     SKILL_BAR,
     SKILL_TEXT,
+    WARNING_ICONS,
 
 }

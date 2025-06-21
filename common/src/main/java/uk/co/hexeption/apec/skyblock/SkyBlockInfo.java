@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerTeam;
@@ -412,10 +413,55 @@ public class SkyBlockInfo implements SBAPI, MC {
 //
 //        }
 //
-//        otherData.currentEvents = getEvents(sd);
+        otherData.currentEvents = getEvents(sd);
 
         return otherData;
 
+    }
+
+    /**
+     * @param sd = ScoreBoardData
+     * @return A list of the current events (see EventIDs.class for the events)
+     */
+
+    private ArrayList<EventIDs> getEvents (SBScoreBoard sd) {
+        ArrayList<EventIDs> events = new ArrayList<EventIDs>();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.SHOW_WARNING)) {
+            try {
+                if (mc.player != null) if (isInvFull()) events.add(EventIDs.INV_FULL);
+                if (sd.purse() != null) {
+                    String purse = ApecUtils.removeAllColourCodes(sd.purse().getString());
+                    if (purse.contains("(")) purse = purse.substring(0,purse.indexOf("("));
+                    purse = ApecUtils.removeNonNumericalChars(purse);
+                    if (!purse.equals("")) {
+                        if (Float.parseFloat(purse) >= 5000000f && !usesPiggyBank) events.add(EventIDs.COIN_COUNT);
+                    }
+                }
+//                if (hasSentATradeRequest) events.add(EventIDs.TRADE_OUT);
+//                if (hasRecievedATradeRequest) events.add(EventIDs.TRADE_IN);
+                if (!stringScoreboard.isEmpty())
+                    if (ApecUtils.removeAllColourCodes(stringScoreboard.get(stringScoreboard.size() - 1)).contains("Server closing"))
+                        events.add(EventIDs.SERVER_REBOOT);
+                if (mc.player != null) {
+                    int pingThreshold = 80;
+                    int ping = mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()).getLatency();
+                    if (ping > pingThreshold) events.add(EventIDs.HIGH_PING);
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        return events;
+    }
+
+    /**
+     * @return Returns true if the inventory of the player is full
+     */
+
+    private boolean isInvFull () {
+        Inventory ip = mc.player.getInventory();
+        return ip.getFreeSlot() == -1;
     }
 
     /**
