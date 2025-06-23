@@ -205,10 +205,21 @@ public class SkyBlockInfo implements SBAPI, MC {
         float skill_xp_percentage = -1f;
         String skill_info = "";
         boolean skill_shown = false;
+        boolean ability_shown = false;
+        String ability_text = "";
+        String rift_timer = "";
+        String kuudra_tiered_bonus = "";
+
+        // Define Kuudra symbols
+        final char dominus = '\u1750';
+        final char arcane = '\u046A';
+        final char fervor = '\u0489';
+        final char spirit = '\u26B6';
+        final char hydra = '\u2051';
 
 
         // HP
-        {
+        try {
             String segment = ApecUtils.segmentString(actionBar, "❤", '§', '❤', 1, 1);
             if (segment != null) {
                 Tuple<Integer, Integer> hpTuple = formatStringFractI(ApecUtils.removeAllColourCodes(segment));
@@ -238,10 +249,15 @@ public class SkyBlockInfo implements SBAPI, MC {
                 play_absorption = lastAp;
                 play_base_absorption = lastBaseAp;
             }
+        } catch (Exception err) {
+            play_hp = lastHp;
+            play_base_hp = lastBaseHp;
+            play_absorption = lastAp;
+            play_base_absorption = lastBaseAp;
         }
 
         // Heal Duration
-        {
+        try {
             char[] healDurationSymbols = new char[] { '▆', '▅', '▄', '▃', '▂', '▁' };
             String segmentedSrtring = null;
             char ticker = '\0';
@@ -256,10 +272,12 @@ public class SkyBlockInfo implements SBAPI, MC {
             } else {
                 play_heal_duration = 0;
             }
+        } catch (Exception err) {
+            play_heal_duration = 0;
         }
 
         // Mana
-        {
+        try {
             String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf('✎'), '§', '✎', 1, 1);
             if (segmentedString != null) {
                 Tuple<Integer, Integer> t = formatStringFractI(ApecUtils.removeAllColourCodes(segmentedString));
@@ -271,10 +289,13 @@ public class SkyBlockInfo implements SBAPI, MC {
                 play_mp = lastMn;
                 play_base_mp = lastBaseMn;
             }
+        } catch (Exception err) {
+            play_mp = lastMn;
+            play_base_mp = lastBaseMn;
         }
 
         // Overflow mana
-        {
+        try {
             String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf('ʬ'), '\u00a7', 'ʬ', 1, 1);
             if (segmentedString != null) {
                 int value = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString.replace(",", "")));
@@ -288,25 +309,100 @@ public class SkyBlockInfo implements SBAPI, MC {
                 play_base_overflow = 0;
                 baseOp = 0;
             }
+        } catch (Exception err) {
+            play_overflow = 0;
+            play_base_overflow = 0;
         }
 
-        {
+        // Defense
+        try {
             String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf('❈'), '§', '❈', 2, 1);
             if (segmentedString != null) {
                 play_defence = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString.replace(",", "")));
                 lastDefence = play_defence;
+            } else if (!actionBar.contains(endRaceSymbol) &&
+                    !actionBar.contains(woodRacingSymbol) &&
+                    !actionBar.contains(dpsSymbol) &&
+                    !actionBar.contains(secSymbol) &&
+                    !actionBar.contains(secretSymbol) &&
+                    !actionBar.contains(chickenRaceSymbol) &&
+                    !actionBar.contains(jumpSymbol) &&
+                    !actionBar.contains(crystalRaceSymbol) &&
+                    !actionBar.contains(giantMushroomSymbol) &&
+                    !actionBar.contains(precursorRuinsSymbol)) {
+                // Makes sure that the defence is not replaced by something else in the action bar and it is really 0
+                play_defence = 0;
+                lastDefence = play_defence;
             } else {
                 play_defence = lastDefence;
             }
-
+        } catch (Exception err) {
+            play_defence = lastDefence;
         }
 
+        // ABILITY
         try {
-            // Skill
+            String segmentedString = ApecUtils.segmentString(actionBar, ")", '§', ' ', 3, 1);
+            if (segmentedString != null) {
+                if (segmentedString.contains("-") && actionBar.contains(String.valueOf('✎'))) {
+                    ability_shown = true;
+                    ability_text = segmentedString;
+                }
+            }
+        } catch (Exception err) {
+            ability_shown = false;
+        }
+
+        // Rift Timer
+        try {
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(riftSymbol), '§', riftSymbol, 1, 1);
+            if (segmentedString != null) {
+                rift_timer = ApecUtils.removeAllColourCodes(segmentedString);
+            }
+        } catch (Exception err) {
+            rift_timer = "";
+        }
+
+        // Kuudra Tiered Bonus
+        try {
+            // Check for Dominus
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(dominus), '§', dominus, 1, 1);
+            if (segmentedString != null) {
+                kuudra_tiered_bonus = dominus + " Dominus " + ApecUtils.removeAllColourCodes(segmentedString);
+            }
+
+            // Check for Arcane
+            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(arcane), '§', arcane, 1, 1);
+            if (segmentedString != null) {
+                kuudra_tiered_bonus = arcane + " Arcane " + ApecUtils.removeAllColourCodes(segmentedString);
+            }
+
+            // Check for Fervor
+            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(fervor), '§', fervor, 1, 1);
+            if (segmentedString != null) {
+                kuudra_tiered_bonus = fervor + " Fervor " + ApecUtils.removeAllColourCodes(segmentedString);
+            }
+
+            // Check for Spirit
+            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(spirit), '§', spirit, 1, 1);
+            if (segmentedString != null) {
+                kuudra_tiered_bonus = spirit + " Spirit " + ApecUtils.removeAllColourCodes(segmentedString);
+            }
+
+            // Check for Hydra
+            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(hydra), '§', hydra, 1, 1);
+            if (segmentedString != null) {
+                kuudra_tiered_bonus = hydra + " Hydra " + ApecUtils.removeAllColourCodes(segmentedString);
+            }
+        } catch (Exception err) {
+            kuudra_tiered_bonus = "";
+        }
+
+        // Skill
+        try {
             String segmentString = ApecUtils.segmentString(actionBar, ")", '+', ' ', 1, 1, ApecUtils.SegmentationOptions.ALL_INSTANCES_LEFT);
 
             String inBetweenBrackets = null;
-
 
             if (segmentString != null) {
                 inBetweenBrackets = ApecUtils.segmentString(segmentString, "(", '(', ')', 1, 1, ApecUtils.SegmentationOptions.TOTALLY_EXCLUSIVE);
@@ -321,16 +417,14 @@ public class SkyBlockInfo implements SBAPI, MC {
                 skill_info = ApecUtils.removeAllColourCodes(segmentString);
                 skill_shown = true;
             } else {
-                if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.ALWAYS_SHOW_SKILL) && !lastSkillXp.equals("")) {
+                if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.ALWAYS_SHOW_SKILL) && !lastSkillXp.isEmpty()) {
                     skill_info = ApecUtils.removeAllColourCodes(lastSkillXp);
                     skill_xp_percentage = praseSkillPercentage(ApecUtils.segmentString(lastSkillXp, "(", '(', ')', 1, 1, ApecUtils.SegmentationOptions.TOTALLY_EXCLUSIVE));
                     skill_shown = true;
                 }
             }
-
-
         } catch (Exception err) {
-            err.printStackTrace();
+            skill_shown = false;
         }
 
         // Create a new PlayerStats record instance with all the updated values
@@ -349,7 +443,8 @@ public class SkyBlockInfo implements SBAPI, MC {
                 skill_info,
                 skill_xp_percentage,
                 skill_shown,
-                false);
+                ability_shown,
+                kuudra_tiered_bonus);
     }
 
     private OtherData ProcessOtherData(SBScoreBoard sd) {
