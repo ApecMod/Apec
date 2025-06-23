@@ -8,6 +8,8 @@ import dev.architectury.platform.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -26,97 +28,144 @@ import uk.co.hexeption.apec.mixins.accessors.PlayerTabOverlayAccessor;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
+/**
+ * Main class for processing and storing SkyBlock information.
+ * Handles scoreboard data, player stats, and other game-related information.
+ */
 public class SkyBlockInfo implements SBAPI, MC {
 
+    // Scoreboard related fields
     private SBScoreBoard scoreboard = SBScoreBoard.EMPTY;
     private boolean onSkyblock;
-
+    private boolean isInRift = false;
+    private boolean isInDungeon = false;
     private boolean usesPiggyBank;
 
-    // Cache for purse and bits components
+    // Cache for components
     private Component cachedPurse = Component.empty();
     private Component cachedBits = Component.empty();
 
-    private ObjectArrayList<String> stringScoreboard = new ObjectArrayList<>();
-    private ObjectArrayList<Component> componenetScoreboard = new ObjectArrayList<>();
+    // Scoreboard data storage
+    private final ObjectArrayList<String> stringScoreboard = new ObjectArrayList<>();
+    private final ObjectArrayList<Component> componentScoreboard = new ObjectArrayList<>();
 
+    // Player stats and UI components
     private PlayerStats playerStats = PlayerStats.EMPTY;
     private Component clientOverlay = Component.empty();
     private Component clientTabFooter = Component.empty();
 
-    // Private fields for the overlay parsing
+    // Player stats caching fields
     private int lastHp = 1, lastBaseHp = 1;
-    private int lastMn = 1;
-    private int lastBaseMn = 1;
+    private int lastMana = 1, lastBaseMana = 1;
     private int lastDefence = 0;
-    private int baseAp = 0;
-    private int lastAp = 1, lastBaseAp = 1;
-    private int baseOp = 1;
+    private int baseAbsorption = 0;
+    private int lastAbsorption = 1, lastBaseAbsorption = 1;
+    private int baseOverflow = 1;
 
-    private final String endRaceSymbol = "THE END RACE";
-    private final String woodRacingSymbol = "WOODS RACING";
-    private final String dpsSymbol = "DPS";
-    private final String secSymbol = "second";
-    private final String secretSymbol = "Secrets";
-    private final String chickenRaceSymbol = "CHICKEN RACING";
-    private final String jumpSymbol = "JUMP";
-    private final String crystalRaceSymbol = "CRYSTAL CORE RACE";
-    private final String giantMushroomSymbol = "GIANT MUSHROOM RACE";
-    private final String precursorRuinsSymbol = "PRECURSOR RUINS RACE";
-    private final String reviveSymbol = "Revive";
-    private final String armadilloName = "Armadillo";
-    private final String treasureMetalDetectorSymbol = "TREASURE:";
+    // Additional data
     private OtherData otherData;
 
-    private boolean isInRift = false;
-    private boolean isInDungeon = false;
+    // Game symbols and identifiers as constants
+    private static final class GameSymbols {
+        // Race symbols
+        static final String END_RACE = "THE END RACE";
+        static final String WOODS_RACING = "WOODS RACING";
+        static final String CHICKEN_RACE = "CHICKEN RACING";
+        static final String CRYSTAL_RACE = "CRYSTAL CORE RACE";
+        static final String GIANT_MUSHROOM = "GIANT MUSHROOM RACE";
+        static final String PRECURSOR_RUINS = "PRECURSOR RUINS RACE";
 
-    private final char riftSymbol = 'ф';
+        // Other game indicators
+        static final String DPS = "DPS";
+        static final String SECOND = "second";
+        static final String SECRETS = "Secrets";
+        static final String JUMP = "JUMP";
+        static final String REVIVE = "Revive";
+        static final String ARMADILLO = "Armadillo";
+        static final String TREASURE = "TREASURE:";
 
+        // Kuudra symbols
+        static final char DOMINUS = '\u1750';
+        static final char ARCANE = '\u046A';
+        static final char FERVOR = '\u0489';
+        static final char SPIRIT = '\u26B6';
+        static final char HYDRA = '\u2051';
+
+        // Rift symbol
+        static final char RIFT = 'ф';
+
+        // Health symbols
+        static final char HEALTH = '❤';
+        static final char DEFENSE = '❈';
+        static final char MANA = '✎';
+        static final char OVERFLOW_MANA = 'ʬ';
+    }
+
+    /**
+     * Initializes the SkyBlockInfo class by registering event handlers.
+     */
     public void init() {
+        ClientTickEvent.CLIENT_PRE.register(this::processTick);
 
-        ClientTickEvent.CLIENT_PRE.register(this::clientTick);
-        // Stupid hack as ClientSystemMessageEvent not working on NeoForge
+        // Register chat message event handlers based on platform
         if (Platform.isFabric()) {
-            ClientSystemMessageEvent.RECEIVED.register((message) -> clientChatMessage(null, message));
+            ClientSystemMessageEvent.RECEIVED.register(message -> processChatMessage(null, message));
         }
         if (Platform.isNeoForge()) {
-            ClientChatEvent.RECEIVED.register(this::clientChatMessage);
+            ClientChatEvent.RECEIVED.register(this::processChatMessage);
         }
     }
 
-    private CompoundEventResult<Component> clientChatMessage(ChatType.Bound bound, Component component) {
+    /**
+     * Processes chat messages for relevant game information.
+     *
+     * @param bound The chat message bound, possibly null on Fabric
+     * @param component The message component
+     * @return An unmodified event result
+     */
+    private CompoundEventResult<Component> processChatMessage(ChatType.Bound bound, Component component) {
+        String message = component.getString();
 
-        if (component.getString().contains("❤") || component.getString().contains("✎") || component.getString().contains("Revive") || component.getString().contains("CHICKEN RACING") || component.getString().contains("Armadillo")) {
+        // Process overlay messages (health, mana, special events)
+        if (message.contains("❤") || message.contains("✎") ||
+            message.contains(GameSymbols.REVIVE) ||
+            message.contains(GameSymbols.CHICKEN_RACE) ||
+            message.contains(GameSymbols.ARMADILLO)) {
             this.clientOverlay = component;
         }
 
-        this.isInRift = component.getString().contains(String.valueOf(riftSymbol));
+        // Check if player is in the Rift dimension
+        this.isInRift = message.contains(String.valueOf(GameSymbols.RIFT));
 
         return CompoundEventResult.pass();
     }
 
-    private void clientTick(Minecraft minecraft) {
-
-        Component clientScoreboardTitle = getClientScoreboardTitle();
-        if (!clientScoreboardTitle.getString().isEmpty()) {
-            this.onSkyblock = clientScoreboardTitle.getString().contains("SKYBLOCK");
-
-            getScoreboardLines();
-
-            parseScoreboardData();
-
-            parsePlayerStats();
-
-            this.otherData = this.ProcessOtherData(scoreboard);
-
-            this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.getTabList()).getFooter();
+    /**
+     * Main game tick processing method that updates all SkyBlock information.
+     *
+     * @param minecraft The Minecraft instance
+     */
+    private void processTick(Minecraft minecraft) {
+        Component scoreboardTitle = getScoreboardTitle();
+        if (scoreboardTitle.getString().isEmpty()) {
+            return;
         }
+
+        this.onSkyblock = scoreboardTitle.getString().contains("SKYBLOCK");
+
+        // Process information in this order
+        collectScoreboardLines();
+        parseScoreboardData();
+        parsePlayerStats();
+        this.otherData = processOtherData(scoreboard);
+        this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.getTabList()).getFooter();
     }
 
+    /**
+     * Parses scoreboard data to extract game information.
+     */
     private void parseScoreboardData() {
-
-        String irl_date = "";
+        String irlDate = "";
         String serverShard = "";
         String date = "";
         String hour = "";
@@ -128,17 +177,20 @@ public class SkyBlockInfo implements SBAPI, MC {
 
         this.isInDungeon = false;
 
-        for (Component component : this.componenetScoreboard) {
+        for (Component component : this.componentScoreboard) {
             String line = component.getString();
 
-            if(ApecUtils.isContainedIn(line, "The Catacombs")){
+            // Check for dungeon indicator
+            if (ApecUtils.isContainedIn(line, "The Catacombs")) {
                 this.isInDungeon = true;
             }
 
+            // Parse various scoreboard sections
             if (ApecUtils.isContainedIn(line, "//")) {
-                irl_date = ApecUtils.removeFirstSpaces(line).split(" ")[0];
-                serverShard = ApecUtils.removeFirstSpaces(line).split(" ")[1];
-            } else if (ApecUtils.containedByCharSequence(line, "♲") || ApecUtils.containedByCharSequence(line, "☀ Stranded") || ApecUtils.containedByCharSequence(line, "Ⓑ")) {
+                String[] parts = ApecUtils.removeFirstSpaces(line).split(" ");
+                irlDate = parts.length > 0 ? parts[0] : "";
+                serverShard = parts.length > 1 ? parts[1] : "";
+            } else if (isGameTypeIndicator(line)) {
                 gameType = component;
             } else if (isDate(line)) {
                 date = ApecUtils.removeFirstSpaces(line);
@@ -148,15 +200,15 @@ public class SkyBlockInfo implements SBAPI, MC {
                 zone = component;
             } else if (ApecUtils.containedByCharSequence(line, "Purse: ")) {
                 purse = component;
-                this.cachedPurse = component; // Cache the purse component
+                this.cachedPurse = component;
                 this.usesPiggyBank = false;
             } else if (ApecUtils.containedByCharSequence(line, "Piggy: ")) {
                 purse = component;
-                this.cachedPurse = component; // Cache the purse component
+                this.cachedPurse = component;
                 this.usesPiggyBank = true;
             } else if (ApecUtils.containedByCharSequence(line, "Bits: ")) {
                 bits = component;
-                this.cachedBits = component; // Cache the bits component
+                this.cachedBits = component;
             } else if (!line.isEmpty() && !line.contains("www")) {
                 extra.add(component);
             }
@@ -171,6 +223,7 @@ public class SkyBlockInfo implements SBAPI, MC {
             bits = this.cachedBits;
         }
 
+        // Create a new scoreboard instance with updated data
         this.scoreboard = new SBScoreBoard(
                 serverShard,
                 purse,
@@ -179,226 +232,194 @@ public class SkyBlockInfo implements SBAPI, MC {
                 zone,
                 date,
                 hour,
-                irl_date,
-                getClientScoreboardTitle().getString(),
+                irlDate,
+                getScoreboardTitle().getString(),
                 gameType);
-
     }
 
-    private void parsePlayerStats() {
+    /**
+     * Determines if a line indicates a game type.
+     *
+     * @param line The line to check
+     * @return True if the line indicates a game type
+     */
+    private boolean isGameTypeIndicator(String line) {
+        return ApecUtils.containedByCharSequence(line, "♲") ||
+               ApecUtils.containedByCharSequence(line, "☀ Stranded") ||
+               ApecUtils.containedByCharSequence(line, "Ⓑ");
+    }
 
-        // 2,964/2,664❤     683❈ Defense     327/327✎ Mana
+    /**
+     * Parses player stats from the action bar overlay.
+     */
+    private void parsePlayerStats() {
         String actionBar = this.clientOverlay.getString();
 
-        int play_hp = 0;
-        int play_base_hp = 0;
-        int play_absorption = 0;
-        int play_base_absorption = 0;
-        int play_heal_duration = 0;
-        char play_heal_duration_ticker = 0;
-        int play_mp = 0;
-        int play_base_mp = 0;
-        int play_overflow = 0;
-        int play_base_overflow = 0;
-        int play_defence = 0;
+        // Initialize variables
+        int hp = 0;
+        int baseHp = 0;
+        int absorption = 0;
+        int baseAbsorption = 0;
+        int healDuration = 0;
+        char healDurationTicker = 0;
+        int mana = 0;
+        int baseMana = 0;
+        int overflow = 0;
+        int baseOverflow = 0;
+        int defence = 0;
         String lastSkillXp = "";
-        float skill_xp_percentage = -1f;
-        String skill_info = "";
-        boolean skill_shown = false;
-        boolean ability_shown = false;
-        String ability_text = "";
-        String rift_timer = "";
-        String kuudra_tiered_bonus = "";
+        float skillXpPercentage = -1f;
+        String skillInfo = "";
+        boolean skillShown = false;
+        boolean abilityShown = false;
+        String abilityText = "";
+        String riftTimer = "";
+        String kuudraTieredBonus = "";
 
-        // Define Kuudra symbols
-        final char dominus = '\u1750';
-        final char arcane = '\u046A';
-        final char fervor = '\u0489';
-        final char spirit = '\u26B6';
-        final char hydra = '\u2051';
-
-
-        // HP
+        // Parse health
         try {
-            String segment = ApecUtils.segmentString(actionBar, "❤", '§', '❤', 1, 1);
+            String segment = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.HEALTH), '§', GameSymbols.HEALTH, 1, 1);
             if (segment != null) {
-                Tuple<Integer, Integer> hpTuple = formatStringFractI(ApecUtils.removeAllColourCodes(segment));
-                play_hp = hpTuple.getA();
-                play_base_hp = hpTuple.getB();
+                Tuple<Integer, Integer> hpTuple = parseStringFraction(ApecUtils.removeAllColourCodes(segment));
+                hp = hpTuple.getA();
+                baseHp = hpTuple.getB();
 
-                if (play_hp > play_base_hp) {
-                    play_absorption = play_hp - play_base_hp;
-                    play_hp = play_base_hp;
+                if (hp > baseHp) {
+                    absorption = hp - baseHp;
+                    hp = baseHp;
                 } else {
-                    play_absorption = 0;
-                    play_base_absorption = 0;
+                    absorption = 0;
+                    this.baseAbsorption = 0;
                 }
-                if (play_absorption > baseAp) {
-                    baseAp = play_absorption;
+                if (absorption > this.baseAbsorption) {
+                    this.baseAbsorption = absorption;
                 }
-                play_base_absorption = baseAp;
+                baseAbsorption = this.baseAbsorption;
 
-                lastAp = play_absorption;
-                lastBaseAp = play_base_absorption;
+                lastAbsorption = absorption;
+                lastBaseAbsorption = baseAbsorption;
 
-                lastHp = play_hp;
-                lastBaseHp = play_base_hp;
+                lastHp = hp;
+                lastBaseHp = baseHp;
             } else {
-                play_hp = lastHp;
-                play_base_hp = lastBaseHp;
-                play_absorption = lastAp;
-                play_base_absorption = lastBaseAp;
+                hp = lastHp;
+                baseHp = lastBaseHp;
+                absorption = lastAbsorption;
+                baseAbsorption = lastBaseAbsorption;
             }
         } catch (Exception err) {
-            play_hp = lastHp;
-            play_base_hp = lastBaseHp;
-            play_absorption = lastAp;
-            play_base_absorption = lastBaseAp;
+            hp = lastHp;
+            baseHp = lastBaseHp;
+            absorption = lastAbsorption;
+            baseAbsorption = lastBaseAbsorption;
         }
 
-        // Heal Duration
+        // Parse heal duration
         try {
             char[] healDurationSymbols = new char[] { '▆', '▅', '▄', '▃', '▂', '▁' };
-            String segmentedSrtring = null;
+            String segmentedString = null;
             char ticker = '\0';
-            for (char _c : healDurationSymbols) {
-                ticker = _c;
-                segmentedSrtring = ApecUtils.segmentString(actionBar, String.valueOf(_c), '+', _c, 1, 1);
-                if (segmentedSrtring != null) break;
+            for (char symbol : healDurationSymbols) {
+                ticker = symbol;
+                segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(symbol), '+', symbol, 1, 1);
+                if (segmentedString != null) break;
             }
-            if (segmentedSrtring != null) {
-                play_heal_duration = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedSrtring).replace("+", ""));
-                play_heal_duration_ticker = ticker;
+            if (segmentedString != null) {
+                healDuration = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString).replace("+", ""));
+                healDurationTicker = ticker;
             } else {
-                play_heal_duration = 0;
+                healDuration = 0;
             }
         } catch (Exception err) {
-            play_heal_duration = 0;
+            healDuration = 0;
         }
 
-        // Mana
+        // Parse mana
         try {
-            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf('✎'), '§', '✎', 1, 1);
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.MANA), '§', GameSymbols.MANA, 1, 1);
             if (segmentedString != null) {
-                Tuple<Integer, Integer> t = formatStringFractI(ApecUtils.removeAllColourCodes(segmentedString));
-                play_mp = t.getA();
-                play_base_mp = t.getB();
-                lastMn = play_mp;
-                lastBaseMn = play_base_mp;
+                Tuple<Integer, Integer> t = parseStringFraction(ApecUtils.removeAllColourCodes(segmentedString));
+                mana = t.getA();
+                baseMana = t.getB();
+                lastMana = mana;
+                lastBaseMana = baseMana;
             } else {
-                play_mp = lastMn;
-                play_base_mp = lastBaseMn;
+                mana = lastMana;
+                baseMana = lastBaseMana;
             }
         } catch (Exception err) {
-            play_mp = lastMn;
-            play_base_mp = lastBaseMn;
+            mana = lastMana;
+            baseMana = lastBaseMana;
         }
 
-        // Overflow mana
+        // Parse overflow mana
         try {
-            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf('ʬ'), '\u00a7', 'ʬ', 1, 1);
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.OVERFLOW_MANA), '§', GameSymbols.OVERFLOW_MANA, 1, 1);
             if (segmentedString != null) {
-                int value = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString.replace(",", "")));
-                play_overflow = value;
-                if (baseOp < value) {
-                    baseOp = value;
+                int value = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString).replace(",", ""));
+                overflow = value;
+                if (baseOverflow < value) {
+                    baseOverflow = value;
                 }
-                play_base_overflow = baseOp;
+                baseOverflow = this.baseOverflow;
             } else {
-                play_overflow = 0;
-                play_base_overflow = 0;
-                baseOp = 0;
+                overflow = 0;
+                baseOverflow = 0;
+                this.baseOverflow = 0;
             }
         } catch (Exception err) {
-            play_overflow = 0;
-            play_base_overflow = 0;
+            overflow = 0;
+            baseOverflow = 0;
         }
 
-        // Defense
+        // Parse defense
         try {
-            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf('❈'), '§', '❈', 2, 1);
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.DEFENSE), '§', GameSymbols.DEFENSE, 2, 1);
             if (segmentedString != null) {
-                play_defence = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString.replace(",", "")));
-                lastDefence = play_defence;
-            } else if (!actionBar.contains(endRaceSymbol) &&
-                    !actionBar.contains(woodRacingSymbol) &&
-                    !actionBar.contains(dpsSymbol) &&
-                    !actionBar.contains(secSymbol) &&
-                    !actionBar.contains(secretSymbol) &&
-                    !actionBar.contains(chickenRaceSymbol) &&
-                    !actionBar.contains(jumpSymbol) &&
-                    !actionBar.contains(crystalRaceSymbol) &&
-                    !actionBar.contains(giantMushroomSymbol) &&
-                    !actionBar.contains(precursorRuinsSymbol)) {
-                // Makes sure that the defence is not replaced by something else in the action bar and it is really 0
-                play_defence = 0;
-                lastDefence = play_defence;
+                defence = Integer.parseInt(ApecUtils.removeAllColourCodes(segmentedString).replace(",", ""));
+                lastDefence = defence;
+            } else if (!isActionBarContainingSpecialText(actionBar)) {
+                // Makes sure defense is actually 0 rather than replaced by racing text
+                defence = 0;
+                lastDefence = defence;
             } else {
-                play_defence = lastDefence;
+                defence = lastDefence;
             }
         } catch (Exception err) {
-            play_defence = lastDefence;
+            defence = lastDefence;
         }
 
-        // ABILITY
+        // Parse ability text
         try {
             String segmentedString = ApecUtils.segmentString(actionBar, ")", '§', ' ', 3, 1);
             if (segmentedString != null) {
-                if (segmentedString.contains("-") && actionBar.contains(String.valueOf('✎'))) {
-                    ability_shown = true;
-                    ability_text = segmentedString;
+                if (segmentedString.contains("-") && actionBar.contains(String.valueOf(GameSymbols.MANA))) {
+                    abilityShown = true;
+                    abilityText = segmentedString;
                 }
             }
         } catch (Exception err) {
-            ability_shown = false;
+            abilityShown = false;
         }
 
-        // Rift Timer
+        // Parse rift timer
         try {
-            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(riftSymbol), '§', riftSymbol, 1, 1);
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.RIFT), '§', GameSymbols.RIFT, 1, 1);
             if (segmentedString != null) {
-                rift_timer = ApecUtils.removeAllColourCodes(segmentedString);
+                riftTimer = ApecUtils.removeAllColourCodes(segmentedString);
             }
         } catch (Exception err) {
-            rift_timer = "";
+            riftTimer = "";
         }
 
-        // Kuudra Tiered Bonus
+        // Parse Kuudra tiered bonus
         try {
-            // Check for Dominus
-            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(dominus), '§', dominus, 1, 1);
-            if (segmentedString != null) {
-                kuudra_tiered_bonus = dominus + " Dominus " + ApecUtils.removeAllColourCodes(segmentedString);
-            }
-
-            // Check for Arcane
-            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(arcane), '§', arcane, 1, 1);
-            if (segmentedString != null) {
-                kuudra_tiered_bonus = arcane + " Arcane " + ApecUtils.removeAllColourCodes(segmentedString);
-            }
-
-            // Check for Fervor
-            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(fervor), '§', fervor, 1, 1);
-            if (segmentedString != null) {
-                kuudra_tiered_bonus = fervor + " Fervor " + ApecUtils.removeAllColourCodes(segmentedString);
-            }
-
-            // Check for Spirit
-            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(spirit), '§', spirit, 1, 1);
-            if (segmentedString != null) {
-                kuudra_tiered_bonus = spirit + " Spirit " + ApecUtils.removeAllColourCodes(segmentedString);
-            }
-
-            // Check for Hydra
-            segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(hydra), '§', hydra, 1, 1);
-            if (segmentedString != null) {
-                kuudra_tiered_bonus = hydra + " Hydra " + ApecUtils.removeAllColourCodes(segmentedString);
-            }
+            kuudraTieredBonus = parseKuudraTieredBonus(actionBar);
         } catch (Exception err) {
-            kuudra_tiered_bonus = "";
+            kuudraTieredBonus = "";
         }
 
-        // Skill
+        // Parse skill information
         try {
             String segmentString = ApecUtils.segmentString(actionBar, ")", '+', ' ', 1, 1, ApecUtils.SegmentationOptions.ALL_INSTANCES_LEFT);
 
@@ -409,81 +430,154 @@ public class SkyBlockInfo implements SBAPI, MC {
             }
 
             if (inBetweenBrackets != null) {
-                skill_xp_percentage = praseSkillPercentage(inBetweenBrackets);
+                skillXpPercentage = parseSkillPercentage(inBetweenBrackets);
             }
 
-            if (skill_xp_percentage != -1f) {
+            if (skillXpPercentage != -1f) {
                 lastSkillXp = segmentString;
-                skill_info = ApecUtils.removeAllColourCodes(segmentString);
-                skill_shown = true;
-            } else {
-                if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.ALWAYS_SHOW_SKILL) && !lastSkillXp.isEmpty()) {
-                    skill_info = ApecUtils.removeAllColourCodes(lastSkillXp);
-                    skill_xp_percentage = praseSkillPercentage(ApecUtils.segmentString(lastSkillXp, "(", '(', ')', 1, 1, ApecUtils.SegmentationOptions.TOTALLY_EXCLUSIVE));
-                    skill_shown = true;
-                }
+                skillInfo = ApecUtils.removeAllColourCodes(segmentString);
+                skillShown = true;
+            } else if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.ALWAYS_SHOW_SKILL) && !lastSkillXp.isEmpty()) {
+                skillInfo = ApecUtils.removeAllColourCodes(lastSkillXp);
+                skillXpPercentage = parseSkillPercentage(ApecUtils.segmentString(lastSkillXp, "(", '(', ')', 1, 1, ApecUtils.SegmentationOptions.TOTALLY_EXCLUSIVE));
+                skillShown = true;
             }
         } catch (Exception err) {
-            skill_shown = false;
+            skillShown = false;
         }
 
-        // Create a new PlayerStats record instance with all the updated values
+        // Create a new PlayerStats instance with all the updated values
         this.playerStats = new PlayerStats(
-                play_hp,
-                play_base_hp,
-                play_heal_duration,
-                play_heal_duration_ticker,
-                play_absorption,
-                play_base_absorption,
-                play_overflow,
-                play_base_overflow,
-                play_mp,
-                play_base_mp,
-                play_defence,
-                skill_info,
-                skill_xp_percentage,
-                skill_shown,
-                ability_shown,
-                kuudra_tiered_bonus);
+                hp,
+                baseHp,
+                healDuration,
+                healDurationTicker,
+                absorption,
+                baseAbsorption,
+                overflow,
+                baseOverflow,
+                mana,
+                baseMana,
+                defence,
+                skillInfo,
+                skillXpPercentage,
+                skillShown,
+                abilityShown,
+                kuudraTieredBonus);
     }
 
-    private OtherData ProcessOtherData(SBScoreBoard sd) {
+    /**
+     * Checks if the action bar contains special text that would replace defense value.
+     *
+     * @param actionBar The action bar text
+     * @return True if the action bar contains special text
+     */
+    private boolean isActionBarContainingSpecialText(String actionBar) {
+        return actionBar.contains(GameSymbols.END_RACE) ||
+               actionBar.contains(GameSymbols.WOODS_RACING) ||
+               actionBar.contains(GameSymbols.DPS) ||
+               actionBar.contains(GameSymbols.SECOND) ||
+               actionBar.contains(GameSymbols.SECRETS) ||
+               actionBar.contains(GameSymbols.CHICKEN_RACE) ||
+               actionBar.contains(GameSymbols.JUMP) ||
+               actionBar.contains(GameSymbols.CRYSTAL_RACE) ||
+               actionBar.contains(GameSymbols.GIANT_MUSHROOM) ||
+               actionBar.contains(GameSymbols.PRECURSOR_RUINS);
+    }
 
+    /**
+     * Parses Kuudra tiered bonus information from the action bar.
+     *
+     * @param actionBar The action bar text
+     * @return Kuudra tiered bonus text or empty string if not found
+     */
+    private String parseKuudraTieredBonus(String actionBar) {
+        // Check for Dominus
+        String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.DOMINUS), '§', GameSymbols.DOMINUS, 1, 1);
+        if (segmentedString != null) {
+            return GameSymbols.DOMINUS + " Dominus " + ApecUtils.removeAllColourCodes(segmentedString);
+        }
+
+        // Check for Arcane
+        segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.ARCANE), '§', GameSymbols.ARCANE, 1, 1);
+        if (segmentedString != null) {
+            return GameSymbols.ARCANE + " Arcane " + ApecUtils.removeAllColourCodes(segmentedString);
+        }
+
+        // Check for Fervor
+        segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.FERVOR), '§', GameSymbols.FERVOR, 1, 1);
+        if (segmentedString != null) {
+            return GameSymbols.FERVOR + " Fervor " + ApecUtils.removeAllColourCodes(segmentedString);
+        }
+
+        // Check for Spirit
+        segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.SPIRIT), '§', GameSymbols.SPIRIT, 1, 1);
+        if (segmentedString != null) {
+            return GameSymbols.SPIRIT + " Spirit " + ApecUtils.removeAllColourCodes(segmentedString);
+        }
+
+        // Check for Hydra
+        segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.HYDRA), '§', GameSymbols.HYDRA, 1, 1);
+        if (segmentedString != null) {
+            return GameSymbols.HYDRA + " Hydra " + ApecUtils.removeAllColourCodes(segmentedString);
+        }
+
+        return "";
+    }
+
+    /**
+     * Processes other game data from the scoreboard and action bar.
+     *
+     * @param scoreboard The SkyBlock scoreboard
+     * @return An OtherData instance with processed information
+     */
+    private OtherData processOtherData(SBScoreBoard scoreboard) {
         OtherData otherData = new OtherData();
         String actionBar = this.clientOverlay.getString();
-        if (actionBar == null ? true : isFromChat(actionBar)) return otherData;
-        String endRace = ApecUtils.segmentString(actionBar, endRaceSymbol, '\u00a7', ' ', 2, 2);
-        String woodRacing = ApecUtils.segmentString(actionBar, woodRacingSymbol, '\u00a7', ' ', 2, 2);
-        String dps = ApecUtils.segmentString(actionBar, dpsSymbol, '\u00a7', ' ', 1, 1);
-        String sec = ApecUtils.segmentString(actionBar, secSymbol, '\u00a7', ' ', 1, 2);
-        String secrets = ApecUtils.segmentString(actionBar, secretSymbol, '\u00a7', '\u00a7', 1, 1);
-        String chickenRace = ApecUtils.segmentString(actionBar, chickenRaceSymbol, '\u00a7', ' ', 2, 2);
-        String jump = ApecUtils.segmentString(actionBar, jumpSymbol, '\u00a7', '\u00a7', 3, 1);
-        String crystalRace = ApecUtils.segmentString(actionBar, crystalRaceSymbol, '\u00a7', ' ', 2, 2);
-        String mushroomRace = ApecUtils.segmentString(actionBar, giantMushroomSymbol, '\u00a7', ' ', 2, 2);
-        String precursorRace = ApecUtils.segmentString(actionBar, precursorRuinsSymbol, '\u00a7', ' ', 2, 2);
 
-        if ((endRace != null || woodRacing != null || dps != null || sec != null) && !otherData.ExtraInfo.isEmpty())
-            otherData.ExtraInfo.add(" ");
-
-        if (endRace != null) otherData.ExtraInfo.add(endRace);
-        if (woodRacing != null) otherData.ExtraInfo.add(woodRacing);
-        if (dps != null) otherData.ExtraInfo.add(dps);
-        if (secrets != null) otherData.ExtraInfo.add(secrets);
-        // The condition is like this to make sure the actionData is not null
-        if (actionBar.contains("Revive")) {
-            otherData.ExtraInfo.add(actionBar);
+        if (actionBar == null || isFromChat(actionBar)) {
+            return otherData;
         }
-        // The revive message also contais the word second so we have to be sure is not that one
-        else if (sec != null) otherData.ExtraInfo.add(sec);
-        if (chickenRace != null) otherData.ExtraInfo.add(chickenRace);
-        if (jump != null) otherData.ExtraInfo.add(jump);
-        if (crystalRace != null) otherData.ExtraInfo.add(crystalRace);
-        if (mushroomRace != null) otherData.ExtraInfo.add(mushroomRace);
-        if (precursorRace != null) otherData.ExtraInfo.add(precursorRace);
 
-        if (actionBar.contains(armadilloName)) {
-            String segmentEnergy = ApecUtils.segmentString(actionBar, "/", '\u00a7', '\0' /*placeholder*/, 2, 1, ApecUtils.SegmentationOptions.TOTALLY_INCLUSIVE);
+        // Extract various special text segments from the action bar
+        String endRace = ApecUtils.segmentString(actionBar, GameSymbols.END_RACE, '\u00a7', ' ', 2, 2);
+        String woodRacing = ApecUtils.segmentString(actionBar, GameSymbols.WOODS_RACING, '\u00a7', ' ', 2, 2);
+        String dps = ApecUtils.segmentString(actionBar, GameSymbols.DPS, '\u00a7', ' ', 1, 1);
+        String sec = ApecUtils.segmentString(actionBar, GameSymbols.SECOND, '\u00a7', ' ', 1, 2);
+        String secrets = ApecUtils.segmentString(actionBar, GameSymbols.SECRETS, '\u00a7', '\u00a7', 1, 1);
+        String chickenRace = ApecUtils.segmentString(actionBar, GameSymbols.CHICKEN_RACE, '\u00a7', ' ', 2, 2);
+        String jump = ApecUtils.segmentString(actionBar, GameSymbols.JUMP, '\u00a7', '\u00a7', 3, 1);
+        String crystalRace = ApecUtils.segmentString(actionBar, GameSymbols.CRYSTAL_RACE, '\u00a7', ' ', 2, 2);
+        String mushroomRace = ApecUtils.segmentString(actionBar, GameSymbols.GIANT_MUSHROOM, '\u00a7', ' ', 2, 2);
+        String precursorRace = ApecUtils.segmentString(actionBar, GameSymbols.PRECURSOR_RUINS, '\u00a7', ' ', 2, 2);
+
+        // Add a space if we're going to add race information
+        if ((endRace != null || woodRacing != null || dps != null || sec != null) && !otherData.ExtraInfo.isEmpty()) {
+            otherData.ExtraInfo.add(" ");
+        }
+
+        // Add all relevant information to the extra info list
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, endRace);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, woodRacing);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, dps);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, secrets);
+
+        // Handle revive message which has priority over "second" text
+        if (actionBar.contains(GameSymbols.REVIVE)) {
+            otherData.ExtraInfo.add(actionBar);
+        } else if (sec != null) {
+            otherData.ExtraInfo.add(sec);
+        }
+
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, chickenRace);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, jump);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, crystalRace);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, mushroomRace);
+        addToExtraInfoIfNotNull(otherData.ExtraInfo, precursorRace);
+
+        // Parse Armadillo energy if present
+        if (actionBar.contains(GameSymbols.ARMADILLO)) {
+            String segmentEnergy = ApecUtils.segmentString(actionBar, "/", '\u00a7', '\0', 2, 1, ApecUtils.SegmentationOptions.TOTALLY_INCLUSIVE);
             if (segmentEnergy != null) {
                 String[] values = ApecUtils.removeAllColourCodes(segmentEnergy).split("/");
                 otherData.ArmadilloEnergy = Float.parseFloat(values[0]);
@@ -491,59 +585,81 @@ public class SkyBlockInfo implements SBAPI, MC {
             }
         }
 
-        if (actionBar.contains(treasureMetalDetectorSymbol)) {
-            String segmentedString = ApecUtils.segmentString(actionBar, treasureMetalDetectorSymbol, '\u00a7', 'm', 2, 1, ApecUtils.SegmentationOptions.TOTALLY_INCLUSIVE);
+        // Parse treasure metal detector info
+        if (actionBar.contains(GameSymbols.TREASURE)) {
+            String segmentedString = ApecUtils.segmentString(actionBar, GameSymbols.TREASURE, '\u00a7', 'm', 2, 1, ApecUtils.SegmentationOptions.TOTALLY_INCLUSIVE);
             if (segmentedString != null) {
                 otherData.ExtraInfo.add(segmentedString);
             }
         }
 
-//        if (ApecMain.Instance.settingsManager.getSettingState(SettingID.SHOW_POTIONS_EFFECTS)) {
-//
-//            List<String> effects = getPlayerEffects();
-//            if (!effects.isEmpty()) {
-//                if (!otherData.ExtraInfo.isEmpty()) otherData.ExtraInfo.add(" ");
-//                otherData.ExtraInfo.addAll(effects);
-//            }
-//
-//        }
-//
-        otherData.currentEvents = getEvents(sd);
+        // Add current events
+        otherData.currentEvents = getCurrentEvents(scoreboard);
 
         return otherData;
-
     }
 
     /**
-     * @param sd = ScoreBoardData
-     * @return A list of the current events (see EventIDs.class for the events)
+     * Adds a string to the extra info list if it's not null.
+     *
+     * @param list The list to add to
+     * @param value The value to add if not null
      */
+    private void addToExtraInfoIfNotNull(List<String> list, String value) {
+        if (value != null) {
+            list.add(value);
+        }
+    }
 
-    private ArrayList<EventIDs> getEvents (SBScoreBoard sd) {
-        ArrayList<EventIDs> events = new ArrayList<EventIDs>();
+    /**
+     * Determines current events based on scoreboard data.
+     *
+     * @param scoreboard The SkyBlock scoreboard
+     * @return A list of current events
+     */
+    private ArrayList<EventIDs> getCurrentEvents(SBScoreBoard scoreboard) {
+        ArrayList<EventIDs> events = new ArrayList<>();
 
         if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.SHOW_WARNING)) {
             try {
-                if (mc.player != null) if (isInvFull()) events.add(EventIDs.INV_FULL);
-                if (sd.purse() != null) {
-                    String purse = ApecUtils.removeAllColourCodes(sd.purse().getString());
-                    if (purse.contains("(")) purse = purse.substring(0,purse.indexOf("("));
+                // Check if inventory is full
+                if (mc.player != null && isInventoryFull()) {
+                    events.add(EventIDs.INV_FULL);
+                }
+
+                // Check coin count for warning
+                if (scoreboard.purse() != null) {
+                    String purse = ApecUtils.removeAllColourCodes(scoreboard.purse().getString());
+                    if (purse.contains("(")) {
+                        purse = purse.substring(0, purse.indexOf("("));
+                    }
                     purse = ApecUtils.removeNonNumericalChars(purse);
-                    if (!purse.equals("")) {
-                        if (Float.parseFloat(purse) >= 5000000f && !usesPiggyBank) events.add(EventIDs.COIN_COUNT);
+                    if (!purse.isEmpty()) {
+                        if (Float.parseFloat(purse) >= 5000000f && !usesPiggyBank) {
+                            events.add(EventIDs.COIN_COUNT);
+                        }
                     }
                 }
-//                if (hasSentATradeRequest) events.add(EventIDs.TRADE_OUT);
-//                if (hasRecievedATradeRequest) events.add(EventIDs.TRADE_IN);
-                if (!stringScoreboard.isEmpty())
-                    if (ApecUtils.removeAllColourCodes(stringScoreboard.get(stringScoreboard.size() - 1)).contains("Server closing"))
-                        events.add(EventIDs.SERVER_REBOOT);
+
+                // Check for server reboot
+                if (!stringScoreboard.isEmpty() &&
+                    ApecUtils.removeAllColourCodes(stringScoreboard.get(stringScoreboard.size() - 1))
+                             .contains("Server closing")) {
+                    events.add(EventIDs.SERVER_REBOOT);
+                }
+
+                // Check ping
                 if (mc.player != null) {
                     int pingThreshold = 80;
-                    int ping = mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()).getLatency();
-                    if (ping > pingThreshold) events.add(EventIDs.HIGH_PING);
+                    int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()))
+                                      .map(info -> info.getLatency())
+                                      .orElse(0);
+                    if (ping > pingThreshold) {
+                        events.add(EventIDs.HIGH_PING);
+                    }
                 }
             } catch (Exception e) {
+                // Error handling is silent by design
             }
         }
 
@@ -551,70 +667,133 @@ public class SkyBlockInfo implements SBAPI, MC {
     }
 
     /**
-     * @return Returns true if the inventory of the player is full
+     * Determines if the player's inventory is full.
+     *
+     * @return True if inventory is full
      */
-
-    private boolean isInvFull () {
-        Inventory ip = mc.player.getInventory();
-        return ip.getFreeSlot() == -1;
+    private boolean isInventoryFull() {
+        if (mc.player == null) {
+            return false;
+        }
+        Inventory inventory = mc.player.getInventory();
+        return inventory.getFreeSlot() == -1;
     }
 
     /**
-     * @param skillInfo = The text between brackets of the skill xp string
-     * @return the precentege of completion until next skill level
+     * Parses skill percentage from skill information text.
+     *
+     * @param skillInfo The text between brackets of the skill xp string
+     * @return The percentage of completion until next skill level (-1f if invalid)
      */
-    float praseSkillPercentage(String skillInfo) {
-        if (skillInfo == null) return -1f;
+    private float parseSkillPercentage(String skillInfo) {
+        if (skillInfo == null) {
+            return -1f;
+        }
+
         if (skillInfo.contains("%")) {
-            skillInfo = skillInfo.replace("%","");
-            return Float.parseFloat(skillInfo) / 100f;
-        } else if (skillInfo.contains("/")){
+            skillInfo = skillInfo.replace("%", "");
+            try {
+                return Float.parseFloat(skillInfo) / 100f;
+            } catch (NumberFormatException e) {
+                return -1f;
+            }
+        } else if (skillInfo.contains("/")) {
             String[] twoValues = skillInfo.split("/");
-            float first = ApecUtils.hypixelShortValueFormattingToFloat(twoValues[0]);
-            float second = ApecUtils.hypixelShortValueFormattingToFloat(twoValues[1]);
-            return first / second;
+            try {
+                float first = ApecUtils.hypixelShortValueFormattingToFloat(twoValues[0]);
+                float second = ApecUtils.hypixelShortValueFormattingToFloat(twoValues[1]);
+                return first / second;
+            } catch (Exception e) {
+                return -1f;
+            }
         }
         return -1f;
     }
 
-    public Tuple<Integer, Integer> formatStringFractI(String s) {
-
-        String[] tempSplit = s.replace(",", "").split("/");
-        return new Tuple<>(Integer.parseInt(tempSplit[0]), Integer.parseInt(tempSplit[1]));
+    /**
+     * Parses a fraction string into two integers.
+     *
+     * @param s The string fraction in format "number/number"
+     * @return A tuple with the numerator and denominator
+     */
+    private Tuple<Integer, Integer> parseStringFraction(String s) {
+        try {
+            String[] tempSplit = s.replace(",", "").split("/");
+            return new Tuple<>(Integer.parseInt(tempSplit[0]), Integer.parseInt(tempSplit[1]));
+        } catch (Exception e) {
+            return new Tuple<>(0, 0);
+        }
     }
 
+    /**
+     * Determines if a string represents a SkyBlock date.
+     *
+     * @param s The string to check
+     * @return True if the string is a date
+     */
     private boolean isDate(String s) {
-
-        return (ApecUtils.containedByCharSequence(s, "Autumn") || ApecUtils.containedByCharSequence(s, "Winter") || ApecUtils.containedByCharSequence(s, "Spring") || ApecUtils.containedByCharSequence(s, "Summer")) && (ApecUtils.containedByCharSequence(s, "st") || ApecUtils.containedByCharSequence(s, "nd") || ApecUtils.containedByCharSequence(s, "rd") || ApecUtils.containedByCharSequence(s, "th"));
+        return (ApecUtils.containedByCharSequence(s, "Autumn") ||
+                ApecUtils.containedByCharSequence(s, "Winter") ||
+                ApecUtils.containedByCharSequence(s, "Spring") ||
+                ApecUtils.containedByCharSequence(s, "Summer")) &&
+               (ApecUtils.containedByCharSequence(s, "st") ||
+                ApecUtils.containedByCharSequence(s, "nd") ||
+                ApecUtils.containedByCharSequence(s, "rd") ||
+                ApecUtils.containedByCharSequence(s, "th"));
     }
 
+    /**
+     * Determines if a string represents SkyBlock time.
+     *
+     * @param s The string to check
+     * @return True if the string is a time
+     */
     private boolean isTime(String s) {
-
         return (ApecUtils.containedByCharSequence(s, "am") || ApecUtils.containedByCharSequence(s, "pm")) &&
-                (ApecUtils.containedByCharSequence(s, ":")) &&
-                (ApecUtils.containedByCharSequence(s, "☽") || ApecUtils.containedByCharSequence(s, "☀"));
+               (ApecUtils.containedByCharSequence(s, ":")) &&
+               (ApecUtils.containedByCharSequence(s, "☽") || ApecUtils.containedByCharSequence(s, "☀"));
     }
 
-    public boolean isFromChat(String s) {
-
+    /**
+     * Determines if a message is from chat rather than the action bar.
+     *
+     * @param s The string to check
+     * @return True if the string is from chat
+     */
+    private boolean isFromChat(String s) {
         return (s.contains("[") && s.contains("]")) || (s.startsWith("\u00a77") && s.contains(": "));
     }
 
-    private Component getClientScoreboardTitle() {
-
+    /**
+     * Gets the scoreboard title from the client.
+     *
+     * @return The scoreboard title component
+     */
+    private Component getScoreboardTitle() {
         try {
+            if (mc.level == null) {
+                return Component.empty();
+            }
+
             Scoreboard scoreboard = mc.level.getScoreboard();
             Objective displayObjective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
+
+            if (displayObjective == null) {
+                return Component.empty();
+            }
+
             return displayObjective.getDisplayName();
         } catch (Exception e) {
             return Component.empty();
         }
     }
 
-    private void getScoreboardLines() {
-
+    /**
+     * Collects and parses the scoreboard lines from the client.
+     */
+    private void collectScoreboardLines() {
         this.stringScoreboard.clear();
-        this.componenetScoreboard.clear();
+        this.componentScoreboard.clear();
 
         var player = mc.player;
         if (player == null) {
@@ -623,6 +802,11 @@ public class SkyBlockInfo implements SBAPI, MC {
 
         Scoreboard scoreboard = player.getScoreboard();
         Objective displayObjective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
+
+        if (displayObjective == null) {
+            return;
+        }
+
         ObjectArrayList<Component> componentLine = new ObjectArrayList<>();
         ObjectArrayList<String> stringLine = new ObjectArrayList<>();
 
@@ -641,101 +825,97 @@ public class SkyBlockInfo implements SBAPI, MC {
             }
         }
 
-        if (displayObjective != null) {
-            Collections.reverse(stringLine);
-            Collections.reverse(componentLine);
-        }
+        Collections.reverse(stringLine);
+        Collections.reverse(componentLine);
 
         this.stringScoreboard.addAll(stringLine);
-        this.componenetScoreboard.addAll(componentLine);
+        this.componentScoreboard.addAll(componentLine);
     }
 
     /**
-     * @param s = Input string
-     * @return Return true if the specific text should have an empty line before in the left side display
+     * Determines if a specific text should have an empty line before it in the left side display.
+     *
+     * @param s The text to check
+     * @return True if it should have a space before
      */
-
-    public boolean ShouldHaveSpaceBefore(String s) {
-
-        return ApecUtils.containedByCharSequence(s, "Objective") || //Objectives
-                ApecUtils.containedByCharSequence(s, "Contest") || // Jacob's contest
-                ApecUtils.containedByCharSequence(s, "Year") || // New year and the vote thing
-                ApecUtils.containedByCharSequence(s, "Zoo") || // Traveling Zoo
-                ApecUtils.containedByCharSequence(s, "Festival") || // Spooky Festival
-                ApecUtils.containedByCharSequence(s, "Season") || // Jerry season
-                ApecUtils.containedByCharSequence(s, "Election") || // Idk at this point im just putting some things from the wiki
-                ApecUtils.containedByCharSequence(s, "Slayer") || // Slayer quest
-                ApecUtils.containedByCharSequence(s, "Keys") || // Keys in dungeons
-                ApecUtils.containedByCharSequence(s, "Time Elapsed") || // time elapsed dungeons
-                ApecUtils.containedByCharSequence(s, "Starting in:") ||
-                ApecUtils.containedByCharSequence(s, "Wave") ||
-                ApecUtils.containedByCharSequence(s, "Festival");
+    public boolean shouldHaveSpaceBefore(String s) {
+        return ApecUtils.containedByCharSequence(s, "Objective") ||
+               ApecUtils.containedByCharSequence(s, "Contest") ||
+               ApecUtils.containedByCharSequence(s, "Year") ||
+               ApecUtils.containedByCharSequence(s, "Zoo") ||
+               ApecUtils.containedByCharSequence(s, "Festival") ||
+               ApecUtils.containedByCharSequence(s, "Season") ||
+               ApecUtils.containedByCharSequence(s, "Election") ||
+               ApecUtils.containedByCharSequence(s, "Slayer") ||
+               ApecUtils.containedByCharSequence(s, "Keys") ||
+               ApecUtils.containedByCharSequence(s, "Time Elapsed") ||
+               ApecUtils.containedByCharSequence(s, "Starting in:") ||
+               ApecUtils.containedByCharSequence(s, "Wave");
     }
 
     /**
-     * @param s = Input string
-     * @return Return true if the specific text should have an empty line after in the left side display
+     * Determines if a specific text should have an empty line after it in the left side display.
+     *
+     * @param s The text to check
+     * @return True if it should have a space after
      */
-
-    public boolean ShouldHaveSpaceAfter(String s) {
-
-        return ApecUtils.containedByCharSequence(s, "Dungeon Cleared"); // Dungeon cleared in dungeons
+    public boolean shouldHaveSpaceAfter(String s) {
+        return ApecUtils.containedByCharSequence(s, "Dungeon Cleared");
     }
+
+    /**
+     * Class representing additional SkyBlock data.
+     */
+    public class OtherData {
+        public ArrayList<String> ExtraInfo = new ArrayList<>();
+        public ArrayList<EventIDs> currentEvents = new ArrayList<>();
+        public float ArmadilloEnergy;
+        public float ArmadilloBaseEnergy;
+    }
+
+    // SBAPI implementation methods
 
     @Override
     public boolean isOnSkyblock() {
-
         return onSkyblock;
     }
 
     @Override
     public boolean isInRift() {
-
         return isInRift;
     }
 
     @Override
     public boolean isInDungeon() {
-
         return isInDungeon;
     }
 
     @Override
     public SBScoreBoard getScoreboard() {
-
         return scoreboard;
     }
 
     @Override
     public boolean usesPiggyBank() {
-
         return usesPiggyBank;
     }
 
     @Override
     public PlayerStats getPlayerStats() {
-
         return playerStats;
     }
 
     @Override
     public Component getTabListFooter() {
-
         return clientTabFooter;
     }
 
-    public class OtherData {
-
-        public ArrayList<String> ExtraInfo = new ArrayList<String>();
-        public ArrayList<EventIDs> currentEvents = new ArrayList<EventIDs>();
-        public float ArmadilloEnergy;
-        public float ArmadilloBaseEnergy;
-
-    }
-
+    /**
+     * Gets other data related to SkyBlock.
+     *
+     * @return The OtherData instance
+     */
     public OtherData getOtherData() {
-
         return otherData;
     }
-
 }
