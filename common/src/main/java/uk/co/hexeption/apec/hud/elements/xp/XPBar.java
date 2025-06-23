@@ -3,9 +3,11 @@ package uk.co.hexeption.apec.hud.elements.xp;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import org.joml.Vector2f;
+import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecTextures;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
 public class XPBar extends Element {
@@ -16,6 +18,10 @@ public class XPBar extends Element {
 
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
+
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.XP_BAR) == false) {
+            return;
+        }
 
         ApecTextures xpBarTexture = ApecTextures.STATUS_BAR;
 

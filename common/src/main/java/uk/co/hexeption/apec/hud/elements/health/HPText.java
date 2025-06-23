@@ -6,6 +6,7 @@ import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
 public class HPText extends Element {
@@ -18,6 +19,11 @@ public class HPText extends Element {
 
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
+
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.HP_TEXT) == false) {
+            return;
+        }
+
         boolean showAPBar = false;
 
         int hp = Apec.SKYBLOCK_INFO.getPlayerStats().hp();

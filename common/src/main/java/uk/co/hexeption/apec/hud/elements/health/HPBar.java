@@ -7,6 +7,7 @@ import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecTextures;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
 public class HPBar extends Element {
@@ -16,6 +17,11 @@ public class HPBar extends Element {
 
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
+
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.HP_BAR) == false) {
+            return;
+        }
+
         int hp = Apec.SKYBLOCK_INFO.getPlayerStats().hp();
         int base_hp = Apec.SKYBLOCK_INFO.getPlayerStats().base_hp();
         int ap = Apec.SKYBLOCK_INFO.getPlayerStats().absorption();

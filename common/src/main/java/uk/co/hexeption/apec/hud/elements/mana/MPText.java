@@ -5,6 +5,7 @@ import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 import uk.co.hexeption.apec.utils.MultiColourText;
 
@@ -19,6 +20,11 @@ public class MPText extends Element {
 
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
+
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.MP_TEXT) == false) {
+            return;
+        }
+
         int mp = Apec.SKYBLOCK_INFO.getPlayerStats().mana();
         int base_mp = Apec.SKYBLOCK_INFO.getPlayerStats().base_mana();
         int overflow = Apec.SKYBLOCK_INFO.getPlayerStats().overflow();

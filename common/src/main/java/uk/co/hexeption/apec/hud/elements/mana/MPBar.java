@@ -7,6 +7,7 @@ import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecTextures;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
 public class MPBar extends Element {
@@ -17,6 +18,10 @@ public class MPBar extends Element {
 
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
+
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.MP_BAR) == false) {
+            return;
+        }
 
         int mp = Apec.SKYBLOCK_INFO.getPlayerStats().mana();
         int base_mp = Apec.SKYBLOCK_INFO.getPlayerStats().base_mana();

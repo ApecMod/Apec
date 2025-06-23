@@ -2,8 +2,10 @@ package uk.co.hexeption.apec.hud.elements.xp;
 
 import net.minecraft.client.gui.GuiGraphics;
 import org.joml.Vector2f;
+import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
+import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 
 public class XPText extends Element {
@@ -16,6 +18,11 @@ public class XPText extends Element {
 
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
+
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.XP_TEXT) == false) {
+            return;
+        }
+
         String xpText = "Lvl " + mc.player.experienceLevel + " XP";
 
         Vector2f statBar = ApecUtils.scalarMultiply(getCurrentAnchorPoint(), 1f / scale);
