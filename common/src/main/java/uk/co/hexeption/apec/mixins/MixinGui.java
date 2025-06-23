@@ -1,5 +1,7 @@
 package uk.co.hexeption.apec.mixins;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -85,10 +87,10 @@ public class MixinGui implements MC {
         ci.cancel();
     }
 
-    @Inject(method = "renderItemHotbar", at = @At("HEAD"))
-    private void renderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
+    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderItemHotbar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
+    private void renderItemHotbar(Gui instance, GuiGraphics guiGraphics, DeltaTracker deltaTracker, Operation<Void> original) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            original.call(instance, guiGraphics, deltaTracker);
             return;
         }
 
@@ -102,14 +104,9 @@ public class MixinGui implements MC {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
         guiGraphics.pose().translate(-translationX, -translationY, 100);
-    }
-
-    @Inject(method = "renderItemHotbar", at = @At("RETURN"))
-    private void renderItemHotbarReturn(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
-        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
-            return;
-        }
+        
+        original.call(instance, guiGraphics, deltaTracker);
+        
         guiGraphics.pose().popPose();
     }
 
