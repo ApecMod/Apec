@@ -1,7 +1,5 @@
 package uk.co.hexeption.apec.mixins;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -87,10 +85,10 @@ public class MixinGui implements MC {
         ci.cancel();
     }
 
-    @WrapOperation(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderItemHotbar(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"))
-    private void renderItemHotbar(Gui instance, GuiGraphics guiGraphics, DeltaTracker deltaTracker, Operation<Void> original) {
+    @Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;pose()Lcom/mojang/blaze3d/vertex/PoseStack;", ordinal = 0))
+    private void renderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
-            original.call(instance, guiGraphics, deltaTracker);
             return;
         }
 
@@ -104,9 +102,14 @@ public class MixinGui implements MC {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(scale, scale, scale);
         guiGraphics.pose().translate(-translationX, -translationY, 100);
-        
-        original.call(instance, guiGraphics, deltaTracker);
-        
+    }
+
+    @Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;attackIndicator()Lnet/minecraft/client/OptionInstance;"))
+    private void renderItemHotbarReturn(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
+        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
         guiGraphics.pose().popPose();
     }
 
@@ -144,7 +147,7 @@ public class MixinGui implements MC {
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
-          return;
+            return;
         }
 
         if(mc.screen instanceof CustomizationScreen) {
@@ -152,3 +155,4 @@ public class MixinGui implements MC {
         }
     }
 }
+

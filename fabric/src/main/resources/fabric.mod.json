@@ -13,14 +13,12 @@
   },
   "license": "CC0-1.0",
   "icon": "assets/apec/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [
-      "uk.co.hexeption.fabric.apec.ExampleModFabric"
-    ],
     "client": [
-      "uk.co.hexeption.fabric.apec.client.ExampleModFabricClient"
+      "uk.co.hexeption.fabric.apec.ApecFabric"
     ]
+
   },
   "mixins": [
     "apec.mixins.json"
