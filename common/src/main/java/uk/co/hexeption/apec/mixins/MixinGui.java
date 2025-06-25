@@ -39,6 +39,15 @@ public class MixinGui implements MC {
         ci.cancel();
     }
 
+    @Inject(method = "renderOverlayMessage", at = @At("HEAD"), cancellable = true)
+    private void renderOverlayMessage(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
+        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+        ci.cancel();
+    }
+
     @Inject(method = "renderHearts", at = @At("HEAD"), cancellable = true)
     private void renderHearts(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
 
