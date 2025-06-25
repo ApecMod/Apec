@@ -7,7 +7,6 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.platform.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
@@ -824,9 +823,6 @@ public class SkyBlockInfo implements SBAPI, MC {
                 }
             }
         }
-
-        Collections.reverse(stringLine);
-        Collections.reverse(componentLine);
 
         this.stringScoreboard.addAll(stringLine);
         this.componentScoreboard.addAll(componentLine);
