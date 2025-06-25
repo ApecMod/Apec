@@ -44,7 +44,7 @@ public final class Apec implements MC {
     @Environment(EnvType.CLIENT)
     public static void clientInit() {
 
-        var settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_SHIFT, "key.categories.apec");
+        var settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.categories.apec");
         KeyMappingRegistry.register(settingKeybind);
 
         ClientCommandRegistrationEvent.EVENT.register(ApecCommand::register);
