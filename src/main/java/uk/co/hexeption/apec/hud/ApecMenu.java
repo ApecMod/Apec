@@ -21,6 +21,8 @@ import uk.co.hexeption.apec.hud.elements.ToolTipText;
 import uk.co.hexeption.apec.hud.elements.WarningIcons;
 import uk.co.hexeption.apec.hud.elements.drillfuel.DrillFuelBar;
 import uk.co.hexeption.apec.hud.elements.drillfuel.DrillFuelText;
+import uk.co.hexeption.apec.hud.elements.air.AirBar;
+import uk.co.hexeption.apec.hud.elements.air.AirText;
 import uk.co.hexeption.apec.hud.elements.health.HPBar;
 import uk.co.hexeption.apec.hud.elements.health.HPText;
 import uk.co.hexeption.apec.hud.elements.mana.MPBar;
@@ -47,6 +49,8 @@ public class ApecMenu implements MC {
                     new XPBar(),
                     new DrillFuelText(),
                     new DrillFuelBar(),
+                    new AirText(),
+                    new AirBar(),
                     new ExtraInfo(),
                     new BottomBar(),
                     new ItemHotBar(),
