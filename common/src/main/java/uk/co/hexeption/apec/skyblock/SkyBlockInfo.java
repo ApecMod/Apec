@@ -1,5 +1,7 @@
 package uk.co.hexeption.apec.skyblock;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.events.client.ClientChatEvent;
 import dev.architectury.event.events.client.ClientSystemMessageEvent;
@@ -7,8 +9,10 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.platform.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -16,8 +20,8 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.PlayerScoreEntry;
 import net.minecraft.world.scores.PlayerTeam;
-import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.EventIDs;
@@ -809,23 +813,34 @@ public class SkyBlockInfo implements SBAPI, MC {
         ObjectArrayList<Component> componentLine = new ObjectArrayList<>();
         ObjectArrayList<String> stringLine = new ObjectArrayList<>();
 
-        for (ScoreHolder scoreHolder : scoreboard.getTrackedPlayers()) {
-            if (scoreboard.listPlayerScores(scoreHolder).containsKey(displayObjective)) {
-                PlayerTeam team = scoreboard.getPlayersTeam(scoreHolder.getScoreboardName());
+        Collection<PlayerScoreEntry> scores = scoreboard.listPlayerScores(displayObjective);
+        List<PlayerScoreEntry> list = scores.stream().filter(input -> input != null && !input.isHidden()).collect(Collectors.toList());
 
-                if (team != null) {
-                    Component component = Component.empty().append(team.getPlayerPrefix().copy()).append(team.getPlayerSuffix().copy());
-                    String string = team.getPlayerPrefix().getString() + team.getPlayerSuffix().getString();
-                    if (!string.trim().isEmpty()) {
-                        componentLine.add(component);
-                        stringLine.add(string);
-                    }
+        list.sort((a, b) -> Integer.compare(b.value(), a.value()));
+
+        if (list.size() > 15) {
+            scores = Lists.newArrayList(Iterables.skip(list, scores.size() - 15));
+        } else {
+            scores = list;
+        }
+
+        for (PlayerScoreEntry score : scores) {
+            PlayerTeam team = scoreboard.getPlayersTeam(score.owner());
+
+            if (team != null) {
+                Component component = Component.empty().append(team.getPlayerPrefix().copy()).append(team.getPlayerSuffix().copy());
+                String string = team.getPlayerPrefix().getString() + team.getPlayerSuffix().getString();
+                if (!string.trim().isEmpty()) {
+                    componentLine.add(component);
+                    stringLine.add(string);
                 }
             }
         }
 
         this.stringScoreboard.addAll(stringLine);
         this.componentScoreboard.addAll(componentLine);
+
+
     }
 
     /**

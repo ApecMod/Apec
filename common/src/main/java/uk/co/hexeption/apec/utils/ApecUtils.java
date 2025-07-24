@@ -2,6 +2,7 @@ package uk.co.hexeption.apec.utils;
 
 import java.util.HashMap;
 import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -252,12 +253,30 @@ public class ApecUtils {
     }
 
     public static void drawOutlineText(Minecraft mc, GuiGraphics guiGraphics, Component text, int x, int y, int colour) {
-        String noColorText = text.getString();
-        guiGraphics.drawString(mc.font, noColorText, x + 1, y, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, noColorText, x - 1, y, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, noColorText, x, y + 1, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, noColorText, x, y - 1, (colour >> 24) << 24);
+        var copyOfText = setComponentColorDeep(text, ChatFormatting.BLACK);
+        guiGraphics.drawString(mc.font, copyOfText, x + 1, y, (colour >> 24) << 24);
+        guiGraphics.drawString(mc.font, copyOfText, x - 1, y, (colour >> 24) << 24);
+        guiGraphics.drawString(mc.font, copyOfText, x, y + 1, (colour >> 24) << 24);
+        guiGraphics.drawString(mc.font, copyOfText, x, y - 1, (colour >> 24) << 24);
         guiGraphics.drawString(mc.font, text, x, y, colour);
+    }
+
+    /**
+     * Recursively sets the color of a Component and all its siblings to the given ChatFormatting color.
+     */
+    public static Component setComponentColorDeep(Component component, ChatFormatting color) {
+        Component copy = component.copy();
+        if (copy instanceof net.minecraft.network.chat.MutableComponent mutable) {
+            mutable.setStyle(mutable.getStyle().withColor(color));
+            for (int i = 0; i < mutable.getSiblings().size(); i++) {
+                Component sib = mutable.getSiblings().get(i);
+                Component coloredSib = setComponentColorDeep(sib, color);
+                mutable.getSiblings().set(i, coloredSib);
+            }
+            return mutable;
+        } else {
+            return copy;
+        }
     }
 
     public static void drawOutlineWrappedText(Minecraft mc, GuiGraphics guiGraphics, String text, int x, int y, int wordWrap, int colour) {
