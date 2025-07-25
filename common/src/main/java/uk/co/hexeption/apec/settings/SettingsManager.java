@@ -63,6 +63,16 @@ public class SettingsManager {
         add(new Setting(SHOW_RIFT_TIMER,true));
         add(new Setting(USE_GAME_MODE_OUT_OF_BB, false));
         add(new Setting(SettingID.USE_KUUDRA_SET_BONUS_OUT_OF_BB, false));
+
+        // New GUI element settings - default to true to hide vanilla elements on Skyblock
+        add(new Setting(HIDE_VANILLA_EFFECTS, true));
+        add(new Setting(HIDE_VANILLA_SCOREBOARD, true));
+        add(new Setting(HIDE_VANILLA_OVERLAY_MESSAGE, true));
+        add(new Setting(HIDE_VANILLA_HEARTS, true));
+        add(new Setting(HIDE_VANILLA_EXPERIENCE_BAR, true));
+        add(new Setting(HIDE_VANILLA_EXPERIENCE_LEVEL, true));
+        add(new Setting(HIDE_VANILLA_ARMOR, true));
+        add(new Setting(HIDE_VANILLA_FOOD, true));
     }};
 
     /** Hashmap that holds the titles and descriptions of each setting */
@@ -110,6 +120,14 @@ public class SettingsManager {
         put(SHOW_RIFT_TIMER,new Tuple<String,String>("Show rift timer","Shows the rift timer"));
         put(USE_GAME_MODE_OUT_OF_BB, new Tuple<String, String>("Game Mode outside bar", "Shows the gamemode outside the bottom bar"));
         put(USE_KUUDRA_SET_BONUS_OUT_OF_BB, new Tuple<String, String>("Kuudra set bonus outside bar", "Shows the Kuudra set bonus outside the bottom bar"));
+        put(HIDE_VANILLA_EFFECTS, new Tuple<String, String>("Hide vanilla effects", "Hides the vanilla potion effects on the screen"));
+        put(HIDE_VANILLA_SCOREBOARD, new Tuple<String, String>("Hide vanilla scoreboard", "Hides the vanilla scoreboard"));
+        put(HIDE_VANILLA_OVERLAY_MESSAGE, new Tuple<String, String>("Hide vanilla overlay message", "Hides the vanilla overlay message"));
+        put(HIDE_VANILLA_HEARTS, new Tuple<String, String>("Hide vanilla hearts", "Hides the vanilla hearts"));
+        put(HIDE_VANILLA_EXPERIENCE_BAR, new Tuple<String, String>("Hide vanilla experience bar", "Hides the vanilla experience bar"));
+        put(HIDE_VANILLA_EXPERIENCE_LEVEL, new Tuple<String, String>("Hide vanilla experience level", "Hides the vanilla experience level"));
+        put(HIDE_VANILLA_ARMOR, new Tuple<String, String>("Hide vanilla armor", "Hides the vanilla armor"));
+        put(HIDE_VANILLA_FOOD, new Tuple<String, String>("Hide vanilla food", "Hides the vanilla food"));
     }};
 
     /** Cache for setting states */
@@ -209,14 +227,25 @@ public class SettingsManager {
             }
             scanner.close();
             JsonObject json = JsonParser.parseString(jsonContent.toString()).getAsJsonObject();
+
+            boolean hasNewSettings = false;
             for (Setting setting : settings) {
                 if (json.has(setting.settingID.name())) {
                     boolean status = json.get(setting.settingID.name()).getAsBoolean();
                     this.setSettingStateWithNoSaving(setting.settingID, status);
+                } else {
+                    // New setting not in config file - keep default value and mark for saving
+                    hasNewSettings = true;
                 }
             }
+
+            // If we found new settings, save the config to include them
+            if (hasNewSettings) {
+                this.SaveSettings();
+            }
+
         } catch (IOException | JsonSyntaxException e) {
-            ApecUtils.showMessage("[\u00A72Apec\u00A7f] There was an error reading settings!");
+            this.SaveSettings(); // Create new config with all current settings
         }
     }
 

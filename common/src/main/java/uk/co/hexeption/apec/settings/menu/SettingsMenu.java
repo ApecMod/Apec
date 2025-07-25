@@ -1,7 +1,8 @@
 package uk.co.hexeption.apec.settings.menu;
 
-
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -14,9 +15,6 @@ import uk.co.hexeption.apec.mixins.accessors.ScreenAccessor;
 import uk.co.hexeption.apec.settings.Setting;
 import uk.co.hexeption.apec.settings.SettingsManager;
 import uk.co.hexeption.apec.utils.ApecUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SettingsMenu extends Screen implements MC {
 
@@ -55,6 +53,7 @@ public class SettingsMenu extends Screen implements MC {
             SearchFor(string);
         });
 
+        settings.clear();
         settings.addAll(Apec.INSTANCE.settingsManager.settings);
 
         this.loadPage(pageNumber);
@@ -78,19 +77,6 @@ public class SettingsMenu extends Screen implements MC {
 
             drawRectangleAt(guiGraphics, x, y, 15, 5, i, j);
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().scale(1.1f, 1.1f, 1.1f);
-
-            guiGraphics.drawString(font, s.name, (int) ((x + 7) / 1.1f), (int) ((y + 6) / 1.1f), enabled ? 0x00ff00 : 0xff0000);
-
-            guiGraphics.pose().popPose();
-
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().scale(0.8f, 0.8f, 0.8f);
-
-            ApecUtils.drawWrappedText(guiGraphics, s.description, (int) ((x + 7) / 0.8f), (int) ((y + 18) / 0.8f), 140, 0xffffff);
-
-            guiGraphics.pose().popPose();
         }
 
         if (searchBox.visible) {
@@ -173,11 +159,15 @@ public class SettingsMenu extends Screen implements MC {
 
     private void SearchFor(String searchTerm) {
         if (searchTerm.length() != 0) {
-            Integer[] Scores = new Integer[settings.size()];
-            int SettingCount = settings.size();
+            Integer[] Scores = new Integer[Apec.INSTANCE.settingsManager.settings.size()];
+            int SettingCount = Apec.INSTANCE.settingsManager.settings.size();
             String[] SearchWords = searchTerm.split(" ");
+
+            // Use the actual settings manager list for search, not the local list
+            List<Setting> sourceSettings = Apec.INSTANCE.settingsManager.settings;
+
             for (int i = 0; i < SettingCount; i++) {
-                String[] SettingWords = SettingsManager.settingData.get(settings.get(i).settingID).getA().toLowerCase().split(" ");
+                String[] SettingWords = SettingsManager.settingData.get(sourceSettings.get(i).settingID).getA().toLowerCase().split(" ");
 
                 int TotalScore = 0;
                 for (int w = 0; w < SearchWords.length; w++) {
@@ -211,10 +201,13 @@ public class SettingsMenu extends Screen implements MC {
                 Scores[i] = TotalScore;
             }
 
+            // Clear and create fresh sorted list based on search results
+            settings.clear();
+            settings.addAll(sourceSettings);
             ApecUtils.bubbleSort(Lists.newArrayList(Scores), settings);
 
         } else {
-            // Resets the order
+            // Reset to original order - always refresh from settings manager
             settings.clear();
             settings.addAll(Apec.INSTANCE.settingsManager.settings);
         }

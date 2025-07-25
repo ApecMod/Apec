@@ -15,6 +15,7 @@ import uk.co.hexeption.apec.MC;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.hud.customization.CustomizationScreen;
 import uk.co.hexeption.apec.hud.elements.ItemHotBar;
+import uk.co.hexeption.apec.settings.SettingID;
 
 @Mixin(Gui.class)
 public class MixinGui implements MC {
@@ -27,7 +28,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_EFFECTS)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderScoreboardSidebar", at = @At("HEAD"), cancellable = true)
@@ -36,7 +40,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_SCOREBOARD)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderOverlayMessage", at = @At("HEAD"), cancellable = true)
@@ -45,7 +52,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_OVERLAY_MESSAGE)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderHearts", at = @At("HEAD"), cancellable = true)
@@ -54,7 +64,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_HEARTS)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
@@ -63,7 +76,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_EXPERIENCE_BAR)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderExperienceLevel", at = @At("HEAD"), cancellable = true)
@@ -72,7 +88,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_EXPERIENCE_LEVEL)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
@@ -81,7 +100,10 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        ci.cancel();
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_ARMOR)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderFood", at = @At("HEAD"), cancellable = true)
@@ -91,7 +113,9 @@ public class MixinGui implements MC {
             return;
         }
 
-        ci.cancel();
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_FOOD)) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;pose()Lcom/mojang/blaze3d/vertex/PoseStack;", ordinal = 0))
