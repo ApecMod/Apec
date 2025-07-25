@@ -29,6 +29,8 @@ public class SettingsManager {
         add(new Setting(MP_TEXT,true));
         add(new Setting(XP_BAR,true));
         add(new Setting(XP_TEXT,true));
+        add(new Setting(DRILL_FUEL_BAR,true));
+        add(new Setting(DRILL_FUEL_TEXT,true));
         add(new Setting(SHOW_AIR_BAR,true));
         add(new Setting(AIR_TEXT,true));
         add(new Setting(SHOW_SKILL_XP,true));
@@ -105,6 +107,8 @@ public class SettingsManager {
         put(HP_TEXT,new Tuple<String, String>("Show HP Text","Shows the HP text"));
         put(MP_TEXT,new Tuple<String, String>("Show MP Text","Shows the MP text"));
         put(XP_TEXT,new Tuple<String, String>("Show XP Text","Shows the XP text"));
+        put(DRILL_FUEL_BAR,new Tuple<String, String>("Show Drill Fuel Bar","Shows the drill fuel bar"));
+        put(DRILL_FUEL_TEXT,new Tuple<String, String>("Show Drill Fuel Text","Shows the drill fuel text"));
         put(AIR_TEXT,new Tuple<String, String>("Show Air text","Shows the air text"));
         put(SKILL_TEXT,new Tuple<String, String>("Show Skill text","Shows the skill text"));
         put(SHOW_CURRENT_SERVER,new Tuple<String, String>("Show current server","Show in which server you are in"));

@@ -44,9 +44,11 @@ public interface SBAPI {
             float skill_xp_percentage,
             boolean skill_shown,
             boolean ability_shown,
-            String kuudraTieredBonus
+            String kuudraTieredBonus,
+            int drillFuelRemaining,
+            int drillFuelCapacity
     ) {
-        public static final PlayerStats EMPTY = new PlayerStats(0, 0, 0, '0', 0, 0, 0, 0, 0, 0, 0, "", 0, false, false, "");
+        public static final PlayerStats EMPTY = new PlayerStats(0, 0, 0, '0', 0, 0, 0, 0, 0, 0, 0, "", 0, false, false, "", 0,0);
     }
 
     PlayerStats getPlayerStats();

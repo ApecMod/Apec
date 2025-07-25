@@ -278,6 +278,8 @@ public class SkyBlockInfo implements SBAPI, MC {
         String abilityText = "";
         String riftTimer = "";
         String kuudraTieredBonus = "";
+        int drillFuelRemaining = 0;
+        int drillFuelCapacity = 0;
 
         // Parse health
         try {
@@ -449,6 +451,31 @@ public class SkyBlockInfo implements SBAPI, MC {
             skillShown = false;
         }
 
+        // Parse drill fuel information
+        try {
+            String segmentFuel = ApecUtils.segmentString(actionBar, "Drill Fuel", '§', 'D', 1, 1);
+            if (segmentFuel != null) {
+                String cleanedFuel = ApecUtils.removeAllColourCodes(segmentFuel).trim();
+                if (cleanedFuel.contains("/")) {
+                    String[] fuelParts = cleanedFuel.split("\\s+");
+                    for (String part : fuelParts) {
+                        if (part.contains("/") && !part.contains("Drill")) {
+                            String[] values = part.split("/");
+                            if (values.length == 2) {
+                                drillFuelRemaining = (int) ApecUtils.hypixelShortValueFormattingToFloat(values[0]);
+                                drillFuelCapacity = (int) ApecUtils.hypixelShortValueFormattingToFloat(values[1]);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception err) {
+            drillFuelRemaining = 0;
+            drillFuelCapacity = 0;
+        }
+
+
         // Create a new PlayerStats instance with all the updated values
         this.playerStats = new PlayerStats(
                 hp,
@@ -466,7 +493,9 @@ public class SkyBlockInfo implements SBAPI, MC {
                 skillXpPercentage,
                 skillShown,
                 abilityShown,
-                kuudraTieredBonus);
+                kuudraTieredBonus,
+                drillFuelRemaining,
+                drillFuelCapacity);
     }
 
     /**
