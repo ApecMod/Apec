@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "name": "${mod_name}",
+  "version": "${mod_version}",
+  "description": "A GUI improvement mod for Hypixel Skyblock that enhances the in-game interface with HP/MP bars, custom scoreboard display, inventory traffic list, potion effects overlay, warning icons, and custom NPC GUIs.",
+  "authors": [
+    "Hexeption"
+  ],
+  "contact": {
+    "homepage": "https://github.com/ApecMod/Apec",
+    "sources": "https://github.com/ApecMod/Apec",
+    "issues": "https://github.com/ApecMod/Apec/issues"
+  },
+  "license": "MPL-2.0",
+  "icon": "assets/apec/icon.png",
+  "environment": "client",
+  "mixins": [
+    "apec.mixins.json"
+  ],
+  "entrypoints": {
+    "client": [
+      "uk.co.hexeption.apec.loaders.FabricClientLoader"
+    ]
+  }
+}

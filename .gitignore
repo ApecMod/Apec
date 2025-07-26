@@ -23,3 +23,4 @@ eclipse
 run
 *.txt
 *.hprof
+*.DS_Store
