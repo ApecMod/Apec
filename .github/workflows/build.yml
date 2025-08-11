@@ -1,10 +1,10 @@
-name: Build 1.19
+name: Build
 
 on:
   push:
-    branches: [ "1.19" ]
+    branches: [ "1.21" ]
   pull_request:
-    branches: [ "1.19" ]
+    branches: [ "1.21" ]
 
 permissions:
   contents: read
