@@ -8,6 +8,7 @@ import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class HPText extends Element {
 
@@ -38,12 +39,12 @@ public class HPText extends Element {
 
         Vector2f statBar = ApecUtils.scalarMultiply(getCurrentAnchorPoint(), 1f / scale);
 
-        ApecUtils.drawOutlineText(mc, graphics, hpText, (int) (statBar.x - mc.font.width(hpText)), (int) (statBar.y - 10), 0xd10808);
+        ApecUtils.drawOutlineText(mc, graphics, hpText, (int) (statBar.x - mc.font.width(hpText)), (int) (statBar.y - 10), GuiGraphicsUtils.fixColourAlpha(0xd10808));
         textWidth = mc.font.width(hpText);
 
         if (ap != 0 && showAPBar) {
             String apText = ap + "/" + base_ap + " AP";
-            ApecUtils.drawOutlineText(mc, graphics, apText, (int) (statBar.x - 5 - mc.font.width(apText) - mc.font.width(hpText)), (int) (statBar.y - 10), 0x1966AD);
+            ApecUtils.drawOutlineText(mc, graphics, apText, (int) (statBar.x - 5 - mc.font.width(apText) - mc.font.width(hpText)), (int) (statBar.y - 10), GuiGraphicsUtils.fixColourAlpha(0x1966AD));
         }
     }
 

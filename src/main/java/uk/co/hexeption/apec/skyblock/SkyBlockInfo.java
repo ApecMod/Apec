@@ -103,7 +103,6 @@ public class SkyBlockInfo implements SBAPI, MC {
      * Initializes the SkyBlockInfo class by registering event handlers.
      */
     public void init() {
-        //? if fabric {
         net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
             processTick(client);
         });
@@ -119,7 +118,6 @@ public class SkyBlockInfo implements SBAPI, MC {
                 processChatMessage(null, message);
             }
         });
-        //?}
     }
 
     /**

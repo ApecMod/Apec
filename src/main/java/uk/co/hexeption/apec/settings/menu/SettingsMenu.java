@@ -43,26 +43,29 @@ public class SettingsMenu extends Screen implements MC {
 
         addRenderableWidget(new SettingNavigationButton(width / 2 - 265, height / 2 - 130, 20, 250, button -> ((SettingNavigationButton) button).runAction(), font, NavigationAction.BACK));
         addRenderableWidget(new SettingNavigationButton(width / 2 + 245, height / 2 - 130, 20, 250, button -> ((SettingNavigationButton) button).runAction(), font, NavigationAction.NEXT));
-        addRenderableWidget(new SettingNavigationButton(0, 0, 85, 23, button -> ((SettingNavigationButton) button).runAction(), font, NavigationAction.OPEN_GUI_EDITING));
+        // breaks if not on Skyblock
+        if (Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            addRenderableWidget(new SettingNavigationButton(0, 0, 85, 23, button -> ((SettingNavigationButton) button).runAction(), font, NavigationAction.OPEN_GUI_EDITING));
+        }
         settingNavigationButton = addRenderableWidget(new SettingNavigationButton(width / 2 - 265, height / 2 - 145, 120, 15, button -> ((SettingNavigationButton) button).runAction(), font, NavigationAction.SEARCH));
 
         searchBox = addRenderableWidget(new EditBox(font, width / 2 - 265, height / 2 - 145, SearchBoxAnimationStartingWidth, 15, Component.nullToEmpty("Search")));
         searchBox.visible = false;
 
-        searchBox.setResponder((string) -> {
-            SearchFor(string);
-        });
+        searchBox.setResponder(this::SearchFor);
 
         settings.clear();
         settings.addAll(Apec.INSTANCE.settingsManager.settings);
 
-        this.loadPage(pageNumber);
+        loadPage(pageNumber);
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.render(guiGraphics, i, j, f);
-
+        // Text is (for some reason) offset on the z axis in 1.21.5 rendering. In order to not cause any problems, with the 1.21.8 move, let's just keep this how it was yeah?
+        // ideally, this is fixed properly (https://discord.com/channels/1002229552921202759/1143261334100775023/1406880714095333377)
+        //? if 1.21.5
+        /*super.render(guiGraphics, i, j, f);*/
 
         guiGraphics.fill(width / 2 - 245, height / 2 - 130, width / 2 + 245, height / 2 + 120, 0x990a0a0a);
 
@@ -76,7 +79,6 @@ public class SettingsMenu extends Screen implements MC {
             int y = height / 2 - 120 + spaceBetweenLines * ((ik % 12) / 3);
 
             drawRectangleAt(guiGraphics, x, y, 15, 5, i, j);
-
         }
 
         if (searchBox.visible) {
@@ -91,6 +93,9 @@ public class SettingsMenu extends Screen implements MC {
             searchBox.render(guiGraphics, i, j, f);
         }
 
+        // ensure we render the boxes first. again, ideally this should be fixed
+        //? if >= 1.21.8
+        super.render(guiGraphics, i, j, f);
     }
 
     public void drawRectangleAt(GuiGraphics graphics, int x, int y, int w, int h, int mX, int mY) {
@@ -116,7 +121,6 @@ public class SettingsMenu extends Screen implements MC {
     public boolean isPauseScreen() {
         return false;
     }
-
 
     public void runAction(NavigationAction action) {
         switch (action) {
@@ -158,7 +162,7 @@ public class SettingsMenu extends Screen implements MC {
     }
 
     private void SearchFor(String searchTerm) {
-        if (searchTerm.length() != 0) {
+        if (!searchTerm.isEmpty()) {
             Integer[] Scores = new Integer[Apec.INSTANCE.settingsManager.settings.size()];
             int SettingCount = Apec.INSTANCE.settingsManager.settings.size();
             String[] SearchWords = searchTerm.split(" ");
@@ -170,8 +174,8 @@ public class SettingsMenu extends Screen implements MC {
                 String[] SettingWords = SettingsManager.settingData.get(sourceSettings.get(i).settingID).getA().toLowerCase().split(" ");
 
                 int TotalScore = 0;
-                for (int w = 0; w < SearchWords.length; w++) {
-                    char[] SearchTermC = SearchWords[w].toCharArray();
+                for (String searchWord : SearchWords) {
+                    char[] SearchTermC = searchWord.toCharArray();
                     if (SearchTermC.length == 0) continue;
                     for (int j = 0; j < SettingWords.length; j++) {
                         char[] Word = SettingWords[j].toCharArray();
@@ -215,5 +219,7 @@ public class SettingsMenu extends Screen implements MC {
         this.loadPage(pageNumber);
     }
 
-
+    public static Screen createConfigScreen(Screen screen) {
+        return new SettingsMenu(0);
+    }
 }

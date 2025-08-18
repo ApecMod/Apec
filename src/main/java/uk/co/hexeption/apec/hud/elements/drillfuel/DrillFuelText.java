@@ -2,12 +2,14 @@ package uk.co.hexeption.apec.hud.elements.drillfuel;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.CommonColors;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class DrillFuelText extends Element {
 
@@ -81,15 +83,11 @@ public class DrillFuelText extends Element {
      * Gets the color value for the outline text
      */
     private int getColorValue(ChatFormatting color) {
-        switch (color) {
-            case GREEN:
-                return 0x55FF55;
-            case YELLOW:
-                return 0xFFFF55;
-            case RED:
-                return 0xFF5555;
-            default:
-                return 0xFFFFFF;
-        }
+        return switch (color) {
+            case GREEN -> GuiGraphicsUtils.fixColourAlpha(0x55FF55);
+            case YELLOW -> GuiGraphicsUtils.fixColourAlpha(0xFFFF55);
+            case RED -> GuiGraphicsUtils.fixColourAlpha(0xFF5555);
+            default -> CommonColors.WHITE;
+        };
     }
 }

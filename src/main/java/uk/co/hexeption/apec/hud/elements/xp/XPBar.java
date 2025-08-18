@@ -1,10 +1,10 @@
 package uk.co.hexeption.apec.hud.elements.xp;
 
-//? >= 1.21.6 {
-/*import net.minecraft.client.renderer.RenderPipelines;
-*///?} else {
-import net.minecraft.client.renderer.RenderType;
- //?}
+//? if >= 1.21.8 {
+import net.minecraft.client.renderer.RenderPipelines;
+//?} else {
+/*import net.minecraft.client.renderer.RenderType;
+ *///?}
 
 import net.minecraft.client.gui.GuiGraphics;
 import org.joml.Vector2f;
@@ -35,10 +35,10 @@ public class XPBar extends Element {
         int height = (int) statBar.y;
 
         // Empty Bar
-        graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, xpBarTexture.getResourceLocation(), width, height, 0, 30, 182, 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
+        graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, xpBarTexture.getResourceLocation(), width, height, 0, 30, 182, 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
 
         // Full Bar
-        graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, xpBarTexture.getResourceLocation(), width, height, 0, 35, (int) (mc.player.experienceProgress * 182f), 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
+        graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, xpBarTexture.getResourceLocation(), width, height, 0, 35, (int) (mc.player.experienceProgress * 182f), 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
     }
 
     @Override

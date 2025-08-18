@@ -1,10 +1,10 @@
 package uk.co.hexeption.apec.hud.elements;
 
-//? >= 1.21.6 {
-/*import net.minecraft.client.renderer.RenderPipelines;
-*///?} else {
-import net.minecraft.client.renderer.RenderType;
- //?}
+//? if >= 1.21.8 {
+import net.minecraft.client.renderer.RenderPipelines;
+//?} else {
+/*import net.minecraft.client.renderer.RenderType;
+*///?}
 
 import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,12 +55,12 @@ public class WarningIcons extends Element {
 
         var warningIconTexture = ApecTextures.ICONS;
         switch (eventID) {
-            case INV_FULL -> graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, warningIconTexture.getResourceLocation(), x, y, 1,226,14,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case TRADE_IN -> graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, warningIconTexture.getResourceLocation(), x, y, 32,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case TRADE_OUT -> graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, warningIconTexture.getResourceLocation(), x, y, 16,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case COIN_COUNT -> graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, warningIconTexture.getResourceLocation(), x, y, 48,226,13,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case SERVER_REBOOT -> graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, warningIconTexture.getResourceLocation(), x, y, 62,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case HIGH_PING -> graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, warningIconTexture.getResourceLocation(), x, y, 78,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case INV_FULL -> graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, warningIconTexture.getResourceLocation(), x, y, 1,226,14,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case TRADE_IN -> graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, warningIconTexture.getResourceLocation(), x, y, 32,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case TRADE_OUT -> graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, warningIconTexture.getResourceLocation(), x, y, 16,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case COIN_COUNT -> graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, warningIconTexture.getResourceLocation(), x, y, 48,226,13,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case SERVER_REBOOT -> graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, warningIconTexture.getResourceLocation(), x, y, 62,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case HIGH_PING -> graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, warningIconTexture.getResourceLocation(), x, y, 78,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
         }
     }
 

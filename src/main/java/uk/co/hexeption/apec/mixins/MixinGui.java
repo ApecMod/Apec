@@ -1,5 +1,9 @@
 package uk.co.hexeption.apec.mixins;
 
+//? if >= 1.21.8 {
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+//?}
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,6 +20,7 @@ import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.hud.customization.CustomizationScreen;
 import uk.co.hexeption.apec.hud.elements.ItemHotBar;
 import uk.co.hexeption.apec.settings.SettingID;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 @Mixin(Gui.class)
 public class MixinGui implements MC {
@@ -24,7 +29,6 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
     private void renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -36,7 +40,6 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderScoreboardSidebar", at = @At("HEAD"), cancellable = true)
     private void renderScoreboardSidebar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -48,7 +51,6 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderOverlayMessage", at = @At("HEAD"), cancellable = true)
     private void renderOverlayMessage(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -60,7 +62,6 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderHearts", at = @At("HEAD"), cancellable = true)
     private void renderHearts(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -70,11 +71,18 @@ public class MixinGui implements MC {
         }
     }
 
-    //? >= 1.21.6 {
-    //?} else {
-    @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
-    private void renderExperienceBar(GuiGraphics guiGraphics, int i, CallbackInfo ci) {
+    //? if >= 1.21.8 {
+    @Inject(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"), cancellable = true)
+    private void cancelExperienceRendering(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
 
+        ci.cancel();
+    }
+    //?} else {
+    /*@Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
+    private void renderExperienceBar(GuiGraphics guiGraphics, int i, CallbackInfo ci) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -86,7 +94,6 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderExperienceLevel", at = @At("HEAD"), cancellable = true)
     private void renderExperienceLevel(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -95,11 +102,10 @@ public class MixinGui implements MC {
             ci.cancel();
         }
     }
-    //?}
+    *///?}
 
     @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
     private static void renderArmor(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -111,7 +117,6 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderFood", at = @At("HEAD"), cancellable = true)
     private void renderFood(GuiGraphics guiGraphics, Player player, int i, int j, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -121,9 +126,30 @@ public class MixinGui implements MC {
         }
     }
 
-    @Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;pose()Lcom/mojang/blaze3d/vertex/PoseStack;", ordinal = 0))
-    private void renderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    //? if >= 1.21.8 {
+    @WrapMethod(method = "renderItemHotbar")
+    private void moveItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, Operation<Void> original) {
+        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            original.call(guiGraphics, deltaTracker);
+            return;
+        }
 
+        var apecHotBar = ((ItemHotBar) Apec.apecMenu.getGuiComponent(ElementType.ITEM_HOT_BAR));
+        var pos = apecHotBar.getCurrentAnchorPoint();
+        var scale = apecHotBar.getScale();
+
+        var translationX = ((float) guiGraphics.guiWidth() / 2) - pos.x / scale - 91;
+        var translationY = (guiGraphics.guiHeight()) - pos.y / scale - 22;
+
+        GuiGraphicsUtils.push(guiGraphics);
+        GuiGraphicsUtils.scale(guiGraphics, scale);
+        GuiGraphicsUtils.translate(guiGraphics, -translationX, -translationY, 100);
+        original.call(guiGraphics, deltaTracker);
+        GuiGraphicsUtils.pop(guiGraphics);
+    }
+    //?} else {
+    /*@Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;pose()Lcom/mojang/blaze3d/vertex/PoseStack;", ordinal = 0))
+    private void renderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -132,48 +158,31 @@ public class MixinGui implements MC {
         var pos = apecHotBar.getCurrentAnchorPoint();
         var scale = apecHotBar.getScale();
 
-        var translationX = (guiGraphics.guiWidth() / 2) - pos.x / scale - 91;
+        var translationX = ((float) guiGraphics.guiWidth() / 2) - pos.x / scale - 91;
         var translationY = (guiGraphics.guiHeight()) - pos.y / scale - 22;
 
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().pushMatrix();
-        *///?} else {
-        guiGraphics.pose().pushPose();
-         //?}
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().scale(scale, scale);
-        *///?} else {
-        guiGraphics.pose().scale(scale, scale, scale);
-         //?}
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().translate(-translationX, -translationY);
-        *///?} else {
-        guiGraphics.pose().translate(-translationX, -translationY, 100);
-         //?}
+        GuiGraphicsUtils.push(guiGraphics);
+        GuiGraphicsUtils.scale(guiGraphics, scale);
+        GuiGraphicsUtils.translate(guiGraphics, -translationX, -translationY, 100);
     }
 
     @Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;attackIndicator()Lnet/minecraft/client/OptionInstance;"))
     private void renderItemHotbarReturn(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().popMatrix();
-        *///?} else {
-        guiGraphics.pose().popPose();
-         //?}
+
+        GuiGraphicsUtils.pop(guiGraphics);
     }
+    *///?}
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
 
         Apec.apecMenu.render(guiGraphics);
-
     }
 
     @ModifyVariable(method = "renderSelectedItemName", at = @At(value = "STORE"), ordinal = 1)
@@ -183,6 +192,7 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return original;
         }
+
         return toolTipText.getXOffset(guiGraphics);
     }
 
@@ -193,18 +203,18 @@ public class MixinGui implements MC {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return original;
         }
+
         return toolTipText.getYOffset(guiGraphics);
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
+    @Inject(method = "tick()V", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
 
-        if(mc.screen instanceof CustomizationScreen) {
+        if (mc.screen instanceof CustomizationScreen) {
             this.toolHighlightTimer = 255;
         }
     }
 }
-

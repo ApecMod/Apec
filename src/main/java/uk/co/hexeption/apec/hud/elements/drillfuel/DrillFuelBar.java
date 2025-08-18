@@ -1,7 +1,6 @@
 package uk.co.hexeption.apec.hud.elements.drillfuel;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecTextures;
@@ -9,10 +8,11 @@ import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
-//? >= 1.21.6 {
+//? if >= 1.21.8 {
+import net.minecraft.client.renderer.RenderPipelines;
 //?} else {
-import net.minecraft.client.renderer.RenderType;
-//?}
+/*import net.minecraft.client.renderer.RenderType;
+*///?}
 
 public class DrillFuelBar extends Element {
 
@@ -43,10 +43,10 @@ public class DrillFuelBar extends Element {
         int height = (int) statBar.y;
 
         // Empty Bar - using a different row from the texture for drill fuel
-        graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, drillFuelBarTexture.getResourceLocation(), width, height, 0, 80, 182, 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
+        graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, drillFuelBarTexture.getResourceLocation(), width, height, 0, 80, 182, 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
 
         // Full Bar - with drill fuel color (orange/brown)
-        graphics.blit(/*? >= 1.21.6 {*/ /*RenderPipelines.GUI_TEXTURED *//*?} else {*/ RenderType::guiTextured /*?}*/, drillFuelBarTexture.getResourceLocation(), width, height, 0, 85, (int) (fuelFactor * 182f), 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
+        graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, drillFuelBarTexture.getResourceLocation(), width, height, 0, 85, (int) (fuelFactor * 182f), 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
     }
 
     @Override

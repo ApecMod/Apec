@@ -1,49 +1,28 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
-
-        // Modstitch
-        maven("https://maven.isxander.dev/releases/")
-
-        // Loom platform
-        maven("https://maven.fabricmc.net/")
-
-        // MDG platform
-        maven("https://maven.neoforged.net/releases/")
-
-        // Stonecutter
-        maven("https://maven.kikugie.dev/releases")
+        gradlePluginPortal()
+        maven("https://maven.fabricmc.net")
         maven("https://maven.kikugie.dev/snapshots")
-
-        // Modstitch
-        maven("https://maven.isxander.dev/releases")
+        maven("https://maven.kikugie.dev/releases")
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.6+"
+    id("dev.kikugie.stonecutter") version "0.7.8"
 }
 
 stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
-
     create(rootProject) {
-        /**
-         * @param mcVersion The base minecraft version.
-         * @param loaders A list of loaders to target, supports "fabric" (1.14+), "neoforge"(1.20.6+), "vanilla"(any) or "forge"(<=1.20.1)
-         */
-        fun mc(mcVersion: String, name: String = mcVersion, loaders: Iterable<String>) =
-            loaders.forEach { vers("$name-$it", mcVersion) }
+        versions("1.21.5", "1.21.8")
 
-        // Configure your targets here!
-        mc("1.21.5", loaders = listOf("fabric", "neoforge"))
-        mc("1.21.6", loaders = listOf("fabric", "neoforge"))
+        vcsVersion = "1.21.8"
+    }
+}
 
-        // This is the default target.
-        // https://stonecutter.kikugie.dev/stonecutter/guide/setup#settings-settings-gradle-kts
-        vcsVersion = "1.21.5-fabric"
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs")
     }
 }
 
