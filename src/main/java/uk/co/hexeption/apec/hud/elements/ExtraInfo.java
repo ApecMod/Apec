@@ -3,6 +3,7 @@ package uk.co.hexeption.apec.hud.elements;
 import java.util.ArrayList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.Element;
@@ -27,7 +28,7 @@ public class ExtraInfo extends Element {
 
         if (!ei.isEmpty()) {
             for (int i = 0;i < ei.size();i++) {
-                ApecUtils.drawOutlineText(mc, graphics, ei.get(i), (int)(ExtraScoreInfo.x), (int) (ExtraScoreInfo.y + i * 15), 0x0ffffffff);
+                ApecUtils.drawOutlineText(mc, graphics, ei.get(i), (int)(ExtraScoreInfo.x), (int) (ExtraScoreInfo.y + i * 15), CommonColors.WHITE);
             }
         }
 

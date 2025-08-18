@@ -1,10 +1,5 @@
 package uk.co.hexeption.apec.hud.elements.mana;
 
-//? if >= 1.21.8 {
-import net.minecraft.client.renderer.RenderPipelines;
-//?} else {
-/*import net.minecraft.client.renderer.RenderType;
- *///?}
 import net.minecraft.client.gui.GuiGraphics;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
@@ -13,6 +8,7 @@ import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class MPBar extends Element {
 
@@ -23,7 +19,7 @@ public class MPBar extends Element {
     @Override
     public void drawText(GuiGraphics graphics, boolean editMode) {
 
-        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.MP_BAR) == false) {
+        if(!Apec.INSTANCE.settingsManager.getSettingState(SettingID.MP_BAR)) {
             return;
         }
 
@@ -45,19 +41,19 @@ public class MPBar extends Element {
             float opFactor = overflow > base_overflow ? 1 : (float) overflow / (float) base_overflow;
 
             // Empty Bar
-            graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, mpBarTexture.getResourceLocation(), width, height, 0, 70, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 70, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
 
             // Overflow Bar
-            graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, mpBarTexture.getResourceLocation(), width, height, 0, 75, (int) (opFactor * 49f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 75, (int) (opFactor * 49f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
 
             // MP Bar
-            graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, mpBarTexture.getResourceLocation(), width + 51, height, 51, 75, (int) (mpFactor * 131f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width + 51, height, 51, 75, (int) (mpFactor * 131f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
         } else {
             // Empty Bar
-            graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, mpBarTexture.getResourceLocation(), width, height, 0, 10, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 10, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
 
             // Full Bar
-            graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, mpBarTexture.getResourceLocation(), width, height, 0, 15, (int) (mpFactor * 182f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 15, (int) (mpFactor * 182f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
         }
     }
 
