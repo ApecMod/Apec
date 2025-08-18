@@ -27,7 +27,7 @@ public class ExtraInfo extends Element {
 
         if (!ei.isEmpty()) {
             for (int i = 0;i < ei.size();i++) {
-                ApecUtils.drawOutlineText(mc, graphics, ei.get(i), (int)(ExtraScoreInfo.x), (int) (ExtraScoreInfo.y + i * 15), 0x0ffffff);
+                ApecUtils.drawOutlineText(mc, graphics, ei.get(i), (int)(ExtraScoreInfo.x), (int) (ExtraScoreInfo.y + i * 15), 0x0ffffffff);
             }
         }
 

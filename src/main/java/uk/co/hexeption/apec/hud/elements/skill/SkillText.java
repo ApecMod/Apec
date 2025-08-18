@@ -8,6 +8,7 @@ import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.hud.SkillType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class SkillText extends Element {
 
@@ -39,13 +40,13 @@ public class SkillText extends Element {
                     case FISHING -> 0x184A87;
                     case ALCHEMY -> 0x981B4C;
                 };
-                ApecUtils.drawOutlineText(mc, graphics, ps.skill_info(), (int) (skillTextPos.x), (int) (skillTextPos.y - 10), color);
+                ApecUtils.drawOutlineText(mc, graphics, ps.skill_info(), (int) (skillTextPos.x), (int) (skillTextPos.y - 10), GuiGraphicsUtils.fixColourAlpha(color));
             }
         }
 
         if (editMode) {
             stringWidth = mc.font.width("+0.0 Farming (0/0)");
-            ApecUtils.drawOutlineText(mc, graphics, "+0.0 Farming (0/0)", (int) (skillTextPos.x), (int) (skillTextPos.y - 10), 0x4ca7a8);
+            ApecUtils.drawOutlineText(mc, graphics, "+0.0 Farming (0/0)", (int) (skillTextPos.x), (int) (skillTextPos.y - 10), GuiGraphicsUtils.fixColourAlpha(0x4ca7a8));
         }
 
     }

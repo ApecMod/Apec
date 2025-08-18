@@ -1,0 +1,27 @@
+[versions]
+
+fabricloader = "0.17.2"
+devauth = "1.2.1"
+mixinconstraints = "1.1.0"
+mixinsquared = "0.2.0"
+
+kotlin-jvm = "2.2.0"
+loom = "1.11-SNAPSHOT"
+publishing = "0.8.4"
+ksp = "2.2.0-2.0.2"
+fletchingtable = "0.1.0-alpha.15"
+
+[libraries]
+
+fabricloader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricloader" }
+devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
+mixinconstraints = { module = "com.moulberry:mixinconstraints", version.ref = "mixinconstraints" }
+mixinsquared = { module = "com.github.bawnorton.mixinsquared:mixinsquared-fabric", version.ref = "mixinsquared" }
+
+[plugins]
+
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-jvm" }
+loom = { id = "fabric-loom", version.ref = "loom" }
+publishing = { id = "me.modmuss50.mod-publish-plugin", version.ref = "publishing" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+fletchingtable-fabric = { id = "dev.kikugie.fletching-table.fabric", version.ref = "fletchingtable" }

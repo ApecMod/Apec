@@ -1,7 +1,7 @@
-//? if fabric {
 package uk.co.hexeption.apec.loaders;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,6 +15,7 @@ import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
 import uk.co.hexeption.apec.settings.menu.SettingsMenu;
 
+@Entrypoint
 @Environment(EnvType.CLIENT)
 public class FabricClientLoader implements ClientModInitializer, MC {
 
@@ -23,7 +24,7 @@ public class FabricClientLoader implements ClientModInitializer, MC {
     @Override
     public void onInitializeClient() {
         // Initialize common code first
-        CommonLoader.init();
+        Apec.init();
 
         // Fabric-specific client initialization
         settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.categories.apec");
@@ -50,4 +51,3 @@ public class FabricClientLoader implements ClientModInitializer, MC {
         });
     }
 }
-//?}

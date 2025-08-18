@@ -31,7 +31,7 @@ public class MultiColourText implements MC {
         this.stringSet = stringSet;
         int[] i = new int[colorSet.length];
         for (int j = 0; j < colorSet.length; j++) {
-            i[j] = colorSet[j].intValue();
+            i[j] = colorSet[j];
         }
         this.colorSet = i;
     }
@@ -69,10 +69,8 @@ public class MultiColourText implements MC {
     public void render(GuiGraphics guiGraphics) {
         int nowX = this.x;
         for (int i = 0; i < this.stringSet.length; i++) {
-            if (this.stringSet != null) {
-                ApecUtils.drawOutlineText(mc, guiGraphics, stringSet[i], nowX + this.shiftValue, this.y, colorSet[i]);
-                nowX += mc.font.width(stringSet[i]);
-            }
+            ApecUtils.drawOutlineText(mc, guiGraphics, stringSet[i], nowX + this.shiftValue, this.y, GuiGraphicsUtils.fixColourAlpha(colorSet[i]));
+            nowX += mc.font.width(stringSet[i]);
         }
     }
 }

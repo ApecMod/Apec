@@ -4,8 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import uk.co.hexeption.apec.settings.Setting;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class SettingButton extends PlainTextButton {
 
@@ -26,7 +28,7 @@ public class SettingButton extends PlainTextButton {
         }
 
         // Render the setting name with scrolling text
-        var title = Component.literal(setting.name).withStyle(style -> style.withColor(setting.enabled ? 0x00ff00 : 0xff0000).withUnderlined(false));
+        var title = Component.literal(setting.name).withStyle(style -> style.withColor(setting.enabled ? CommonColors.GREEN : CommonColors.RED).withUnderlined(false));
 
         // Calculate text area bounds (scaled for 1.1f)
         int textX = this.getX() + 7;
@@ -34,30 +36,19 @@ public class SettingButton extends PlainTextButton {
         int textWidth = (int) ((this.width - 14) / 1.1f); // Available width accounting for padding and scale
         int textHeight = 10; // Height for the text area
 
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().pushMatrix();
-        *///?} else {
-        guiGraphics.pose().pushPose();
-        //?}
+        GuiGraphicsUtils.push(guiGraphics);
 
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().scale(1.1f, 1.1f);
-        *///?} else {
-        guiGraphics.pose().scale(1.1f, 1.1f, 1.1f);
-         //?}
+        GuiGraphicsUtils.scale(guiGraphics, 1.1f);
 
         // Scale coordinates for the 1.1f scale
         int scaledX = (int) (textX / 1.1f);
         int scaledY = (int) (textY / 1.1f);
         int scaledHeight = (int) (textHeight / 1.1f);
 
-        renderScrollingString(guiGraphics, Minecraft.getInstance().font, title, scaledX, scaledY, scaledX + textWidth, scaledY + scaledHeight, title.getStyle().getColor().getValue());
+        // TODO: why white? idk! but it works! so i dont care!! genuinely, this makes absolutely no sense
+        renderScrollingString(guiGraphics, Minecraft.getInstance().font, title, scaledX, scaledY, scaledX + textWidth, scaledY + scaledHeight, /*? if >= 1.21.8 {*/ CommonColors.WHITE /*?} else {*/ /*title.getStyle().getColor().getValue() *//*?}*/);
 
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().popMatrix();
-        *///?} else {
-        guiGraphics.pose().popPose();
-         //?}
+        GuiGraphicsUtils.pop(guiGraphics);
 
         // Render the description
         renderDescription(guiGraphics);
@@ -65,16 +56,9 @@ public class SettingButton extends PlainTextButton {
 
     private void renderDescription(GuiGraphics guiGraphics) {
 
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().pushMatrix();
-        *///?} else {
-        guiGraphics.pose().pushPose();
-         //?}
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().scale(0.8f, 0.8f);
-        *///?} else {
-        guiGraphics.pose().scale(0.8f, 0.8f, 0.8f);
-         //?}
+        GuiGraphicsUtils.push(guiGraphics);
+
+        GuiGraphicsUtils.scale(guiGraphics, 0.8f);
 
         ApecUtils.drawWrappedText(
                 guiGraphics,
@@ -82,14 +66,10 @@ public class SettingButton extends PlainTextButton {
                 (int) ((this.getX() + 7) / 0.8f),
                 (int) ((this.getY() + 18) / 0.8f),
                 140,
-                0xffffff
+                CommonColors.WHITE
         );
 
-        //? if >= 1.21.6 {
-        /*guiGraphics.pose().popMatrix();
-        *///?} else {
-        guiGraphics.pose().popPose();
-         //?}
+        GuiGraphicsUtils.pop(guiGraphics);
     }
 
 }

@@ -31,6 +31,7 @@ import uk.co.hexeption.apec.hud.elements.xp.XPBar;
 import uk.co.hexeption.apec.hud.elements.xp.XPText;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class ApecMenu implements MC {
 
@@ -89,22 +90,10 @@ public class ApecMenu implements MC {
         }
 
         for (Element element : guiElements) {
-            //? if >= 1.21.6 {
-            /*guiGraphics.pose().pushMatrix();
-            *///?} else {
-            guiGraphics.pose().pushPose();
-             //?}
-            //? if >= 1.21.6 {
-            /*guiGraphics.pose().scale(element.scale, element.scale);
-            *///?} else {
-            guiGraphics.pose().scale(element.scale, element.scale, element.scale);
-             //?}
+            GuiGraphicsUtils.push(guiGraphics);
+            GuiGraphicsUtils.scale(guiGraphics, element.scale);
             element.drawText(guiGraphics, mc.screen instanceof CustomizationScreen);
-            //? if >= 1.21.6 {
-            /*guiGraphics.pose().popMatrix();
-            *///?} else {
-            guiGraphics.pose().popPose();
-             //?}
+            GuiGraphicsUtils.pop(guiGraphics);
         }
     }
 

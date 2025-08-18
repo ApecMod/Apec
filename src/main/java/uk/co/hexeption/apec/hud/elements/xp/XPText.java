@@ -7,6 +7,7 @@ import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class XPText extends Element {
 
@@ -29,7 +30,7 @@ public class XPText extends Element {
         int width = (int) statBar.x;
         int height = (int) statBar.y;
 
-        ApecUtils.drawOutlineText(mc, graphics, xpText,  (int) (width - mc.font.width(xpText)), (int) (height - 10), 0x80ff20);
+        ApecUtils.drawOutlineText(mc, graphics, xpText,  (int) (width - mc.font.width(xpText)), (int) (height - 10), GuiGraphicsUtils.fixColourAlpha(0x80ff20));
         stringWidth = mc.font.width(xpText);
     }
 
