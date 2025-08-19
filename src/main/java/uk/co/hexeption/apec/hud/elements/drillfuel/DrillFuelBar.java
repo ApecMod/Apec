@@ -8,11 +8,7 @@ import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
-//? if >= 1.21.8 {
-import net.minecraft.client.renderer.RenderPipelines;
-//?} else {
-/*import net.minecraft.client.renderer.RenderType;
-*///?}
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class DrillFuelBar extends Element {
 
@@ -43,10 +39,10 @@ public class DrillFuelBar extends Element {
         int height = (int) statBar.y;
 
         // Empty Bar - using a different row from the texture for drill fuel
-        graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, drillFuelBarTexture.getResourceLocation(), width, height, 0, 80, 182, 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), drillFuelBarTexture.getResourceLocation(), width, height, 0, 80, 182, 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
 
         // Full Bar - with drill fuel color (orange/brown)
-        graphics.blit(/*? if >= 1.21.8 {*/ RenderPipelines.GUI_TEXTURED /*?} else {*/ /*RenderType::guiTextured *//*?}*/, drillFuelBarTexture.getResourceLocation(), width, height, 0, 85, (int) (fuelFactor * 182f), 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), drillFuelBarTexture.getResourceLocation(), width, height, 0, 85, (int) (fuelFactor * 182f), 5, drillFuelBarTexture.getWidth(), drillFuelBarTexture.getHeight());
     }
 
     @Override
