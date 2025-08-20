@@ -9,6 +9,7 @@ import uk.co.hexeption.apec.hud.Element;
 import uk.co.hexeption.apec.hud.ElementType;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
+import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class AirText extends Element {
 
@@ -40,7 +41,7 @@ public class AirText extends Element {
 
         Vector2f statBar = ApecUtils.scalarMultiply(getCurrentAnchorPoint(), 1f / scale);
 
-        ApecUtils.drawOutlineText(mc, graphics, airText, (int) (statBar.x - mc.font.width(airText)), (int) (statBar.y - 10), 0x8ba6b2);
+        ApecUtils.drawOutlineText(mc, graphics, airText, (int) (statBar.x - mc.font.width(airText)), (int) (statBar.y - 10), GuiGraphicsUtils.fixColourAlpha(0x8ba6b2));
         textWidth = mc.font.width(airText);
     }
 
