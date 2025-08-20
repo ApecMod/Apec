@@ -8,7 +8,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 import uk.co.hexeption.apec.Apec;
@@ -39,10 +38,7 @@ public class FabricClientLoader implements ClientModInitializer, MC {
         Apec.SKYBLOCK_INFO.init();
         Apec.INSTANCE.settingsManager.LoadSettings();
 
-        // Use Fabric-specific client events
-        HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-            Apec.apecMenu.init();
-        });
+        Apec.apecMenu.init();
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             if (settingKeybind.consumeClick()) {
