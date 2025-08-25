@@ -48,6 +48,7 @@ public class SettingsManager {
         add(new Setting(ITEM_HIGHLIGHT_TEXT,false));
         add(new Setting(NPC_GUI,true));
         add(new Setting(MENU_GUI,true));
+        add(new Setting(CUSTOM_SKILL_VIEW,true));
         add(new Setting(GUIS_WHEN_DISABLED, false));
         add(new Setting(SHOW_ABILITY_TEXT,true));
         add(new Setting(BB_ON_TOP,false));
@@ -86,6 +87,7 @@ public class SettingsManager {
         put(OVERWRITE_GUI,new Tuple<String, String>("Overwrite GUIs","Overwrites any other mod's ingame gui (close and reopen when enabled)"));
         put(NPC_GUI,new Tuple<String, String>("Npc GUIs", "Custom GUIs for Npcs"));
         put(MENU_GUI,new Tuple<String, String>("Menu GUIs", "Custom GUIs for menus"));
+        put(CUSTOM_SKILL_VIEW,new Tuple<String, String>("Custom Skill View", "Custom skill view overlay with enhanced interface"));
         put(INVENTORY_TRAFFIC,new Tuple<String, String>("Show Inventory Traffic", "Show what items are going in and out of the inventory"));
         put(HIDE_IN_F3,new Tuple<String, String>("Hide in F3", "Hides certain elements while in f3"));
         put(SHOW_SKILL_XP,new Tuple<String, String>("Show skill xp", "When you get skill xp it will appear on the screen"));

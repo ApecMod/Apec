@@ -6,7 +6,8 @@
   "client": [
     "MixinGui",
     "accessors.PlayerTabOverlayAccessor",
-    "accessors.ScreenAccessor"
+    "accessors.ScreenAccessor",
+    "container.MixinAbstractContainerScreen"
   ],
   "mixins": [
   ],
