@@ -3,6 +3,7 @@ package uk.co.hexeption.apec.gui.container;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.network.chat.Component;
+import uk.co.hexeption.apec.gui.container.impl.AuctionHouseOverlay;
 import uk.co.hexeption.apec.gui.container.impl.SkillViewOverlay;
 
 public class ContainerGuiManager {
@@ -15,6 +16,9 @@ public class ContainerGuiManager {
         // Register overlays
         SkillViewOverlay skillViewOverlay = new SkillViewOverlay();
         overlays.add(skillViewOverlay);
+
+        AuctionHouseOverlay auctionHouseOverlay = new AuctionHouseOverlay();
+        overlays.add(auctionHouseOverlay);
     }
 
     public static ContainerGuiManager get() {
@@ -31,6 +35,10 @@ public class ContainerGuiManager {
                     ((SkillViewOverlay) overlay).setSlotClickCallback(slotIndex -> {
                         // This will be called by the mixin - we need a way to get back to the screen
                         // For now, this is a placeholder that the mixin will handle
+                    });
+                } else if (overlay instanceof AuctionHouseOverlay) {
+                    ((AuctionHouseOverlay) overlay).setSlotClickCallback(slotIndex -> {
+                        // This will be called by the mixin for auction house interactions
                     });
                 }
                 currentActiveOverlay = overlay;

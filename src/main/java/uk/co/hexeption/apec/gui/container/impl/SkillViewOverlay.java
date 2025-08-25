@@ -88,7 +88,7 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
         int scaledWidth = mc.getWindow().getGuiScaledWidth();
         int scaledHeight = mc.getWindow().getGuiScaledHeight();
 
-        g.fill(0, 0, scaledWidth, scaledHeight, 0x80000000);
+        g.fillGradient(0, 0, scaledWidth, scaledHeight, -1072689136, -804253680);
 
         try {
             if (slots.size() > SKILL_XP_CONTAINER_SLOTS[0]) {
