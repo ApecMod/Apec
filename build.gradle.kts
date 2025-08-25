@@ -99,6 +99,9 @@ dependencies {
 
     modImplementation("net.fabricmc.fabric-api:fabric-api:${deps.fabricApiVersion}+${mc.version}")
     modImplementation(fletchingTable.modrinth("modmenu", "${mc.version}", "fabric"))
+
+    // REI integration - optional dependency
+    modCompileOnly(fletchingTable.modrinth("rei", "${mc.version}", "fabric"))
 }
 
 // mc_dep fields must be in the format 'x', '>=x', '>=x <=y'

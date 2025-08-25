@@ -7,8 +7,9 @@ import uk.co.hexeption.apec.gui.container.impl.SkillViewOverlay;
 
 public class ContainerGuiManager {
 
-    private static final ContainerGuiManager INSTANCE = new ContainerGuiManager();
+    public static final ContainerGuiManager INSTANCE = new ContainerGuiManager();
     private final List<ContainerGuiOverlay> overlays = new ArrayList<>();
+    private ContainerGuiOverlay currentActiveOverlay = null;
 
     private ContainerGuiManager() {
         // Register overlays
@@ -32,10 +33,33 @@ public class ContainerGuiManager {
                         // For now, this is a placeholder that the mixin will handle
                     });
                 }
+                currentActiveOverlay = overlay;
                 return overlay;
             }
         }
+        currentActiveOverlay = null;
         return null;
+    }
+
+    /**
+     * Check if any overlay is currently active for the given screen
+     */
+    public boolean hasActiveOverlay(Object screen) {
+        return currentActiveOverlay != null;
+    }
+
+    /**
+     * Get the currently active overlay
+     */
+    public ContainerGuiOverlay getCurrentActiveOverlay() {
+        return currentActiveOverlay;
+    }
+
+    /**
+     * Clear the current active overlay
+     */
+    public void clearActiveOverlay() {
+        currentActiveOverlay = null;
     }
 
 }

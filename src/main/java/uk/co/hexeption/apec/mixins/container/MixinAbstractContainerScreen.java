@@ -47,9 +47,18 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
 
     private ContainerGuiOverlay apec$getOverlay() {
 
-        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) return null;
-        if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.CUSTOM_SKILL_VIEW)) return null;
-        if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.MENU_GUI)) return null;
+        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            apec$clearOverlay();
+            return null;
+        }
+        if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.CUSTOM_SKILL_VIEW)) {
+            apec$clearOverlay();
+            return null;
+        }
+        if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.MENU_GUI)) {
+            apec$clearOverlay();
+            return null;
+        }
         if (currentOverlay == null) {
             currentOverlay = ContainerGuiManager.get().findForTitle(this.title);
             // Set up the slot click callback for the overlay
@@ -60,6 +69,13 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
             }
         }
         return currentOverlay;
+    }
+
+    private void apec$clearOverlay() {
+        if (currentOverlay != null) {
+            currentOverlay = null;
+            ContainerGuiManager.INSTANCE.clearActiveOverlay();
+        }
     }
 
     @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"), cancellable = true)
@@ -147,6 +163,11 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
             Slot slot = this.menu.slots.get(slotId);
             slotClicked(slot, slotId, mouseButton, type);
         }
+    }
+
+    @Inject(method = "onClose()V", at = @At("HEAD"))
+    private void apec$onClose(CallbackInfo ci) {
+        apec$clearOverlay();
     }
 
 }

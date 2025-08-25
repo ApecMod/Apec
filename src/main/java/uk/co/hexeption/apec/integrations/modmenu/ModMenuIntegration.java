@@ -1,4 +1,4 @@
-package uk.co.hexeption.apec.modmenu;
+package uk.co.hexeption.apec.integrations.modmenu;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
