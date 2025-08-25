@@ -118,8 +118,25 @@ publishMods {
 
     displayName = "${mod.name} ${mod.version}"
     this.version = mod.version.toString()
-    changelog = project.rootProject.file("CHANGELOG.md").takeIf { it.exists() }?.readText() ?: "No changelog provided."
-    type = STABLE
+
+    // Allow overriding changelog via -Ppublish.changelogFile=path or -Ppublish.changelog=text
+    val changelogFromFile = optionalProp("publish.changelogFile") { path ->
+        rootProject.file(path).takeIf { it.exists() }?.readText()
+    }
+    changelog = changelogFromFile
+        ?: optionalProp("publish.changelog") { it }
+        ?: project.rootProject.file("CHANGELOG.md").takeIf { it.exists() }?.readText()
+        ?: "No changelog provided."
+
+    // Allow overriding release type via -Ppublish.type=[stable|beta|alpha]
+    type = optionalProp("publish.type") {
+        when (it.lowercase()) {
+            "stable" -> STABLE
+            "beta" -> BETA
+            "alpha" -> ALPHA
+            else -> STABLE
+        }
+    } ?: STABLE
 
     modLoaders.add("fabric")
 

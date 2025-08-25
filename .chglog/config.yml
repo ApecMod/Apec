@@ -1,0 +1,43 @@
+style: github
+# Let git-chglog infer repository URL from git remote 'origin'
+# info:
+#   repository_url: https://github.com/<owner>/<repo>
+
+options:
+  commits:
+    filters:
+      Type:
+        - feat
+        - fix
+        - perf
+        - refactor
+        - docs
+        - build
+        - chore
+        - ci
+        - test
+  commit_groups:
+    title_maps:
+      feat: Features
+      fix: Bug Fixes
+      perf: Performance
+      refactor: Refactoring
+      docs: Documentation
+      build: Build System
+      chore: Chores
+      ci: CI
+      test: Tests
+  header:
+    pattern: "^([\w-]+)(?:\(([^)]+)\))?!?:\s*(.*)$"
+    pattern_maps:
+      - Type
+      - Scope
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE
+  tag_filter_pattern: '^v'
+
+# Use the default conventional template path
+template: CHANGELOG.tpl.md
+

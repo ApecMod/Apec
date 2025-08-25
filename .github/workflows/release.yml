@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 0.0.6)'
+        required: true
+        type: string
+      pre_release:
+        description: 'Mark as pre-release (beta)'
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Gradle (with cache)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+
+      - name: Install git-chglog
+        run: |
+          go install github.com/git-chglog/git-chglog/cmd/git-chglog@v0.15.4
+
+      - name: Generate changelog with git-chglog
+        run: |
+          git-chglog -c ./.chglog/config.yml --next-tag v${{ inputs.version }} -o CHANGELOG.txt
+
+      - name: Compute publish type
+        id: meta
+        run: |
+          if [ "${{ inputs.pre_release }}" = "true" ]; then
+            echo "publish_type=beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish_type=stable" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build
+        run: |
+          ./gradlew --no-daemon build -Pmod.version="${{ inputs.version }}"
+
+      - name: Publish to Modrinth and CurseForge
+        if: ${{ secrets.MODRINTH_TOKEN != '' || secrets.CURSEFORGE_TOKEN != '' }}
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          ARGS="-Pmod.version=${{ inputs.version }} -Ppublish.type=${{ steps.meta.outputs.publish_type }} -Ppublish.changelogFile=CHANGELOG.txt"
+          if [ -n "$MODRINTH_TOKEN" ]; then
+            ARGS="$ARGS -Pmodrinth.token=$MODRINTH_TOKEN"
+          else
+            ARGS="$ARGS -Ppublish.modrinth="
+          fi
+          if [ -n "$CURSEFORGE_TOKEN" ]; then
+            ARGS="$ARGS -Pcurseforge.token=$CURSEFORGE_TOKEN"
+          else
+            ARGS="$ARGS -Ppublish.curseforge="
+          fi
+          ./gradlew --no-daemon publishMods $ARGS
+
+      - name: Create GitHub Release and Upload Assets
+        if: ${{ env.ACT != 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}
+          name: Apec ${{ inputs.version }}
+          body_path: CHANGELOG.txt
+          prerelease: ${{ inputs.pre_release }}
+          files: |
+            versions/*/build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
