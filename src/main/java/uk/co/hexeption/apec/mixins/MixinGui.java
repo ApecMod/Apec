@@ -1,9 +1,7 @@
 package uk.co.hexeption.apec.mixins;
 
-//? if >= 1.21.8 {
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-//?}
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,15 +19,25 @@ import uk.co.hexeption.apec.hud.customization.CustomizationScreen;
 import uk.co.hexeption.apec.hud.elements.ItemHotBar;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
+//? if >= 1.21.8 {
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+//?}
 
 @Mixin(Gui.class)
 public class MixinGui implements MC {
 
-    @Shadow private int toolHighlightTimer;
+    @Shadow
+    private int toolHighlightTimer;
 
     @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
     private void renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -40,7 +48,12 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderScoreboardSidebar", at = @At("HEAD"), cancellable = true)
     private void renderScoreboardSidebar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -51,7 +64,12 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderOverlayMessage", at = @At("HEAD"), cancellable = true)
     private void renderOverlayMessage(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -62,7 +80,12 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderHearts", at = @At("HEAD"), cancellable = true)
     private void renderHearts(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, float f, int m, int n, int o, boolean bl, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -74,7 +97,12 @@ public class MixinGui implements MC {
     //? if >= 1.21.8 {
     @Inject(method = "renderHotbarAndDecorations", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/contextualbar/ContextualBarRenderer;renderBackground(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/DeltaTracker;)V"), cancellable = true)
     private void cancelExperienceRendering(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -84,6 +112,10 @@ public class MixinGui implements MC {
     /*@Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void renderExperienceBar(GuiGraphics guiGraphics, int i, CallbackInfo ci) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -98,6 +130,10 @@ public class MixinGui implements MC {
             return;
         }
 
+        if (!Apec.apecMenu.shouldShowHUD()) {
+            return;
+        }
+
         if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.HIDE_VANILLA_EXPERIENCE_LEVEL)) {
             ci.cancel();
         }
@@ -106,7 +142,12 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderArmor", at = @At("HEAD"), cancellable = true)
     private static void renderArmor(GuiGraphics guiGraphics, Player player, int i, int j, int k, int l, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -117,7 +158,12 @@ public class MixinGui implements MC {
 
     @Inject(method = "renderFood", at = @At("HEAD"), cancellable = true)
     private void renderFood(GuiGraphics guiGraphics, Player player, int i, int j, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             return;
         }
 
@@ -129,7 +175,13 @@ public class MixinGui implements MC {
     //? if >= 1.21.8 {
     @WrapMethod(method = "renderItemHotbar")
     private void moveItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, Operation<Void> original) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            original.call(guiGraphics, deltaTracker);
+            return;
+        }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
             original.call(guiGraphics, deltaTracker);
             return;
         }
@@ -154,6 +206,10 @@ public class MixinGui implements MC {
             return;
         }
 
+        if (!Apec.apecMenu.shouldShowHUD()) {
+            return;
+        }
+
         var apecHotBar = ((ItemHotBar) Apec.apecMenu.getGuiComponent(ElementType.ITEM_HOT_BAR));
         var pos = apecHotBar.getCurrentAnchorPoint();
         var scale = apecHotBar.getScale();
@@ -172,12 +228,17 @@ public class MixinGui implements MC {
             return;
         }
 
+        if (!Apec.apecMenu.shouldShowHUD()) {
+            return;
+        }
+
         GuiGraphicsUtils.pop(guiGraphics);
     }
     *///?}
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -187,6 +248,7 @@ public class MixinGui implements MC {
 
     @ModifyVariable(method = "renderSelectedItemName", at = @At(value = "STORE"), ordinal = 1)
     private int modifyXPosition(int original, GuiGraphics guiGraphics) {
+
         var toolTipText = (uk.co.hexeption.apec.hud.elements.ToolTipText) Apec.apecMenu.getGuiComponent(ElementType.TOOL_TIP_TEXT);
 
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
@@ -198,6 +260,7 @@ public class MixinGui implements MC {
 
     @ModifyVariable(method = "renderSelectedItemName", at = @At(value = "STORE"), ordinal = 2)
     private int modifyYPosition(int original, GuiGraphics guiGraphics) {
+
         var toolTipText = (uk.co.hexeption.apec.hud.elements.ToolTipText) Apec.apecMenu.getGuiComponent(ElementType.TOOL_TIP_TEXT);
 
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
@@ -209,6 +272,7 @@ public class MixinGui implements MC {
 
     @Inject(method = "tick()V", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
+
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -217,4 +281,5 @@ public class MixinGui implements MC {
             this.toolHighlightTimer = 255;
         }
     }
+
 }

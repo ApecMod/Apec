@@ -20,6 +20,7 @@ import uk.co.hexeption.apec.settings.menu.SettingsMenu;
 public class FabricClientLoader implements ClientModInitializer, MC {
 
     private static KeyMapping settingKeybind;
+    private static KeyMapping hudToggleKeybind;
 
     @Override
     public void onInitializeClient() {
@@ -28,9 +29,11 @@ public class FabricClientLoader implements ClientModInitializer, MC {
 
         // Fabric-specific client initialization
         settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.categories.apec");
+        hudToggleKeybind = new KeyMapping("key.apec.toggle_hud", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_CONTROL, "key.categories.apec");
 
         // Use Fabric-specific registration
         KeyBindingHelper.registerKeyBinding(settingKeybind);
+        KeyBindingHelper.registerKeyBinding(hudToggleKeybind);
 
         // Use Fabric-specific command registration
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
@@ -45,6 +48,12 @@ public class FabricClientLoader implements ClientModInitializer, MC {
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             if (settingKeybind.consumeClick()) {
                 mc.setScreen(new SettingsMenu(0));
+            }
+
+            if (hudToggleKeybind.consumeClick()) {
+                if (Apec.apecMenu != null) {
+                    Apec.apecMenu.toggleHUD();
+                }
             }
         });
     }

@@ -1,5 +1,6 @@
 {
   "modmenu.descriptionTranslation.apec": "A Gui improvment mod for Hypixel Skyblock",
   "key.categories.apec": "Apec",
-  "key.apec.open_menu": "Open Apec Menu"
+  "key.apec.open_menu": "Open Apec Menu",
+  "key.apec.toggle_hud": "Toggle HUD"
 }

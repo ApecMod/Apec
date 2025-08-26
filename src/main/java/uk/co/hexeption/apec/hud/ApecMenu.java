@@ -9,7 +9,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
@@ -19,10 +21,10 @@ import uk.co.hexeption.apec.hud.elements.ExtraInfo;
 import uk.co.hexeption.apec.hud.elements.ItemHotBar;
 import uk.co.hexeption.apec.hud.elements.ToolTipText;
 import uk.co.hexeption.apec.hud.elements.WarningIcons;
-import uk.co.hexeption.apec.hud.elements.drillfuel.DrillFuelBar;
-import uk.co.hexeption.apec.hud.elements.drillfuel.DrillFuelText;
 import uk.co.hexeption.apec.hud.elements.air.AirBar;
 import uk.co.hexeption.apec.hud.elements.air.AirText;
+import uk.co.hexeption.apec.hud.elements.drillfuel.DrillFuelBar;
+import uk.co.hexeption.apec.hud.elements.drillfuel.DrillFuelText;
 import uk.co.hexeption.apec.hud.elements.health.HPBar;
 import uk.co.hexeption.apec.hud.elements.health.HPText;
 import uk.co.hexeption.apec.hud.elements.mana.MPBar;
@@ -36,6 +38,8 @@ import uk.co.hexeption.apec.utils.ApecUtils;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 public class ApecMenu implements MC {
+
+    private boolean hudEnabled = true;
 
     public List<Element> guiElements = new ArrayList<>() {
         {
@@ -90,6 +94,10 @@ public class ApecMenu implements MC {
 
     public void render(GuiGraphics guiGraphics) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        if(!shouldShowHUD()) {
             return;
         }
 
@@ -153,4 +161,41 @@ public class ApecMenu implements MC {
         return null;
     }
 
+    public void toggleHUD() {
+        hudEnabled = !hudEnabled;
+
+        String stateText = hudEnabled ? "enabled" : "disabled";
+        String stateSymbol = hudEnabled ? "✓" : "✗";
+        ChatFormatting stateColor = hudEnabled ? ChatFormatting.GREEN : ChatFormatting.RED;
+
+        if (mc.player != null) {
+            mc.player.displayClientMessage(Component.literal(
+                ChatFormatting.GOLD + "✧ " + ChatFormatting.AQUA + "Apec" + ChatFormatting.GRAY + " » " +
+                ChatFormatting.RESET + "HUD has been " + stateColor + stateSymbol + " " + stateText
+            ), false);
+        }
+
+        Apec.LOGGER.info("HUD toggled: {}", stateText);
+    }
+
+    public void setHUDEnabled(boolean enabled) {
+        this.hudEnabled = enabled;
+
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.AUTO_ENABLE)) {
+            String stateText = enabled ? "enabled" : "disabled";
+            Apec.LOGGER.info("HUD auto-toggled: {}", stateText);
+        }
+    }
+
+    public boolean isHUDEnabled() {
+        return hudEnabled;
+    }
+
+    public boolean shouldShowHUD() {
+        if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.AUTO_ENABLE)) {
+            return hudEnabled && Apec.SKYBLOCK_INFO.isOnSkyblock();
+        }
+
+        return hudEnabled;
+    }
 }
