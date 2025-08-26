@@ -12,6 +12,7 @@ import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
+import uk.co.hexeption.apec.commands.ApecCommands;
 import uk.co.hexeption.apec.settings.menu.SettingsMenu;
 
 @Entrypoint
@@ -33,6 +34,7 @@ public class FabricClientLoader implements ClientModInitializer, MC {
 
         // Use Fabric-specific command registration
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            ApecCommands.register(dispatcher);
         });
 
         Apec.SKYBLOCK_INFO.init();
