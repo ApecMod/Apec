@@ -1,13 +1,14 @@
 package uk.co.hexeption.apec.gui.container.impl;
 
+//? if 1.21.5 {
+/*import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.FormattedCharSequence;
+*///?}
+
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -51,16 +52,20 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     public void setSlotClickCallback(SlotClickCallback callback) {
+
         this.slotClickCallback = callback;
     }
 
     @FunctionalInterface
     public interface SlotClickCallback {
+
         void clickSlot(int slotIndex);
+
     }
 
     @Override
     public boolean matchesTitle(Component title) {
+
         if (title == null) return false;
         String titleText = title.getString();
 
@@ -91,7 +96,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void renderAuctionInterface(GuiGraphics g, Minecraft mc, List<Slot> slots,
-                                      int scaledWidth, int scaledHeight, int mouseX, int mouseY) {
+            int scaledWidth, int scaledHeight, int mouseX, int mouseY) {
 
         int centerX = scaledWidth / 2;
         int centerY = scaledHeight / 2;
@@ -109,9 +114,10 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void renderHeader(GuiGraphics g, Minecraft mc, int centerX, int centerY) {
+
         String title = "Auction Browser" + pageText.replace("(", " ").replace(")", "");
         g.drawString(mc.font, title, centerX - 97, centerY - 97, CommonColors.WHITE, false);
-        
+
         if (!searchTerm.isEmpty()) {
             String searchDisplay = "Search: \"" + searchTerm + "\"";
             g.drawString(mc.font, searchDisplay, centerX - 97, centerY - 87, CommonColors.WHITE, false);
@@ -119,25 +125,26 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void renderCategoryButtons(GuiGraphics g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
-        String[] categories = {"Weapons", "Armour", "Accessories", "Consumables", "Blocks", "Tools & Misc"};
+
+        String[] categories = { "Weapons", "Armour", "Accessories", "Consumables", "Blocks", "Tools & Misc" };
         CategoryID[] categoryIDs = CategoryID.values();
-        
+
         for (int i = 0; i < categories.length; i++) {
             int buttonX = centerX - 200;
             int buttonY = centerY - 80 + 54 + (i * 16);
             int buttonWidth = 100;
             int buttonHeight = 16;
-            
+
             boolean isSelected = currentCategory == categoryIDs[i];
-            boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + buttonWidth && 
-                              mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
-            
+            boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
+                    mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
+
             if (isSelected) {
                 g.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight, 0xAA353535);
             } else if (isHovered) {
                 g.fill(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight, 0x1ADDDDDD);
             }
-            
+
             int textX = buttonX + buttonWidth / 2;
             int textY = buttonY + (buttonHeight - 8) / 2;
             g.drawCenteredString(mc.font, categories[i], textX, textY, CommonColors.WHITE);
@@ -145,38 +152,40 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void renderActionButtons(GuiGraphics g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
+
         ApecTextures iconsTexture = ApecTextures.ICONS;
-        
+
         int[][] buttonDefs = {
-            {centerX - 99, centerY + 54, 1},
-            {centerX + 85, centerY + 54, 17},
-            {centerX + 70, centerY + 54, 33},
-            {centerX + 85, centerY - 100, 49}
+                { centerX - 99, centerY + 54, 1 },
+                { centerX + 85, centerY + 54, 17 },
+                { centerX + 70, centerY + 54, 33 },
+                { centerX + 85, centerY - 100, 49 }
         };
-        
+
         for (int[] def : buttonDefs) {
             int buttonX = def[0];
             int buttonY = def[1];
             int textureX = def[2];
 
-            boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + 15 && 
-                              mouseY >= buttonY && mouseY <= buttonY + 15;
-            
+            boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + 15 &&
+                    mouseY >= buttonY && mouseY <= buttonY + 15;
+
             g.blit(GuiGraphicsUtils.getGuiTextured(), iconsTexture.getResourceLocation(),
-                   buttonX, buttonY, textureX, 240, 15, 15,
-                   iconsTexture.getWidth(), iconsTexture.getHeight());
-            
+                    buttonX, buttonY, textureX, 240, 15, 15,
+                    iconsTexture.getWidth(), iconsTexture.getHeight());
+
             if (isHovered) {
                 g.fill(buttonX, buttonY, buttonX + 15, buttonY + 15, 0x1ADDDDDD);
             }
         }
-        
+
         renderLargeActionArea(g, centerX + 110, centerY - 100, mouseX, mouseY);
         renderLargeActionArea(g, centerX + 110, centerY - 30, mouseX, mouseY);
         renderLargeActionArea(g, centerX + 200, centerY - 100, mouseX, mouseY);
     }
 
     private void renderLargeActionArea(GuiGraphics g, int x, int y, int mouseX, int mouseY) {
+
         boolean isHovered = mouseX >= x && mouseX <= x + 80 && mouseY >= y && mouseY <= y + 70;
 
         if (isHovered) {
@@ -185,24 +194,25 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void renderInfoPanels(GuiGraphics g, Minecraft mc, int centerX, int centerY) {
+
         for (int i = 0; i < Math.min(sortList.size(), 6); i++) {
             g.drawString(mc.font, sortList.get(i), centerX + 113, centerY - 97 + 10 * i, CommonColors.WHITE, false);
         }
-        
+
         for (int i = 0; i < Math.min(modeList.size(), 5); i++) {
             g.drawString(mc.font, modeList.get(i), centerX + 113, centerY - 27 + 10 * i, CommonColors.WHITE, false);
         }
-        
+
         for (int i = 0; i < Math.min(rarityList.size(), 11); i++) {
             g.drawString(mc.font, rarityList.get(i), centerX + 203, centerY - 97 + 10 * i, CommonColors.WHITE, false);
         }
     }
 
-    private void renderAuctionItems(GuiGraphics g, Minecraft mc, List<Slot> slots, 
-                                  int centerX, int centerY, int mouseX, int mouseY) {
+    private void renderAuctionItems(GuiGraphics g, Minecraft mc, List<Slot> slots,
+            int centerX, int centerY, int mouseX, int mouseY) {
 
         // Auction item slots: 11-16, 20-25, 29-34, 38-43
-        int[] slotRanges = {11, 20, 29, 38};
+        int[] slotRanges = { 11, 20, 29, 38 };
 
         int itemsPerRow = 6;
         int itemSpacing = 18;
@@ -218,30 +228,35 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                 if (actualSlot < slots.size()) {
                     Slot slot = slots.get(actualSlot);
                     ItemStack item = slot.getItem();
-                    
+
                     if (!item.isEmpty()) {
                         int baseX = gridStartX + (col * itemSpacing);
                         int baseY = gridStartY + (row * itemSpacing);
 
                         float expansion = (col - 2.5f) * 4f;
-                        int itemX = (int)(baseX + expansion);
+                        int itemX = (int) (baseX + expansion);
                         int itemY = baseY;
-                        
+
                         g.renderItem(item, itemX, itemY);
                         g.renderItemDecorations(mc.font, item, itemX, itemY);
-                        
+
                         boolean isHovered = mouseX >= itemX && mouseX <= itemX + 16 &&
-                                          mouseY >= itemY && mouseY <= itemY + 16;
+                                mouseY >= itemY && mouseY <= itemY + 16;
 
                         if (isHovered) {
                             g.fill(itemX, itemY, itemX + 16, itemY + 16, 0x80FFFFFF);
-                            List<Component> tooltip = Screen.getTooltipFromItem(mc, item);
-                            List<ClientTooltipComponent> list = new LinkedList<>();
-                            for (Component component : tooltip) {
-                                list.add(ClientTooltipComponent.create(component.getVisualOrderText()));
+                            //? if >= 1.21.8 {
+                            g.setTooltipForNextFrame(mc.font, item, mouseX, mouseY);
+                            //?} else {
+                            /*List<Component> tooltip = Screen.getTooltipFromItem(mc, item);
+                            List<FormattedCharSequence> tooltipText = new ArrayList<>();
+                            for (Component line : tooltip) {
+                                tooltipText.add(line.getVisualOrderText());
                             }
 
-                            g.renderTooltip(mc.font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                            mc.screen.setTooltipForNextRenderPass(tooltipText);
+                            *///?}
+
                         }
                     }
                 }
@@ -250,6 +265,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void extractSearchTerm() {
+
         try {
             if (Minecraft.getInstance().screen != null) {
                 Component title = Minecraft.getInstance().screen.getTitle();
@@ -271,6 +287,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void updateInfoFromSlots(List<Slot> slots) {
+
         try {
             if (slots.size() > 50 && !slots.get(50).getItem().isEmpty()) {
                 List<Component> tooltip = getTooltipComponents(slots.get(50).getItem());
@@ -279,7 +296,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                     sortList.add(tooltip.get(i));
                 }
             }
-            
+
             if (slots.size() > 52 && !slots.get(52).getItem().isEmpty()) {
                 List<Component> tooltip = getTooltipComponents(slots.get(52).getItem());
                 modeList.clear();
@@ -287,7 +304,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                     modeList.add(tooltip.get(i));
                 }
             }
-            
+
             if (slots.size() > 51 && !slots.get(51).getItem().isEmpty()) {
                 List<Component> tooltip = getTooltipComponents(slots.get(51).getItem());
                 rarityList.clear();
@@ -295,7 +312,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                     rarityList.add(tooltip.get(i));
                 }
             }
-            
+
             if (slots.size() > 53 && !slots.get(53).getItem().isEmpty()) {
                 List<Component> tooltip = getTooltipComponents(slots.get(53).getItem());
                 if (tooltip.size() > 1) {
@@ -307,6 +324,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void setInitialCategoryFromSlots(List<Slot> slots) {
+
         if (!initialCategorySet && slots.size() > 1 && !slots.get(1).getItem().isEmpty()) {
             ItemStack item = slots.get(1).getItem();
             String itemName = item.getItem().toString();
@@ -324,13 +342,14 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
             } else if (itemName.contains("purple")) {
                 currentCategory = CategoryID.OTHER;
             }
-            
+
             initialCategorySet = true;
         }
     }
 
     @Override
     public boolean mouseClicked(AbstractContainerMenu menu, List<Slot> slots, double mouseX, double mouseY, int button) {
+
         if (button != 0 && button != 1) return false;
 
         int scaledWidth = Minecraft.getInstance().getWindow().getGuiScaledWidth();
@@ -341,26 +360,27 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         if (handleCategoryButtonClick(mouseX, mouseY, centerX, centerY, slots)) {
             return true;
         }
-        
+
         if (handleActionButtonClick(mouseX, mouseY, centerX, centerY, button, slots)) {
             return true;
         }
-        
+
         return handleAuctionItemClick(mouseX, mouseY, centerX, centerY, slots);
     }
 
     private boolean handleCategoryButtonClick(double mouseX, double mouseY, int centerX, int centerY, List<Slot> slots) {
+
         CategoryID[] categories = CategoryID.values();
-        
+
         for (int i = 0; i < categories.length; i++) {
             int buttonX = centerX - 200;
             int buttonY = centerY - 80 + 54 + (i * 16);
             int buttonWidth = 100;
             int buttonHeight = 16;
-            
-            if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth && 
-                mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
-                
+
+            if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
+                    mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+
                 if (currentCategory != categories[i]) {
                     currentCategory = categories[i];
                     int slotIndex = categories[i].ordinal() * 9;
@@ -375,13 +395,14 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private boolean handleActionButtonClick(double mouseX, double mouseY, int centerX, int centerY, int button, List<Slot> slots) {
+
         int[][] buttonDefs = {
-            {centerX - 99, centerY + 54, 48, 47},  // Search (left/right click different slots)
-            {centerX + 85, centerY + 54, 53, 53},  // Next
-            {centerX + 70, centerY + 54, 46, 46},  // Back
-            {centerX + 85, centerY - 100, 49, 49}  // Close
+                { centerX - 99, centerY + 54, 48, 47 },  // Search (left/right click different slots)
+                { centerX + 85, centerY + 54, 53, 53 },  // Next
+                { centerX + 70, centerY + 54, 46, 46 },  // Back
+                { centerX + 85, centerY - 100, 49, 49 }  // Close
         };
-        
+
         for (int[] def : buttonDefs) {
             if (mouseX >= def[0] && mouseX <= def[0] + 15 && mouseY >= def[1] && mouseY <= def[1] + 15) {
                 int slotIndex = (button == 0) ? def[2] : def[3];
@@ -391,7 +412,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                 return true;
             }
         }
-        
+
         if (mouseX >= centerX + 110 && mouseX <= centerX + 190) {
             if (mouseY >= centerY - 100 && mouseY <= centerY - 30) {
                 clickSlot(50);
@@ -401,19 +422,20 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                 return true;
             }
         }
-        
-        if (mouseX >= centerX + 200 && mouseX <= centerX + 280 && 
-            mouseY >= centerY - 100 && mouseY <= centerY + 20) {
+
+        if (mouseX >= centerX + 200 && mouseX <= centerX + 280 &&
+                mouseY >= centerY - 100 && mouseY <= centerY + 20) {
             clickSlot(51);
             return true;
         }
-        
+
         return false;
     }
 
     private boolean handleAuctionItemClick(double mouseX, double mouseY, int centerX, int centerY, List<Slot> slots) {
-        int[] slotRanges = {11, 20, 29, 38};
-        
+
+        int[] slotRanges = { 11, 20, 29, 38 };
+
         int itemsPerRow = 6;
         int rows = 4;
         int itemSpacing = 18;
@@ -430,11 +452,11 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                     int baseY = gridStartY + (row * itemSpacing);
 
                     float expansion = (col - 2.5f) * 4f;
-                    int itemX = (int)(baseX + expansion);
+                    int itemX = (int) (baseX + expansion);
                     int itemY = baseY;
-                    
-                    if (mouseX >= itemX && mouseX <= itemX + 16 && 
-                        mouseY >= itemY && mouseY <= itemY + 16) {
+
+                    if (mouseX >= itemX && mouseX <= itemX + 16 &&
+                            mouseY >= itemY && mouseY <= itemY + 16) {
                         clickSlot(actualSlot);
                         return true;
                     }
@@ -445,6 +467,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void renderFallback(GuiGraphics g, Minecraft mc, int scaledWidth, int scaledHeight) {
+
         String fallbackText = "Auction House Loading...";
         int textWidth = mc.font.width(fallbackText);
         int textX = (scaledWidth - textWidth) / 2;
@@ -453,12 +476,14 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     private void clickSlot(int slotIndex) {
+
         if (slotClickCallback != null) {
             slotClickCallback.clickSlot(slotIndex);
         }
     }
 
     private List<Component> getTooltipComponents(ItemStack item) {
+
         if (item.isEmpty()) return new ArrayList<>();
 
         List<Component> tooltip = new ArrayList<>();
@@ -471,4 +496,5 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
 
         return tooltip;
     }
+
 }
