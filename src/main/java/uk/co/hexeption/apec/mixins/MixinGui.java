@@ -19,10 +19,6 @@ import uk.co.hexeption.apec.hud.customization.CustomizationScreen;
 import uk.co.hexeption.apec.hud.elements.ItemHotBar;
 import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
-//? if >= 1.21.8 {
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-//?}
 
 @Mixin(Gui.class)
 public class MixinGui implements MC {

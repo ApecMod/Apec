@@ -88,6 +88,6 @@ jobs:
           body_path: CHANGELOG.txt
           prerelease: ${{ inputs.pre_release }}
           files: |
-            versions/*/build/libs/*.jar
+            build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

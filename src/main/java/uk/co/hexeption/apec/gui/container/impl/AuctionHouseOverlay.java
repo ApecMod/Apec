@@ -245,7 +245,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
 
                         if (isHovered) {
                             g.fill(itemX, itemY, itemX + 16, itemY + 16, 0x80FFFFFF);
-                            //? if >= 1.21.8 {
+                            //? if >= 1.21.7 {
                             g.setTooltipForNextFrame(mc.font, item, mouseX, mouseY);
                             //?} else {
                             /*List<Component> tooltip = Screen.getTooltipFromItem(mc, item);

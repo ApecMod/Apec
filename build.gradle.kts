@@ -26,7 +26,7 @@ val mc = McData()
 val mod = ModData()
 val deps = Dependencies()
 
-version = "${mod.version}+${mc.version}"
+version = "${mod.version}+mc${mc.version}"
 group = mod.group
 base { archivesName.set(mod.id) }
 
@@ -225,3 +225,7 @@ if (stonecutter.current.isActive) {
 
 fun <T> optionalProp(property: String, block: (String) -> T?): T? =
     findProperty(property)?.toString()?.takeUnless { it.isBlank() }?.let(block)
+
+tasks.jar {
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
+}
