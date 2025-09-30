@@ -229,6 +229,6 @@ if (stonecutter.current.isActive) {
 fun <T> optionalProp(property: String, block: (String) -> T?): T? =
     findProperty(property)?.toString()?.takeUnless { it.isBlank() }?.let(block)
 
-tasks.jar {
+tasks.remapJar {
     destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
 }
