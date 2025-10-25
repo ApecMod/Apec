@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
@@ -19,6 +20,10 @@ import uk.co.hexeption.apec.settings.menu.SettingsMenu;
 @Environment(EnvType.CLIENT)
 public class FabricClientLoader implements ClientModInitializer, MC {
 
+    //? if > 1.21.8 {
+    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.tryBuild("apec", "apec"));
+    //?}
+
     private static KeyMapping settingKeybind;
     private static KeyMapping hudToggleKeybind;
 
@@ -28,8 +33,13 @@ public class FabricClientLoader implements ClientModInitializer, MC {
         Apec.init();
 
         // Fabric-specific client initialization
-        settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.categories.apec");
+        //? if > 1.21.8 {
+        settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, CATEGORY);
+        hudToggleKeybind = new KeyMapping("key.apec.toggle_hud", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_CONTROL, CATEGORY);
+        //?} else {
+        /*settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, "key.categories.apec");
         hudToggleKeybind = new KeyMapping("key.apec.toggle_hud", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_CONTROL, "key.categories.apec");
+        *///?}
 
         // Use Fabric-specific registration
         KeyBindingHelper.registerKeyBinding(settingKeybind);

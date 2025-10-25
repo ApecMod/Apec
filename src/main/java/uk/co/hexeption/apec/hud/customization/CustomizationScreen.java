@@ -1,5 +1,8 @@
 package uk.co.hexeption.apec.hud.customization;
 
+//? if > 1.21.8 {
+import net.minecraft.client.input.MouseButtonEvent;
+//?}
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -94,42 +97,42 @@ public class CustomizationScreen extends Screen implements uk.co.hexeption.apec.
     }
 
     @Override
-    public boolean mouseReleased(double d, double e, int i) {
+    public boolean mouseReleased(/*? if > 1.21.8 {*/MouseButtonEvent event/*?} else {*//*double d, double e, int i*//*?}*/) {
 
         refreshSnapPoints();
         saveDeltas();
-        return super.mouseReleased(d, e, i);
+        return super.mouseReleased(/*? if > 1.21.8 {*/event/*?} else {*//*d, e, i*//*?}*/);
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
+    public boolean mouseClicked(/*? if > 1.21.8 {*/MouseButtonEvent event, boolean isDoubleClick/*?} else {*//*double d, double e, int i*//*?}*/) {
 
         refreshSnapPoints();
 
-        if (i == 0) {
+        if (/*? if > 1.21.8 {*/event.button()/*?} else {*//*i*//*?}*/ == 0) {
             this.children().forEach(guiEventListener -> {
-                if (guiEventListener.mouseClicked(d, e, i) && guiEventListener instanceof CustomizationWidget)
-                    ((CustomizationWidget) guiEventListener).userStartedDragging(d, e);
+                if (guiEventListener.mouseClicked(/*? if > 1.21.8 {*/event, isDoubleClick/*?} else {*//*d, e, i*//*?}*/) && guiEventListener instanceof CustomizationWidget)
+                    ((CustomizationWidget) guiEventListener).userStartedDragging(/*? if > 1.21.8 {*/event.x(), event.y()/*?} else {*//*d, e*//*?}*/);
             });
             this.children().forEach(guiEventListener -> {
-                if (guiEventListener.mouseClicked(d, e, i) && guiEventListener instanceof CustomizationScaleWidget)
-                    ((CustomizationScaleWidget) guiEventListener).userStartedDragging(d, e);
+                if (guiEventListener.mouseClicked(/*? if > 1.21.8 {*/event, isDoubleClick/*?} else {*//*d, e, i*//*?}*/) && guiEventListener instanceof CustomizationScaleWidget)
+                    ((CustomizationScaleWidget) guiEventListener).userStartedDragging(/*? if > 1.21.8 {*/event.x(), event.y()/*?} else {*//*d, e*//*?}*/);
             });
         }
 
-        if (i == 1) {
+        if (/*? if > 1.21.8 {*/event.button()/*?} else {*//*i*//*?}*/ == 1) {
             this.children().forEach(guiEventListener -> {
-                if (guiEventListener.mouseClicked(d, e, i) && guiEventListener instanceof CustomizationWidget)
+                if (guiEventListener.mouseClicked(/*? if > 1.21.8 {*/event, isDoubleClick/*?} else {*//*d, e, i*//*?}*/) && guiEventListener instanceof CustomizationWidget)
                     ((CustomizationWidget) guiEventListener).reset();
             });
             this.children().forEach(guiEventListener -> {
-                if (guiEventListener.mouseClicked(d, e, i) && guiEventListener instanceof CustomizationScaleWidget)
+                if (guiEventListener.mouseClicked(/*? if > 1.21.8 {*/event, isDoubleClick/*?} else {*//*d, e, i*//*?}*/) && guiEventListener instanceof CustomizationScaleWidget)
                     ((CustomizationScaleWidget) guiEventListener).resetScale();
             });
 
         }
 
-        return super.mouseClicked(d, e, i);
+        return super.mouseClicked(/*? if > 1.21.8 {*/event, isDoubleClick/*?} else {*//*d, e, i*//*?}*/);
     }
 
     private void saveDeltas() {

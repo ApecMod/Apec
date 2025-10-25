@@ -1,5 +1,9 @@
 package uk.co.hexeption.apec.mixins.container;
 
+//? if > 1.21.8 {
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+//?}
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -105,13 +109,18 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         }
     }
 
-    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"), cancellable = true)
+    //? if > 1.21.8 {
+    @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
+    private void apec$mouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
+    //?} else {
+    /*@Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"), cancellable = true)
     private void apec$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    *///?}
 
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
-        boolean handled = overlay.mouseClicked(this.menu, slots, mouseX, mouseY, button);
+        boolean handled = overlay.mouseClicked(this.menu, slots, /*? if > 1.21.8 {*/event.x(), event.y(), event.button()/*?} else {*//*mouseX, mouseY, button*//*?}*/);
         if (handled) {
             cir.setReturnValue(true);
             cir.cancel();
@@ -122,13 +131,18 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         cir.cancel();
     }
 
-    @Inject(method = "mouseReleased(DDI)Z", at = @At("HEAD"), cancellable = true)
+    //? if > 1.21.8 {
+    @Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
+    private void apec$mouseReleased(MouseButtonEvent event, CallbackInfoReturnable<Boolean> cir) {
+    //?} else {
+    /*@Inject(method = "mouseReleased(DDI)Z", at = @At("HEAD"), cancellable = true)
     private void apec$mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    *///?}
 
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
-        boolean handled = overlay.mouseReleased(this.menu, slots, mouseX, mouseY, button);
+        boolean handled = overlay.mouseReleased(this.menu, slots, /*? if > 1.21.8 {*/event.x(), event.y(), event.button()/*?} else {*//*mouseX, mouseY, button*//*?}*/);
         if (handled) {
             cir.setReturnValue(true);
             cir.cancel();
@@ -154,15 +168,20 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         cir.cancel();
     }
 
-    @Inject(method = "keyPressed(III)Z", at = @At("HEAD"), cancellable = true)
+    //? if > 1.21.8 {
+    @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+    private void apec$keyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+    //?} else {
+    /*@Inject(method = "keyPressed(III)Z", at = @At("HEAD"), cancellable = true)
     private void apec$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    *///?}
 
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
         // Allow ESC to close container
-        if (keyCode == 256 /* GLFW.GLFW_KEY_ESCAPE */) return;
+        if (/*? if > 1.21.8 {*/event.key()/*?} else {*//*keyCode*//*?}*/ == 256 /* GLFW.GLFW_KEY_ESCAPE */) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
-        boolean handled = overlay.keyPressed(this.menu, slots, keyCode, scanCode, modifiers);
+        boolean handled = overlay.keyPressed(this.menu, slots, /*? if > 1.21.8 {*/event.key(), event.scancode(), event.modifiers()/*?} else {*//*keyCode, scanCode, modifiers*//*?}*/);
         if (handled) {
             cir.setReturnValue(true);
             cir.cancel();

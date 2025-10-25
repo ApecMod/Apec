@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -694,9 +695,15 @@ public class SkyBlockInfo implements SBAPI, MC {
                 // Check ping
                 if (mc.player != null) {
                     int pingThreshold = 80;
-                    int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()))
-                                      .map(info -> info.getLatency())
+                    //? if > 1.21.8 {
+                    int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().id()))
+                                      .map(PlayerInfo::getLatency)
                                       .orElse(0);
+                    //?} else {
+                    /*int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()))
+                            .map(info -> info.getLatency())
+                            .orElse(0);
+                    *///?}
                     if (ping > pingThreshold) {
                         events.add(EventIDs.HIGH_PING);
                     }
@@ -843,7 +850,11 @@ public class SkyBlockInfo implements SBAPI, MC {
             return;
         }
 
-        Scoreboard scoreboard = player.getScoreboard();
+        //? if > 1.21.8 {
+        Scoreboard scoreboard = mc.level.getScoreboard();
+        //?} else {
+        /*Scoreboard scoreboard = player.getScoreboard();
+        *///?}
         Objective displayObjective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
 
         if (displayObjective == null) {

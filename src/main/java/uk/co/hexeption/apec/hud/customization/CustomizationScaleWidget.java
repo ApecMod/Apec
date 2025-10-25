@@ -1,5 +1,8 @@
 package uk.co.hexeption.apec.hud.customization;
 
+//? if > 1.21.8 {
+import net.minecraft.client.input.MouseButtonEvent;
+//?}
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -51,23 +54,23 @@ public class CustomizationScaleWidget extends Button implements MC {
 
 
     @Override
-    public boolean mouseDragged(double d, double e, int i, double f, double g) {
+    public boolean mouseDragged(/*? if > 1.21.8 {*/MouseButtonEvent event, double mouseX, double mouseY/*?} else {*//*double d, double e, int i, double f, double g*//*?}*/) {
         if(isUserDragging){
             Vector2f realAnchor = this.element.getCurrentAnchorPoint();
             Vector2f boundingPoint = this.element.getCurrentBoundingPoint();
-            int differenceX = (int) ((d - this.initialX) * (realAnchor.x < boundingPoint.x ? 1 : -1));
-            int differenceY = (int) ((e - this.initialY) * (realAnchor.y < boundingPoint.y ? 1 : -1));
+            int differenceX = (int) ((/*? if > 1.21.8 {*/mouseX/*?} else {*//*d*//*?}*/ - this.initialX) * (realAnchor.x < boundingPoint.x ? 1 : -1));
+            int differenceY = (int) ((/*? if > 1.21.8 {*/mouseY/*?} else {*//*e*//*?}*/ - this.initialY) * (realAnchor.y < boundingPoint.y ? 1 : -1));
 
             slideValue = (int)(100f * ((float)(differenceX + differenceY)/(float)50));
             this.element.setScale(initialScale + slideValue/280f);
         }
-        return super.mouseDragged(d, e, i, f, g);
+        return super.mouseDragged(/*? if > 1.21.8 {*/event, mouseX, mouseY/*?} else {*//*d, e, i, f, g*//*?}*/);
     }
 
     @Override
-    public boolean mouseReleased(double d, double e, int i) {
+    public boolean mouseReleased(/*? if > 1.21.8 {*/MouseButtonEvent event/*?} else {*//*double d, double e, int i*//*?}*/) {
         this.isUserDragging = false;
-        return super.mouseReleased(d, e, i);
+        return super.mouseReleased(/*? if > 1.21.8 {*/event/*?} else {*//*d, e, i*//*?}*/);
     }
 
 }

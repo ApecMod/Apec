@@ -1,5 +1,8 @@
 package uk.co.hexeption.apec.hud.customization;
 
+//? if > 1.21.8 {
+import net.minecraft.client.input.MouseButtonEvent;
+//?}
 import com.mojang.blaze3d.platform.Window;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +103,7 @@ public class CustomizationWidget extends Button implements MC {
     }
 
     @Override
-    public boolean mouseDragged(double d, double e, int i, double f, double g) {
+    public boolean mouseDragged(/*? if > 1.21.8 {*/MouseButtonEvent event, double mouseX, double mouseY/*?} else {*//*double d, double e, int i, double f, double g*//*?}*/) {
         if (isUserDragging) {
             Vector2f anchor;
             anchor = this.element.getAnchorPointPosition();
@@ -108,17 +111,18 @@ public class CustomizationWidget extends Button implements MC {
             boolean isSnappedToPositionX = false;
             boolean isSnappedToPositionY = false;
 
-            SnapData SnapResult = IsSnapped(d, e, anchor);
+            SnapData SnapResult = IsSnapped(/*? if > 1.21.8 {*/mouseX, mouseY/*?} else {*//*d, e*//*?}*/, anchor);
+
             isSnappedToPositionX = SnapResult.xSnap;
             isSnappedToPositionY = SnapResult.ySnap;
 
             Vector2f Result = new Vector2f(
-                    isSnappedToPositionX ? SnapResult.vector.x + fineTuneOffset.x : (float) (d - anchor.x + fineTuneOffset.x + startingPos.x),
-                    (float) ((isSnappedToPositionY ? SnapResult.vector.y + fineTuneOffset.y : e - anchor.y + fineTuneOffset.y + startingPos.y) * (lockY ? 0 : 1))
+                    isSnappedToPositionX ? SnapResult.vector.x + fineTuneOffset.x : (float) (/*? if > 1.21.8 {*/mouseX/*?} else {*//*d*//*?}*/ - anchor.x + fineTuneOffset.x + startingPos.x),
+                    (float) ((isSnappedToPositionY ? SnapResult.vector.y + fineTuneOffset.y : /*? if > 1.21.8 {*/mouseY/*?} else {*//*e*//*?}*/ - anchor.y + fineTuneOffset.y + startingPos.y) * (lockY ? 0 : 1))
             );
             this.element.setDeltaPosition(Result);
         }
-        return super.mouseDragged(d, e, i, f, g);
+        return super.mouseDragged(/*? if > 1.21.8 {*/event, mouseX, mouseY/*?} else {*//*d, e, i, f, g*//*?}*/);
     }
 
     private SnapData IsSnapped(double mouseX, double mouseY, Vector2f anchor) {
@@ -144,9 +148,9 @@ public class CustomizationWidget extends Button implements MC {
     }
 
     @Override
-    public boolean mouseReleased(double d, double e, int i) {
+    public boolean mouseReleased(/*? if > 1.21.8 {*/MouseButtonEvent event/*?} else {*//*double d, double e, int i*//*?}*/) {
         this.isUserDragging = false;
-        return super.mouseReleased(d, e, i);
+        return super.mouseReleased(/*? if > 1.21.8 {*/event/*?} else {*//*d, e, i*//*?}*/);
     }
 
     public void reset() {
