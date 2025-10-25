@@ -101,7 +101,8 @@ dependencies {
     modImplementation(fletchingTable.modrinth("modmenu", "${mc.version}", "fabric"))
 
     // REI integration - optional dependency
-    if (mc.version != "1.21.9") { // REI is not available for 1.21.9 yet
+    // REI is not available for 1.21.9 or 1.21.10 yet
+    if (mc.version != "1.21.9" && mc.version != "1.21.10") {
         modCompileOnly(fletchingTable.modrinth("rei", "${mc.version}", "fabric"))
     }
 }
