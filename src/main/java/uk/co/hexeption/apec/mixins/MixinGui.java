@@ -6,6 +6,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,10 +22,13 @@ import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
 @Mixin(Gui.class)
-public class MixinGui implements MC {
+public abstract class MixinGui implements MC {
 
     @Shadow
     private int toolHighlightTimer;
+
+    @Shadow
+    protected abstract void renderSelectedItemName(GuiGraphics guiGraphics);
 
     @Inject(method = "renderEffects", at = @At("HEAD"), cancellable = true)
     private void renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
@@ -103,6 +107,10 @@ public class MixinGui implements MC {
         }
 
         ci.cancel();
+
+        if (this.mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+            this.renderSelectedItemName(guiGraphics);
+        }
     }
     //?} else {
     /*@Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
