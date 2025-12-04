@@ -1,5 +1,4 @@
-//? if <= 1.21.8 {
-/*package uk.co.hexeption.apec.integrations.rei;
+package uk.co.hexeption.apec.integrations.rei;
 
 import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -11,7 +10,7 @@ import net.minecraft.world.InteractionResult;
 import uk.co.hexeption.apec.gui.container.ContainerGuiManager;
 
 @Entrypoint("rei_client")
-/^ REI Plugin to manage overlay rendering on custom container screens to hide REI ^/
+/* REI Plugin to manage overlay rendering on custom container screens to hide REI */
 public class ApecREIPlugin implements REIClientPlugin {
 
     @Override
@@ -47,5 +46,3 @@ public class ApecREIPlugin implements REIClientPlugin {
     }
 
 }
-
-*///?}
