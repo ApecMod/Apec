@@ -111,14 +111,14 @@ public class CustomizationWidget extends Button implements MC {
             boolean isSnappedToPositionX = false;
             boolean isSnappedToPositionY = false;
 
-            SnapData SnapResult = IsSnapped(/*? if > 1.21.8 {*/mouseX, mouseY/*?} else {*//*d, e*//*?}*/, anchor);
+            SnapData SnapResult = IsSnapped(/*? if > 1.21.8 {*/event.x(), event.y()/*?} else {*//*d, e*//*?}*/, anchor);
 
             isSnappedToPositionX = SnapResult.xSnap;
             isSnappedToPositionY = SnapResult.ySnap;
 
             Vector2f Result = new Vector2f(
-                    isSnappedToPositionX ? SnapResult.vector.x + fineTuneOffset.x : (float) (/*? if > 1.21.8 {*/mouseX/*?} else {*//*d*//*?}*/ - anchor.x + fineTuneOffset.x + startingPos.x),
-                    (float) ((isSnappedToPositionY ? SnapResult.vector.y + fineTuneOffset.y : /*? if > 1.21.8 {*/mouseY/*?} else {*//*e*//*?}*/ - anchor.y + fineTuneOffset.y + startingPos.y) * (lockY ? 0 : 1))
+                    isSnappedToPositionX ? SnapResult.vector.x + fineTuneOffset.x : (float) (/*? if > 1.21.8 {*/event.x()/*?} else {*//*d*//*?}*/ - anchor.x + fineTuneOffset.x + startingPos.x),
+                    (float) ((isSnappedToPositionY ? SnapResult.vector.y + fineTuneOffset.y : /*? if > 1.21.8 {*/event.y()/*?} else {*//*e*//*?}*/ - anchor.y + fineTuneOffset.y + startingPos.y) * (lockY ? 0 : 1))
             );
             this.element.setDeltaPosition(Result);
         }
@@ -142,8 +142,8 @@ public class CustomizationWidget extends Button implements MC {
         startingPos = this.element.getCurrentAnchorPoint();
 
 
-        startingPos.x -= mouseX;
-        startingPos.y -= mouseY;
+        startingPos.x -= (float) mouseX;
+        startingPos.y -= (float) mouseY;
         this.isUserDragging = true;
     }
 
