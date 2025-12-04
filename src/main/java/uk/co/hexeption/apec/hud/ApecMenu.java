@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.joml.Vector2f;
@@ -37,7 +38,7 @@ import uk.co.hexeption.apec.settings.SettingID;
 import uk.co.hexeption.apec.utils.ApecUtils;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
 
-public class ApecMenu implements MC {
+public class ApecMenu implements MC, HudRenderLayer  {
 
     private boolean hudEnabled = true;
 
@@ -92,7 +93,8 @@ public class ApecMenu implements MC {
         }
     }
 
-    public void render(GuiGraphics guiGraphics) {
+    @Override
+    public void render(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }

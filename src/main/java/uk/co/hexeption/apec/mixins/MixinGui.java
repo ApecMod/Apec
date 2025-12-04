@@ -232,16 +232,6 @@ public class MixinGui implements MC {
     }
     *///?}
 
-    @Inject(method = "render", at = @At("RETURN"))
-    private void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
-
-        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
-            return;
-        }
-
-        Apec.apecMenu.render(guiGraphics);
-    }
-
     @ModifyVariable(method = "renderSelectedItemName", at = @At(value = "STORE"), ordinal = 1)
     private int modifyXPosition(int original, GuiGraphics guiGraphics) {
 
