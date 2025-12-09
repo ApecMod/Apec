@@ -33,6 +33,8 @@ public class SettingsManager {
         add(new Setting(DRILL_FUEL_TEXT,true));
         add(new Setting(SHOW_AIR_BAR,true));
         add(new Setting(AIR_TEXT,true));
+        add(new Setting(SHOW_PRESSURE_BAR,true));
+        add(new Setting(PRESSURE_TEXT,true));
         add(new Setting(SHOW_SKILL_XP,true));
         add(new Setting(SKILL_TEXT,true));
         add(new Setting(COLORED_SKILL_XP,true));
@@ -101,6 +103,7 @@ public class SettingsManager {
         put(ALWAYS_SHOW_SKILL,new Tuple<String, String>("Always show skill xp","Constantly shows skill xp, using cached values when not normally shown"));
         put(SHOW_CACHED_PURSE_IN_DUNGEONS,new Tuple<String, String>("Show cached purse","Shows a cached value of the purse while in dungeons"));
         put(SHOW_AIR_BAR,new Tuple<String, String>("Show air bar","Toggles on or off the air bar"));
+        put(SHOW_PRESSURE_BAR,new Tuple<String, String>("Show pressure bar","Toggles on or off the pressure bar"));
         put(SNAP_IN_EDITING,new Tuple<String, String>("Snap in gui editing","Activates snapping while in the gui customization menu"));
         put(INFO_BOX_ANIMATION,new Tuple<String, String>("Bottom Bar Animation","A slide down animation for the bottom box when i chat"));
         put(SHOW_ABILITY_TEXT,new Tuple<String, String>("Show ability text","Shows the ability text at the mana bar"));
@@ -112,6 +115,7 @@ public class SettingsManager {
         put(DRILL_FUEL_BAR,new Tuple<String, String>("Show Drill Fuel Bar","Shows the drill fuel bar"));
         put(DRILL_FUEL_TEXT,new Tuple<String, String>("Show Drill Fuel Text","Shows the drill fuel text"));
         put(AIR_TEXT,new Tuple<String, String>("Show Air text","Shows the air text"));
+        put(PRESSURE_TEXT,new Tuple<String, String>("Show Pressure text","Shows the pressure text"));
         put(SKILL_TEXT,new Tuple<String, String>("Show Skill text","Shows the skill text"));
         put(SHOW_CURRENT_SERVER,new Tuple<String, String>("Show current server","Show in which server you are in"));
         put(COLORED_SKILL_XP,new Tuple<String,String>("Colored skill xp","Shows a different colored bar for each skill xp"));

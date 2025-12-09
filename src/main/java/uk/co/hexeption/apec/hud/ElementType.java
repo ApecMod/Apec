@@ -11,6 +11,8 @@ public enum ElementType {
     XP_TEXT,
     AIR_BAR,
     AIR_TEXT,
+    PRESSURE_BAR,
+    PRESSURE_TEXT,
     DRILL_FUEL_BAR,
     DRILL_FUEL_TEXT,
     BOTTOM_BAR,

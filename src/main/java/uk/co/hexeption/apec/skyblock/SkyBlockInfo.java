@@ -99,6 +99,7 @@ public class SkyBlockInfo implements SBAPI, MC {
         static final char DEFENSE = '❈';
         static final char MANA = '✎';
         static final char OVERFLOW_MANA = 'ʬ';
+        static final char PRESSURE = '❍';
     }
 
     /**
@@ -283,6 +284,7 @@ public class SkyBlockInfo implements SBAPI, MC {
         String kuudraTieredBonus = "";
         int drillFuelRemaining = 0;
         int drillFuelCapacity = 0;
+        int pressure = 0;
 
         // Parse health
         try {
@@ -487,6 +489,17 @@ public class SkyBlockInfo implements SBAPI, MC {
             drillFuelCapacity = 0;
         }
 
+        // Parse pressure information
+        try {
+            String segmentPressure = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.PRESSURE), GameSymbols.PRESSURE, '%', 1, 1);
+            if (segmentPressure != null) {
+                String cleanedPressure = ApecUtils.removeAllColourCodes(segmentPressure).trim().replace(GameSymbols.PRESSURE + "", "");
+                pressure = Integer.parseInt(cleanedPressure);
+            }
+        } catch (Exception err) {
+            pressure = 0;
+        }
+
 
         // Create a new PlayerStats instance with all the updated values
         this.playerStats = new PlayerStats(
@@ -507,7 +520,8 @@ public class SkyBlockInfo implements SBAPI, MC {
                 abilityShown,
                 kuudraTieredBonus,
                 drillFuelRemaining,
-                drillFuelCapacity);
+                drillFuelCapacity,
+                pressure);
     }
 
     /**
