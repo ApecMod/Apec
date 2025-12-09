@@ -24,7 +24,12 @@ public class XPText extends Element {
             return;
         }
 
-        String xpText = "Lvl " + mc.player.experienceLevel + " XP";
+        String xpText;
+        if (Apec.SKYBLOCK_INFO.isInDungeon()) {
+            xpText = "Ultimate Cooldown " +  ApecUtils.reduceToTwoDecimals(mc.player.experienceProgress * 100 + 0.1f) + "%";
+        } else {
+            xpText = "Lvl " + mc.player.experienceLevel + " XP";
+        }
 
         Vector2f statBar = ApecUtils.scalarMultiply(getCurrentAnchorPoint(), 1f / scale);
         int width = (int) statBar.x;

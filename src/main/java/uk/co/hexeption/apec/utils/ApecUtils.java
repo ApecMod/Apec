@@ -343,5 +343,9 @@ public class ApecUtils {
         return s;
     }
 
+    public static float reduceToTwoDecimals(float v) {
+        return (float)((int)(v*100)) / 100.0f;
+    }
+
 
 }
