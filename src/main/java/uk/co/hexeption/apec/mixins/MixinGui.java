@@ -276,4 +276,13 @@ public abstract class MixinGui implements MC {
         }
     }
 
+    @Inject(method = "renderAirBubbles", at = @At("HEAD"), cancellable = true)
+    private void renderAirBubbles(GuiGraphics guiGraphics, Player player, int vehicleMaxHealth, int y, int x, CallbackInfo ci) {
+        if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
+            return;
+        }
+
+        ci.cancel();
+    }
+
 }
