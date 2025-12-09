@@ -2,6 +2,7 @@ package uk.co.hexeption.apec;
 
 //? if >=1.21.6 {
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 //?} else if >=1.21.5 {
 /*import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
@@ -34,10 +35,10 @@ public final class Apec implements MC {
 
     private void addHudLayer() {
         //? if >=1.21.6 {
-        HudElementRegistry.addLast(ResourceLocation.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render);
         //?} else if >=1.21.5 {
         /*HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
-            layeredDrawer.addLayer(IdentifiedLayer.of(ResourceLocation.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render));
+            layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, IdentifiedLayer.of(ResourceLocation.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render));
         });
         *///?}
     }
