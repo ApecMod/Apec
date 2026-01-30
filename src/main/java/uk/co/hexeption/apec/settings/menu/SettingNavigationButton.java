@@ -28,7 +28,11 @@ public class SettingNavigationButton extends PlainTextButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    //? if >= 1.21.11 {
+    public void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    //?} else {
+    /*public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+     *///?}
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         } else {

@@ -50,12 +50,12 @@ public class WarningIcons extends Element {
 
         var warningIconTexture = ApecTextures.ICONS;
         switch (eventID) {
-            case INV_FULL -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getResourceLocation(), x, y, 1,226,14,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case TRADE_IN -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getResourceLocation(), x, y, 32,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case TRADE_OUT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getResourceLocation(), x, y, 16,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case COIN_COUNT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getResourceLocation(), x, y, 48,226,13,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case SERVER_REBOOT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getResourceLocation(), x, y, 62,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
-            case HIGH_PING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getResourceLocation(), x, y, 78,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case INV_FULL -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getIdentifier(), x, y, 1,226,14,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case TRADE_IN -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getIdentifier(), x, y, 32,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case TRADE_OUT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getIdentifier(), x, y, 16,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case COIN_COUNT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getIdentifier(), x, y, 48,226,13,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case SERVER_REBOOT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getIdentifier(), x, y, 62,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
+            case HIGH_PING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), warningIconTexture.getIdentifier(), x, y, 78,226,15,13, warningIconTexture.getWidth(), warningIconTexture.getHeight());
         }
     }
 

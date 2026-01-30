@@ -39,14 +39,14 @@ public class PressureBar extends Element {
         int height = (int) statBar.y;
 
         // Pressure Empty Bar
-        graphics.blit(GuiGraphicsUtils.getGuiTextured(), pressureBarTexture.getResourceLocation(),
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), pressureBarTexture.getIdentifier(),
                 width, height,
                 0, 90, 182, 5,
                 pressureBarTexture.getWidth(), pressureBarTexture.getHeight()
         );
 
         // Pressure Filled Bar
-        graphics.blit(GuiGraphicsUtils.getGuiTextured(), pressureBarTexture.getResourceLocation(),
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), pressureBarTexture.getIdentifier(),
                 width, height,
                 0, 95, (int) (pressureFactor * 182), 5,
                 pressureBarTexture.getWidth(), pressureBarTexture.getHeight()

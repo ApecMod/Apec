@@ -14,8 +14,11 @@ public class CustomizationResetWidget extends Button implements MC {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-
+    //? if >= 1.21.11 {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    //?} else {
+    /*protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    *///?}
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         } else {
@@ -23,7 +26,11 @@ public class CustomizationResetWidget extends Button implements MC {
         }
 
         int k = this.active ? 16777215 : 10526880;
-        this.renderString(guiGraphics, mc.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
+        //? if >= 1.21.11 {
+        this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+        //?} else {
+        /*this.renderString(guiGraphics, mc.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
+        *///?}
     }
 
 }

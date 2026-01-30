@@ -37,19 +37,19 @@ public class HPBar extends Element {
         boolean showAPBar = false;
         if (showAPBar) {
             // Empty Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getResourceLocation(), width, height, 0, 60, 182, 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getIdentifier(), width, height, 0, 60, 182, 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
 
             // AP Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getResourceLocation(), width, height, 0, 65, (int) (((float) ap / (float) base_ap) * 49f), 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getIdentifier(), width, height, 0, 65, (int) (((float) ap / (float) base_ap) * 49f), 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
 
             // HP Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getResourceLocation(), width + 51, height, 51, 65, (int) (hpFactor * 131f), 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getIdentifier(), width + 51, height, 51, 65, (int) (hpFactor * 131f), 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
         } else {
             // Empty Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getResourceLocation(), width, height, 0, 0, 182, 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getIdentifier(), width, height, 0, 0, 182, 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
 
             // Full Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getResourceLocation(), width, height, 0, 5, (int) (hpFactor * 182f), 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getIdentifier(), width, height, 0, 5, (int) (hpFactor * 182f), 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
         }
 
     }

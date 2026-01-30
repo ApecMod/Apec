@@ -1,15 +1,15 @@
 [versions]
 
-fabricloader = "0.17.2"
-devauth = "1.2.1"
+fabricloader = "0.18.4"
+devauth = "1.2.2"
 mixinconstraints = "1.1.0"
 mixinsquared = "0.2.0"
 
 kotlin-jvm = "2.2.0"
-loom = "1.11-SNAPSHOT"
+loom = "1.15-SNAPSHOT"
 publishing = "0.8.4"
 ksp = "2.2.0-2.0.2"
-fletchingtable = "0.1.0-alpha.15"
+fletchingtable = "0.1.0-alpha.22"
 
 [libraries]
 

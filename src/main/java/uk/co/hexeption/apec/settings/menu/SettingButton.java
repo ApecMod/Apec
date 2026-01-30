@@ -21,8 +21,11 @@ public class SettingButton extends PlainTextButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-
+    //? if >= 1.21.11 {
+    public void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    //?} else {
+    /*public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+     *///?}
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         }
@@ -46,7 +49,12 @@ public class SettingButton extends PlainTextButton {
         int scaledHeight = (int) (textHeight / 1.1f);
 
         // TODO: why white? idk! but it works! so i dont care!! genuinely, this makes absolutely no sense
-        renderScrollingString(guiGraphics, Minecraft.getInstance().font, title, scaledX, scaledY, scaledX + textWidth, scaledY + scaledHeight, /*? if >= 1.21.8 {*/ CommonColors.WHITE /*?} else {*/ /*title.getStyle().getColor().getValue() *//*?}*/);
+        //? if >= 1.21.11 {
+        // TODO: idk how scrolling text works in 1.21.11
+        guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE).accept(scaledX, scaledY, title);
+        //?} else {
+        /*renderScrollingString(guiGraphics, Minecraft.getInstance().font, title, scaledX, scaledY, scaledX + textWidth, scaledY + scaledHeight, /^? if >= 1.21.8 {^/ CommonColors.WHITE /^?} else {^/ /^title.getStyle().getColor().getValue() ^//^?}^/);
+        *///?}
 
         GuiGraphicsUtils.pop(guiGraphics);
 

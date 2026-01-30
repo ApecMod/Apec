@@ -30,10 +30,10 @@ public class XPBar extends Element {
         int height = (int) statBar.y;
 
         // Empty Bar
-        graphics.blit(GuiGraphicsUtils.getGuiTextured(), xpBarTexture.getResourceLocation(), width, height, 0, 30, 182, 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), xpBarTexture.getIdentifier(), width, height, 0, 30, 182, 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
 
         // Full Bar
-        graphics.blit(GuiGraphicsUtils.getGuiTextured(), xpBarTexture.getResourceLocation(), width, height, 0, 35, (int) (mc.player.experienceProgress * 182f), 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), xpBarTexture.getIdentifier(), width, height, 0, 35, (int) (mc.player.experienceProgress * 182f), 5, xpBarTexture.getWidth(), xpBarTexture.getHeight());
     }
 
     @Override

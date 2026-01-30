@@ -49,7 +49,7 @@ public class BottomBar extends Element {
         ApecTextures bottomBarTexture = ApecTextures.BOTTOM_BAR;
         int drawCount = (int) (mc.getWindow().getGuiScaledWidth() / 256) + 1;
         for (int i = 0; i < drawCount; i++) {
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), bottomBarTexture.getResourceLocation(), (int) (GuiPos.x + i * 256), (int) (GuiPos.y + yDecremetor - (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.BB_ON_TOP) ? 5 : 7)), 0, 0, 256, 20, bottomBarTexture.getWidth(), bottomBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), bottomBarTexture.getIdentifier(), (int) (GuiPos.x + i * 256), (int) (GuiPos.y + yDecremetor - (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.BB_ON_TOP) ? 5 : 7)), 0, 0, 256, 20, bottomBarTexture.getWidth(), bottomBarTexture.getHeight());
         }
 
         var useIcons = Apec.INSTANCE.settingsManager.getSettingState(SettingID.INFO_BOX_ICONS);
@@ -59,25 +59,25 @@ public class BottomBar extends Element {
         if (useIcons) {
             // Money Icon
             if (inRift) {
-                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getResourceLocation(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(0).x()) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(0).y()) * 1 / scale), 1,206,6,9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
+                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getIdentifier(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(0).x()) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(0).y()) * 1 / scale), 1,206,6,9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
             }else {
-                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getResourceLocation(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(0).x()) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(0).y()) * 1 / scale), 1, 216, 6, 9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
+                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getIdentifier(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(0).x()) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(0).y()) * 1 / scale), 1, 216, 6, 9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
             }
 
             // Bits Icon
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getResourceLocation(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(1).x() + 120) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(1).y()) * 1 / scale), 8, 216, 5, 9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getIdentifier(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(1).x() + 120) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(1).y()) * 1 / scale), 8, 216, 5, 9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
 
 
             // Zone Icon
             if( inTheCatacombs) {
-                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getResourceLocation(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(2).x() + 220 - 1) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(2).y()) * 1 / scale), 24, 217, 7, 8, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
+                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getIdentifier(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(2).x() + 220 - 1) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(2).y()) * 1 / scale), 24, 217, 7, 8, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
             } else {
-                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getResourceLocation(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(2).x() + 220) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(2).y()) * 1 / scale), 14, 216, 9, 9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
+                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getIdentifier(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(2).x() + 220) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(2).y()) * 1 / scale), 14, 216, 9, 9, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
             }
 
             // Defence Icon
             if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.USE_DEFENCE_OUT_OF_BB) || editMode) {
-                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getResourceLocation(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(3).x() + 360) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(2).y()) * 1 / scale), 32, 215, 7, 10, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
+                graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.ICONS.getIdentifier(), (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(3).x() + 360) * 1 / scale), (int) ((GuiPos.y + subElementDeltaPositions.get(2).y()) * 1 / scale), 32, 215, 7, 10, ApecTextures.ICONS.getWidth(), ApecTextures.ICONS.getHeight());
             }
 
         }

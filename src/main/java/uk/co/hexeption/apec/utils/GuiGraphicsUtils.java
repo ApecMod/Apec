@@ -10,13 +10,13 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.ARGB;
 //?} else {
 /*import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 *///?}
 
 public class GuiGraphicsUtils {
-    public static /*? if >= 1.21.7 {*/ RenderPipeline /*?} else {*/ /*Function<ResourceLocation, RenderType> *//*?}*/ getGuiTextured() {
+    public static /*? if >= 1.21.7 {*/ RenderPipeline /*?} else {*/ /*Function<Identifier, RenderType> *//*?}*/ getGuiTextured() {
         //? if >= 1.21.7 {
         return RenderPipelines.GUI_TEXTURED;
         //?} else {

@@ -35,32 +35,32 @@ public class SkillBar extends Element {
                 }
                 skillProgress *= 182f;
 
-                graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                         (int) skillBarPos.x, (int) skillBarPos.y,
                         0, 0, 182, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
 
                 var skillType = SkillType.getSkillType(ps.skill_info());
 
                 switch (skillType) {
-                    case NONE, FARMING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case NONE, FARMING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 5, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
-                    case COMBAT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case COMBAT -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 15, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
-                    case MINING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case MINING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 25, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
-                    case FORAGING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case FORAGING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 35, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
-                    case ENCHANTING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case ENCHANTING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 45, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
-                    case FISHING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case FISHING -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 55, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
-                    case ALCHEMY -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getResourceLocation(),
+                    case ALCHEMY -> graphics.blit(GuiGraphicsUtils.getGuiTextured(), skillBarTexture.getIdentifier(),
                             (int) skillBarPos.x, (int) skillBarPos.y,
                             0, 65, (int) skillProgress, 5, skillBarTexture.getWidth(), skillBarTexture.getHeight());
                 }
@@ -69,7 +69,7 @@ public class SkillBar extends Element {
 
         }
         if (editMode) {
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.SKILL_BAR.getResourceLocation(),
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), ApecTextures.SKILL_BAR.getIdentifier(),
                     (int) skillBarPos.x, (int) skillBarPos.y,
                     0, 25, 182, 5, ApecTextures.SKILL_BAR.getWidth(), ApecTextures.SKILL_BAR.getHeight());
         }

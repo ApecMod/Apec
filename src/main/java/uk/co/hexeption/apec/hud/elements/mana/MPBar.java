@@ -41,19 +41,19 @@ public class MPBar extends Element {
             float opFactor = overflow > base_overflow ? 1 : (float) overflow / (float) base_overflow;
 
             // Empty Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 70, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getIdentifier(), width, height, 0, 70, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
 
             // Overflow Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 75, (int) (opFactor * 49f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getIdentifier(), width, height, 0, 75, (int) (opFactor * 49f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
 
             // MP Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width + 51, height, 51, 75, (int) (mpFactor * 131f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getIdentifier(), width + 51, height, 51, 75, (int) (mpFactor * 131f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
         } else {
             // Empty Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 10, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getIdentifier(), width, height, 0, 10, 182, 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
 
             // Full Bar
-            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getResourceLocation(), width, height, 0, 15, (int) (mpFactor * 182f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
+            graphics.blit(GuiGraphicsUtils.getGuiTextured(), mpBarTexture.getIdentifier(), width, height, 0, 15, (int) (mpFactor * 182f), 5, mpBarTexture.getWidth(), mpBarTexture.getHeight());
         }
     }
 

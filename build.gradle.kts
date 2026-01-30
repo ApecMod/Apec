@@ -229,3 +229,10 @@ fun <T> optionalProp(property: String, block: (String) -> T?): T? =
 tasks.remapJar {
     destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
 }
+
+stonecutter {
+    // Not sure why this is necessary, but it is as it should be using Mojo names
+    replacements.string(current.version == "1.21.11") {
+        replace("ResourceLocation", "Identifier")
+    }
+}

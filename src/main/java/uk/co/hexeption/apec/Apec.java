@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 /*import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 *///?}
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.co.hexeption.apec.hud.ApecMenu;
@@ -35,10 +35,10 @@ public final class Apec implements MC {
 
     private void addHudLayer() {
         //? if >=1.21.6 {
-        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, ResourceLocation.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, Identifier.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render);
         //?} else if >=1.21.5 {
         /*HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
-            layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, IdentifiedLayer.of(ResourceLocation.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render));
+            layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, IdentifiedLayer.of(Identifier.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render));
         });
         *///?}
     }

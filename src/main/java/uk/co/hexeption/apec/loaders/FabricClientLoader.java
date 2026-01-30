@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
@@ -21,7 +21,7 @@ import uk.co.hexeption.apec.settings.menu.SettingsMenu;
 public class FabricClientLoader implements ClientModInitializer, MC {
 
     //? if > 1.21.8 {
-    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.tryBuild("apec", "apec"));
+    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.tryBuild("apec", "apec"));
     //?}
 
     private static KeyMapping settingKeybind;

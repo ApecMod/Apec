@@ -41,14 +41,14 @@ public class AirBar extends Element {
         int height = (int) statBar.y;
 
         // Empty Bar
-        graphics.blit(GuiGraphicsUtils.getGuiTextured(), airBarTexture.getResourceLocation(),
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), airBarTexture.getIdentifier(),
                 width, height,
                 0, 40, 182, 5,
                 airBarTexture.getWidth(), airBarTexture.getHeight()
         );
 
         // Air Bar
-        graphics.blit(GuiGraphicsUtils.getGuiTextured(), airBarTexture.getResourceLocation(),
+        graphics.blit(GuiGraphicsUtils.getGuiTextured(), airBarTexture.getIdentifier(),
                 width, height,
                 0, 45, (int) (airFactor * 182), 5,
                 airBarTexture.getWidth(), airBarTexture.getHeight()

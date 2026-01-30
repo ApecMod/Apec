@@ -327,11 +327,11 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
 
         switch (action) {
             case BACK -> {
-                g.blit(GuiGraphicsUtils.getGuiTextured(), statusBarTexture.getResourceLocation(),
+                g.blit(GuiGraphicsUtils.getGuiTextured(), statusBarTexture.getIdentifier(),
                         x, y, 33, 240, 15, 15, statusBarTexture.getWidth(), statusBarTexture.getHeight());
             }
             case CLOSE -> {
-                g.blit(GuiGraphicsUtils.getGuiTextured(), statusBarTexture.getResourceLocation(),
+                g.blit(GuiGraphicsUtils.getGuiTextured(), statusBarTexture.getIdentifier(),
                         x, y, 49, 240, 15, 15, statusBarTexture.getWidth(), statusBarTexture.getHeight());
             }
             case PAGE_CHANGE -> {

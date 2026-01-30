@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.hud;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum ApecTextures {
 
@@ -9,17 +9,17 @@ public enum ApecTextures {
     BOTTOM_BAR("bottom_bar", 256, 256),
     SKILL_BAR("skill_bar", 256, 256);
 
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
     private final int width;
     private final int height;
 
     ApecTextures(String path, int width, int height) {
-        this.resourceLocation = ResourceLocation.fromNamespaceAndPath("apec", "textures/" + path + ".png");
+        this.resourceLocation = Identifier.fromNamespaceAndPath("apec", "textures/" + path + ".png");
         this.width = width;
         this.height = height;
     }
 
-    public ResourceLocation getResourceLocation() {
+    public Identifier getIdentifier() {
         return resourceLocation;
     }
 

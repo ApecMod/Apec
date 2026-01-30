@@ -35,18 +35,14 @@ jobs:
       - name: Setup Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v4
         with:
-          go-version: '1.22.x'
-
-      - name: Install git-chglog
-        run: |
-          go install github.com/git-chglog/git-chglog/cmd/git-chglog@v0.15.4
-
-      - name: Generate changelog with git-chglog
-        run: |
-          git-chglog -c ./.chglog/config.yml --next-tag v${{ inputs.version }} -o CHANGELOG.txt
+          config: cliff.toml
+          args: -t ${{ inputs.version }}
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
 
       - name: Compute publish type
         id: meta
@@ -85,7 +81,7 @@ jobs:
         with:
           tag_name: v${{ inputs.version }}
           name: Apec ${{ inputs.version }}
-          body_path: CHANGELOG.txt
+          body_path: CHANGELOG.md
           prerelease: ${{ inputs.pre_release }}
           files: |
             build/libs/*.jar

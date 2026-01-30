@@ -170,7 +170,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
             boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + 15 &&
                     mouseY >= buttonY && mouseY <= buttonY + 15;
 
-            g.blit(GuiGraphicsUtils.getGuiTextured(), iconsTexture.getResourceLocation(),
+            g.blit(GuiGraphicsUtils.getGuiTextured(), iconsTexture.getIdentifier(),
                     buttonX, buttonY, textureX, 240, 15, 15,
                     iconsTexture.getWidth(), iconsTexture.getHeight());
 

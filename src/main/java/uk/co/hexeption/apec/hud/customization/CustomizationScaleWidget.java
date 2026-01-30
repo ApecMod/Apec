@@ -28,7 +28,11 @@ public class CustomizationScaleWidget extends Button implements MC {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    //? if >= 1.21.11 {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    //?} else {
+    /*protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+     *///?}
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         } else {

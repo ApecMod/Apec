@@ -54,7 +54,11 @@ public class CustomizationWidget extends Button implements MC {
 
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+    //? if >= 1.21.11 {
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    //?} else {
+    /*protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+     *///?}
         Window window = mc.getWindow();
         int scaledWidth = window.getGuiScaledWidth();
         int scaledHeight = window.getGuiScaledHeight();
