@@ -5,9 +5,11 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
@@ -19,6 +21,7 @@ import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.PlayerScoreEntry;
 import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.ScoreHolder;
 import net.minecraft.world.scores.Scoreboard;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.EventIDs;
@@ -158,7 +161,8 @@ public class SkyBlockInfo implements SBAPI, MC {
             return;
         }
 
-        this.onSkyblock = scoreboardTitle.getString().contains("SKYBLOCK");
+        this.onSkyblock = ApecUtils.removeAllColourCodes(scoreboardTitle.getString()).contains("SKYBLOCK");
+        //Apec.LOGGER.info("Skyblock: " + scoreboardTitle.getString());
 
         // Process information in this order
         collectScoreboardLines();
@@ -185,7 +189,7 @@ public class SkyBlockInfo implements SBAPI, MC {
         this.isInDungeon = false;
 
         for (Component component : this.componentScoreboard) {
-            String line = component.getString();
+            String line = component.copy().getString();
 
             // Check for dungeon indicator
             if (ApecUtils.isContainedIn(line, "The Catacombs")) {
@@ -242,6 +246,8 @@ public class SkyBlockInfo implements SBAPI, MC {
                 irlDate,
                 getScoreboardTitle().getString(),
                 gameType);
+
+        Apec.LOGGER.info("Scoreboard: " + scoreboard);
     }
 
     /**
@@ -875,35 +881,33 @@ public class SkyBlockInfo implements SBAPI, MC {
             return;
         }
 
-        ObjectArrayList<Component> componentLine = new ObjectArrayList<>();
-        ObjectArrayList<String> stringLine = new ObjectArrayList<>();
+        ObjectArrayList<Component> componentLines = new ObjectArrayList<>();
+        ObjectArrayList<String> stringLines = new ObjectArrayList<>();
 
-        Collection<PlayerScoreEntry> scores = scoreboard.listPlayerScores(displayObjective);
-        List<PlayerScoreEntry> list = scores.stream().filter(input -> input != null && !input.isHidden()).collect(Collectors.toList());
+        for (ScoreHolder scoreHolder : scoreboard.getTrackedPlayers()) {
+            if(scoreboard.listPlayerScores(scoreHolder).containsKey(displayObjective)) {
+                PlayerTeam team = scoreboard.getPlayersTeam(scoreHolder.getScoreboardName());
 
-        list.sort((a, b) -> Integer.compare(b.value(), a.value()));
+                if(team != null) {
+                    Component componentLine = Component.empty().append(team.getPlayerPrefix().copy()).append(team.getPlayerSuffix().copy());
+                    String stringLine = team.getPlayerPrefix().getString() + team.getPlayerSuffix().getString();
 
-        if (list.size() > 15) {
-            scores = Lists.newArrayList(Iterables.skip(list, scores.size() - 15));
-        } else {
-            scores = list;
-        }
+                    if(!stringLine.trim().isEmpty()) {
+                        String format = ChatFormatting.stripFormatting(stringLine);
 
-        for (PlayerScoreEntry score : scores) {
-            PlayerTeam team = scoreboard.getPlayersTeam(score.owner());
+                        componentLines.add(componentLine);
+                        stringLines.add(format);
 
-            if (team != null) {
-                Component component = Component.empty().append(team.getPlayerPrefix().copy()).append(team.getPlayerSuffix().copy());
-                String string = team.getPlayerPrefix().getString() + team.getPlayerSuffix().getString();
-                if (!string.trim().isEmpty()) {
-                    componentLine.add(component);
-                    stringLine.add(string);
+                    }
                 }
             }
         }
 
-        this.stringScoreboard.addAll(stringLine);
-        this.componentScoreboard.addAll(componentLine);
+        Collections.reverse(stringLines);
+        Collections.reverse(componentLines);
+
+        this.componentScoreboard.addAll(componentLines);
+        this.stringScoreboard.addAll(stringLines);
 
 
     }

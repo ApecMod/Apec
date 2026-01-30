@@ -90,8 +90,8 @@ public class BottomBar extends Element {
         Component purseText = (UseIcons ? RemovePurseText(sd.purse()) : sd.purse());
         Component zoneText = (UseIcons ? RemoveZoneText(sd.zone()) : sd.zone());
         String defenceText = (UseIcons ? "§a" + ps.defense() : "§a❈ Defense: " + ps.defense());
-        Component bitText = (UseIcons ? ApecUtils.removeComponentContaining(sd.bits(), "Bits: ") : sd.bits());
-        Component modeText = (UseIcons ? ApecUtils.removeComponentContaining(sd.gameType(), "Mode: ") : sd.gameType());
+        Component bitText = (UseIcons ? RemoveText(sd.bits(), "Bits: ") : sd.bits());
+        Component modeText = (UseIcons ? RemoveText(sd.gameType(), "Mode: ") : sd.gameType());
 
 //        String kuudraText = ChatFormatting.GOLD + ps.KuudraTieredBonus;
 
@@ -212,22 +212,21 @@ public class BottomBar extends Element {
 
     private Component RemovePurseText(Component s) {
 
-        if (ApecUtils.containedByCharSequence(s, "Purse: ")) {
-            return ApecUtils.removeComponentContaining(s, "Purse: ");
-        } else if (ApecUtils.containedByCharSequence(s, "Piggy: ")) {
-            return ApecUtils.removeComponentContaining(s, "Piggy: ");
-        } else if (ApecUtils.containedByCharSequence(s, "Motes: ")) {
-            return ApecUtils.removeComponentContaining(s, "Motes: ");
-        }
-        return Component.empty();
+        return RemoveText(s, "Purse: ", "Piggy: ", "Motes: ");
     }
 
     public Component RemoveZoneText(Component s) {
 
-        if (ApecUtils.containedByCharSequence(s, "\u23E3")) {
-            return ApecUtils.removeComponentContaining(s, "\u23E3");
-        } else if (ApecUtils.containedByCharSequence(s, "\u0444")) {
-            return ApecUtils.removeComponentContaining(s, "\u0444");
+        return RemoveText(s, "\u23E3", "\u0444");
+    }
+
+    private Component RemoveText(Component s, String... strings) {
+
+        String text = s.getString();
+        for (String string : strings) {
+            if (text.contains(string)) {
+                return Component.literal(text.replace(string, "")).setStyle(s.getStyle());
+            }
         }
         return s;
     }
