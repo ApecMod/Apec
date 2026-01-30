@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -109,17 +111,17 @@ public class SkyBlockInfo implements SBAPI, MC {
      * Initializes the SkyBlockInfo class by registering event handlers.
      */
     public void init() {
-        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
             processTick(client);
         });
 
-        net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+        ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
             if (overlay) {
                 processChatMessage(null, message);
             }
         });
 
-        net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
+        ClientReceiveMessageEvents.GAME_CANCELED.register((message, overlay) -> {
             if (overlay) {
                 processChatMessage(null, message);
             }
@@ -246,8 +248,6 @@ public class SkyBlockInfo implements SBAPI, MC {
                 irlDate,
                 getScoreboardTitle().getString(),
                 gameType);
-
-        Apec.LOGGER.info("Scoreboard: " + scoreboard);
     }
 
     /**
