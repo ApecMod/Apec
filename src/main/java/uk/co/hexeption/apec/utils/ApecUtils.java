@@ -2,11 +2,14 @@ package uk.co.hexeption.apec.utils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.settings.SettingID;
@@ -237,10 +240,7 @@ public class ApecUtils {
     }
 
     public static String removeAllColourCodes(String s) {
-        while (s.contains("§")) {
-            s = s.replace("§" + s.charAt(s.indexOf("§") + 1), "");
-        }
-        return s;
+        return ChatFormatting.stripFormatting(s);
     }
 
     public static void drawOutlineText(Minecraft mc, GuiGraphics guiGraphics, String text, int x, int y, int colour) {
@@ -262,30 +262,26 @@ public class ApecUtils {
     }
 
     /**
-     * Recursively sets the color of a Component and all its siblings to the given ChatFormatting color.
+     * Recursively sets the color of a Component to the given ChatFormatting color.
      */
     public static Component setComponentColorDeep(Component component, ChatFormatting color) {
-        Component copy = component.copy();
-        if (copy instanceof net.minecraft.network.chat.MutableComponent mutable) {
-            mutable.setStyle(mutable.getStyle().withColor(color));
-            for (int i = 0; i < mutable.getSiblings().size(); i++) {
-                Component sib = mutable.getSiblings().get(i);
-                Component coloredSib = setComponentColorDeep(sib, color);
-                mutable.getSiblings().set(i, coloredSib);
-            }
-            return mutable;
-        } else {
-            return copy;
-        }
+        MutableComponent result = Component.empty();
+        component.visit((style, text) -> {
+            result.append(Component.literal(ChatFormatting.stripFormatting(text))
+                    .withStyle(style.withColor(color)));
+            return Optional.empty();
+        }, Style.EMPTY);
+        return result;
     }
 
     public static void drawOutlineWrappedText(Minecraft mc, GuiGraphics guiGraphics, String text, int x, int y, int wordWrap, int colour) {
-        FormattedText formattedText = FormattedText.of(text);
-        guiGraphics.drawWordWrap(mc.font, formattedText, x + 1, y, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, formattedText, x - 1, y, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, formattedText, x, y + 1, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, formattedText, x, y - 1, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, formattedText, x, y, wordWrap, colour);
+        FormattedText outlineText = FormattedText.of(ChatFormatting.stripFormatting(text));
+        FormattedText mainText = FormattedText.of(text);
+        guiGraphics.drawWordWrap(mc.font, outlineText, x + 1, y, wordWrap, (colour >> 24) << 24);
+        guiGraphics.drawWordWrap(mc.font, outlineText, x - 1, y, wordWrap, (colour >> 24) << 24);
+        guiGraphics.drawWordWrap(mc.font, outlineText, x, y + 1, wordWrap, (colour >> 24) << 24);
+        guiGraphics.drawWordWrap(mc.font, outlineText, x, y - 1, wordWrap, (colour >> 24) << 24);
+        guiGraphics.drawWordWrap(mc.font, mainText, x, y, wordWrap, colour);
     }
 
     public static void drawWrappedText(GuiGraphics guiGraphics, String text, int x, int y, int wordWrap, int colour) {

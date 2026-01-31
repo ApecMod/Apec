@@ -903,13 +903,8 @@ public class SkyBlockInfo implements SBAPI, MC {
             }
         }
 
-        Collections.reverse(stringLines);
-        Collections.reverse(componentLines);
-
         this.componentScoreboard.addAll(componentLines);
         this.stringScoreboard.addAll(stringLines);
-
-
     }
 
     /**
