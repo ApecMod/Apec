@@ -7,6 +7,7 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.component.DataComponents;
@@ -16,6 +17,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
+import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.gui.container.ContainerGuiOverlay;
 import uk.co.hexeption.apec.hud.ApecTextures;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
@@ -31,6 +33,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     private final List<Component> rarityList = new ArrayList<>();
     private String pageText = "";
     private boolean initialCategorySet = false;
+    private boolean ironmanMode = false;
 
     public enum CategoryID {
         WEAPONS,
@@ -39,6 +42,15 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         CONSUMABLES,
         BLOCKS,
         OTHER
+    }
+
+    public enum IronmanCategoryID {
+        DYES,
+        PET_SKINS,
+        HELMET_SKINS,
+        BARN_SKINS,
+        OTHER,
+        RUNES
     }
 
     public enum Actions {
@@ -67,10 +79,13 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     public boolean matchesTitle(Component title) {
 
         if (title == null) return false;
-        String titleText = title.getString();
+        String titleText = ChatFormatting.stripFormatting(title.getString());
 
         boolean isInOtherMenu = titleText.contains("View") || titleText.contains("Confirm");
-        return titleText.startsWith("Auctions") && !isInOtherMenu;
+
+        ironmanMode = titleText.equals("Cosmetics Browser");
+
+        return titleText.equals("Auctions Browser") || titleText.endsWith("Cosmetics Browser") && !isInOtherMenu;
     }
 
     @Override
@@ -115,7 +130,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
 
     private void renderHeader(GuiGraphics g, Minecraft mc, int centerX, int centerY) {
 
-        String title = "Auction Browser" + pageText.replace("(", " ").replace(")", "");
+        String title = (ironmanMode ? "Cosmetics Browser" : "Auction Browser") + pageText.replace("(", " ").replace(")", "");
         g.drawString(mc.font, title, centerX - 97, centerY - 97, CommonColors.WHITE, false);
 
         if (!searchTerm.isEmpty()) {
@@ -127,15 +142,16 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     private void renderCategoryButtons(GuiGraphics g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
 
         String[] categories = { "Weapons", "Armour", "Accessories", "Consumables", "Blocks", "Tools & Misc" };
-        CategoryID[] categoryIDs = CategoryID.values();
+        String[] ironmanCategories = { "Dyes", "Pet Skins", "Helmet Skins", "Barn Skins", "Other", "Runes"};
+        String[] names = ironmanMode ? ironmanCategories : categories;
 
-        for (int i = 0; i < categories.length; i++) {
+        for (int i = 0; i < names.length; i++) {
             int buttonX = centerX - 200;
             int buttonY = centerY - 80 + 54 + (i * 16);
             int buttonWidth = 100;
             int buttonHeight = 16;
 
-            boolean isSelected = currentCategory == categoryIDs[i];
+            boolean isSelected = currentCategory.ordinal() == i;
             boolean isHovered = mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
                     mouseY >= buttonY && mouseY <= buttonY + buttonHeight;
 
@@ -147,7 +163,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
 
             int textX = buttonX + buttonWidth / 2;
             int textY = buttonY + (buttonHeight - 8) / 2;
-            g.drawCenteredString(mc.font, categories[i], textX, textY, CommonColors.WHITE);
+            g.drawCenteredString(mc.font, names[i], textX, textY, CommonColors.WHITE);
         }
     }
 
