@@ -11,7 +11,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
@@ -98,7 +98,7 @@ public class ApecMenu implements MC, HudRenderLayer  {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, DeltaTracker tickCounter) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker tickCounter) {
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return;
         }
@@ -110,7 +110,11 @@ public class ApecMenu implements MC, HudRenderLayer  {
         for (Element element : guiElements) {
             GuiGraphicsUtils.push(guiGraphics);
             GuiGraphicsUtils.scale(guiGraphics, element.scale);
-            element.drawText(guiGraphics, mc.screen instanceof CustomizationScreen);
+            //? if >= 26.2 {
+            element.drawText(guiGraphics, mc.gui.screen() instanceof CustomizationScreen);
+            //?} else {
+            /*element.drawText(guiGraphics, mc.screen instanceof CustomizationScreen);
+             *///?}
             GuiGraphicsUtils.pop(guiGraphics);
         }
     }
@@ -175,10 +179,10 @@ public class ApecMenu implements MC, HudRenderLayer  {
         ChatFormatting stateColor = hudEnabled ? ChatFormatting.GREEN : ChatFormatting.RED;
 
         if (mc.player != null) {
-            mc.player.displayClientMessage(Component.literal(
+            mc.player.sendSystemMessage(Component.literal(
                 ChatFormatting.GOLD + "✧ " + ChatFormatting.AQUA + "Apec" + ChatFormatting.GRAY + " » " +
                 ChatFormatting.RESET + "HUD has been " + stateColor + stateSymbol + " " + stateText
-            ), false);
+            ));
         }
 
         Apec.LOGGER.info("HUD toggled: {}", stateText);

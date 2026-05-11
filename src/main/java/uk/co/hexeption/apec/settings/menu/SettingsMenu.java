@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -61,11 +61,9 @@ public class SettingsMenu extends Screen implements MC {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         // Text is (for some reason) offset on the z axis in 1.21.5 rendering. In order to not cause any problems, with the 1.21.8 move, let's just keep this how it was yeah?
         // ideally, this is fixed properly (https://discord.com/channels/1002229552921202759/1143261334100775023/1406880714095333377)
-        //? if 1.21.5
-        /*super.render(guiGraphics, i, j, f);*/
 
         guiGraphics.fill(width / 2 - 245, height / 2 - 130, width / 2 + 245, height / 2 + 120, 0x990a0a0a);
 
@@ -90,15 +88,14 @@ public class SettingsMenu extends Screen implements MC {
             if (searchBox.getWidth() > 150) {
                 searchBox.setWidth(150);
             }
-            searchBox.render(guiGraphics, i, j, f);
+            searchBox.extractRenderState(guiGraphics, i, j, f);
         }
 
         // ensure we render the boxes first. again, ideally this should be fixed
-        //? if >= 1.21.8
-        super.render(guiGraphics, i, j, f);
+        super.extractRenderState(guiGraphics, i, j, f);
     }
 
-    public void drawRectangleAt(GuiGraphics graphics, int x, int y, int w, int h, int mX, int mY) {
+    public void drawRectangleAt(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int mX, int mY) {
         graphics.fill(x, y, x + w * 10, y + h * 10, 0x99151515);
         for (int i = 0; i < w; i++) {
             drawLineComponent(graphics, x + i * 10, y - 1, x + (i + 1) * 10, y + 1, mX, mY);
@@ -110,7 +107,7 @@ public class SettingsMenu extends Screen implements MC {
         }
     }
 
-    private void drawLineComponent(GuiGraphics graphics, int left, int top, int right, int bottom, int mX, int mY) {
+    private void drawLineComponent(GuiGraphicsExtractor graphics, int left, int top, int right, int bottom, int mX, int mY) {
         double range = 45;
         double dist = Math.sqrt(Math.pow(left - mX, 2) + Math.pow(top - mY, 2));
         if (dist > range) dist = range;
@@ -135,7 +132,11 @@ public class SettingsMenu extends Screen implements MC {
                 this.loadPage(pageNumber);
                 break;
             case OPEN_GUI_EDITING:
-                mc.setScreen(new CustomizationScreen());
+                //? if >= 26.2 {
+                mc.gui.setScreen(new CustomizationScreen());
+                //?} else {
+                /*mc.setScreen(new CustomizationScreen());
+                 *///?}
                 break;
             case SEARCH:
                 OpenSearchBox();

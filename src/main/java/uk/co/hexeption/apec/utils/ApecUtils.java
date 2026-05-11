@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.FormattedText;
@@ -243,22 +243,22 @@ public class ApecUtils {
         return ChatFormatting.stripFormatting(s);
     }
 
-    public static void drawOutlineText(Minecraft mc, GuiGraphics guiGraphics, String text, int x, int y, int colour) {
+    public static void drawOutlineText(Minecraft mc, GuiGraphicsExtractor guiGraphics, String text, int x, int y, int colour) {
         String noColorText = removeAllColourCodes(text);
-        guiGraphics.drawString(mc.font, noColorText, x + 1, y, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, noColorText, x - 1, y, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, noColorText, x, y + 1, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, noColorText, x, y - 1, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, text, x, y, colour);
+        guiGraphics.text(mc.font, noColorText, x + 1, y, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, noColorText, x - 1, y, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, noColorText, x, y + 1, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, noColorText, x, y - 1, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, text, x, y, colour);
     }
 
-    public static void drawOutlineText(Minecraft mc, GuiGraphics guiGraphics, Component text, int x, int y, int colour) {
+    public static void drawOutlineText(Minecraft mc, GuiGraphicsExtractor guiGraphics, Component text, int x, int y, int colour) {
         var copyOfText = setComponentColorDeep(text, ChatFormatting.BLACK);
-        guiGraphics.drawString(mc.font, copyOfText, x + 1, y, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, copyOfText, x - 1, y, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, copyOfText, x, y + 1, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, copyOfText, x, y - 1, (colour >> 24) << 24);
-        guiGraphics.drawString(mc.font, text, x, y, colour);
+        guiGraphics.text(mc.font, copyOfText, x + 1, y, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, copyOfText, x - 1, y, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, copyOfText, x, y + 1, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, copyOfText, x, y - 1, (colour >> 24) << 24);
+        guiGraphics.text(mc.font, text, x, y, colour);
     }
 
     /**
@@ -274,19 +274,19 @@ public class ApecUtils {
         return result;
     }
 
-    public static void drawOutlineWrappedText(Minecraft mc, GuiGraphics guiGraphics, String text, int x, int y, int wordWrap, int colour) {
+    public static void drawOutlineWrappedText(Minecraft mc, GuiGraphicsExtractor guiGraphics, String text, int x, int y, int wordWrap, int colour) {
         FormattedText outlineText = FormattedText.of(ChatFormatting.stripFormatting(text));
         FormattedText mainText = FormattedText.of(text);
-        guiGraphics.drawWordWrap(mc.font, outlineText, x + 1, y, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, outlineText, x - 1, y, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, outlineText, x, y + 1, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, outlineText, x, y - 1, wordWrap, (colour >> 24) << 24);
-        guiGraphics.drawWordWrap(mc.font, mainText, x, y, wordWrap, colour);
+        guiGraphics.textWithWordWrap(mc.font, outlineText, x + 1, y, wordWrap, (colour >> 24) << 24);
+        guiGraphics.textWithWordWrap(mc.font, outlineText, x - 1, y, wordWrap, (colour >> 24) << 24);
+        guiGraphics.textWithWordWrap(mc.font, outlineText, x, y + 1, wordWrap, (colour >> 24) << 24);
+        guiGraphics.textWithWordWrap(mc.font, outlineText, x, y - 1, wordWrap, (colour >> 24) << 24);
+        guiGraphics.textWithWordWrap(mc.font, mainText, x, y, wordWrap, colour);
     }
 
-    public static void drawWrappedText(GuiGraphics guiGraphics, String text, int x, int y, int wordWrap, int colour) {
+    public static void drawWrappedText(GuiGraphicsExtractor guiGraphics, String text, int x, int y, int wordWrap, int colour) {
         FormattedText formattedText = FormattedText.of(text);
-        guiGraphics.drawWordWrap(Minecraft.getInstance().font, formattedText, x, y, wordWrap, colour);
+        guiGraphics.textWithWordWrap(Minecraft.getInstance().font, formattedText, x, y, wordWrap, colour);
     }
 
     /**
@@ -296,11 +296,11 @@ public class ApecUtils {
 
     public static void showMessage(String string) {
         if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.SHOW_DEBUG_MESSAGES))
-            Minecraft.getInstance().player.displayClientMessage(Component.literal(string), false);
+            Minecraft.getInstance().player.sendSystemMessage(Component.literal(string));
     }
 
     public static void showNonDebugMessage(String string) {
-        Minecraft.getInstance().player.displayClientMessage(Component.literal(string), false);
+        Minecraft.getInstance().player.sendSystemMessage(Component.literal(string));
     }
 
     // A wise man once said bubble sort is good enough when there are not a lot of elements

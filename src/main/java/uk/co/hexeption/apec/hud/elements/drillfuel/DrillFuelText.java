@@ -1,7 +1,7 @@
 package uk.co.hexeption.apec.hud.elements.drillfuel;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.CommonColors;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
@@ -20,7 +20,7 @@ public class DrillFuelText extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
         if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.DRILL_FUEL_TEXT)) {
             return;

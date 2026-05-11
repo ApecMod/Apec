@@ -2,7 +2,7 @@ package uk.co.hexeption.apec.settings.menu;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.network.chat.Component;
 import uk.co.hexeption.apec.utils.GuiGraphicsUtils;
@@ -28,22 +28,22 @@ public class SettingNavigationButton extends PlainTextButton {
     }
 
     @Override
-    //? if >= 1.21.11 {
-    public void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
-    //?} else {
-    /*public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-     *///?}
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         } else {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x99151515);
         }
 
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, GuiGraphicsUtils.fixColourAlpha(14737632));
+        guiGraphics.centeredText(Minecraft.getInstance().font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, GuiGraphicsUtils.fixColourAlpha(14737632));
     }
 
     public void runAction() {
-        ((SettingsMenu) Minecraft.getInstance().screen).runAction(this.action);
+        //? if >= 26.2 {
+        ((SettingsMenu) Minecraft.getInstance().gui.screen()).runAction(this.action);
+        //?} else {
+        /*((SettingsMenu) Minecraft.getInstance().screen).runAction(this.action);
+         *///?}
     }
 
 }

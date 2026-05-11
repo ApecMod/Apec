@@ -1,12 +1,7 @@
 package uk.co.hexeption.apec;
 
-//? if >=1.21.6 {
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-//?} else if >=1.21.5 {
-/*import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
-*///?}
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,12 +29,6 @@ public final class Apec implements MC {
     }
 
     private void addHudLayer() {
-        //? if >=1.21.6 {
         HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, Identifier.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render);
-        //?} else if >=1.21.5 {
-        /*HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> {
-            layeredDrawer.attachLayerAfter(IdentifiedLayer.MISC_OVERLAYS, IdentifiedLayer.of(Identifier.fromNamespaceAndPath(MOD_ID, "apec_menu"), apecMenu::render));
-        });
-        *///?}
     }
 }

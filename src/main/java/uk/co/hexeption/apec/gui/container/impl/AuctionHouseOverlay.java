@@ -1,15 +1,10 @@
 package uk.co.hexeption.apec.gui.container.impl;
 
-//? if 1.21.5 {
-/*import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.util.FormattedCharSequence;
-*///?}
-
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -89,7 +84,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float delta,
+    public void render(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta,
             int left, int top, int width, int height,
             Minecraft mc,
             AbstractContainerMenu menu,
@@ -110,7 +105,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         }
     }
 
-    private void renderAuctionInterface(GuiGraphics g, Minecraft mc, List<Slot> slots,
+    private void renderAuctionInterface(GuiGraphicsExtractor g, Minecraft mc, List<Slot> slots,
             int scaledWidth, int scaledHeight, int mouseX, int mouseY) {
 
         int centerX = scaledWidth / 2;
@@ -128,18 +123,19 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         renderAuctionItems(g, mc, slots, centerX, centerY, mouseX, mouseY);
     }
 
-    private void renderHeader(GuiGraphics g, Minecraft mc, int centerX, int centerY) {
+    private void renderHeader(GuiGraphicsExtractor g, Minecraft mc, int centerX, int centerY) {
 
         String title = (ironmanMode ? "Cosmetics Browser" : "Auction Browser") + pageText.replace("(", " ").replace(")", "");
-        g.drawString(mc.font, title, centerX - 97, centerY - 97, CommonColors.WHITE, false);
+        //font, text, x, y, color, bool
+        g.text(mc.font, title, centerX - 97, centerY - 97, CommonColors.WHITE, false);
 
         if (!searchTerm.isEmpty()) {
             String searchDisplay = "Search: \"" + searchTerm + "\"";
-            g.drawString(mc.font, searchDisplay, centerX - 97, centerY - 87, CommonColors.WHITE, false);
+            g.text(mc.font, searchDisplay, centerX - 97, centerY - 87, CommonColors.WHITE, false);
         }
     }
 
-    private void renderCategoryButtons(GuiGraphics g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
+    private void renderCategoryButtons(GuiGraphicsExtractor g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
 
         String[] categories = { "Weapons", "Armour", "Accessories", "Consumables", "Blocks", "Tools & Misc" };
         String[] ironmanCategories = { "Dyes", "Pet Skins", "Helmet Skins", "Barn Skins", "Other", "Runes"};
@@ -163,11 +159,11 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
 
             int textX = buttonX + buttonWidth / 2;
             int textY = buttonY + (buttonHeight - 8) / 2;
-            g.drawCenteredString(mc.font, names[i], textX, textY, CommonColors.WHITE);
+            g.centeredText(mc.font, names[i], textX, textY, CommonColors.WHITE);
         }
     }
 
-    private void renderActionButtons(GuiGraphics g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
+    private void renderActionButtons(GuiGraphicsExtractor g, Minecraft mc, int centerX, int centerY, int mouseX, int mouseY) {
 
         ApecTextures iconsTexture = ApecTextures.ICONS;
 
@@ -200,7 +196,7 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         renderLargeActionArea(g, centerX + 200, centerY - 100, mouseX, mouseY);
     }
 
-    private void renderLargeActionArea(GuiGraphics g, int x, int y, int mouseX, int mouseY) {
+    private void renderLargeActionArea(GuiGraphicsExtractor g, int x, int y, int mouseX, int mouseY) {
 
         boolean isHovered = mouseX >= x && mouseX <= x + 80 && mouseY >= y && mouseY <= y + 70;
 
@@ -209,22 +205,22 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         }
     }
 
-    private void renderInfoPanels(GuiGraphics g, Minecraft mc, int centerX, int centerY) {
+    private void renderInfoPanels(GuiGraphicsExtractor g, Minecraft mc, int centerX, int centerY) {
 
         for (int i = 0; i < Math.min(sortList.size(), 6); i++) {
-            g.drawString(mc.font, sortList.get(i), centerX + 113, centerY - 97 + 10 * i, CommonColors.WHITE, false);
+            g.text(mc.font, sortList.get(i), centerX + 113, centerY - 97 + 10 * i, CommonColors.WHITE, false);
         }
 
         for (int i = 0; i < Math.min(modeList.size(), 5); i++) {
-            g.drawString(mc.font, modeList.get(i), centerX + 113, centerY - 27 + 10 * i, CommonColors.WHITE, false);
+            g.text(mc.font, modeList.get(i), centerX + 113, centerY - 27 + 10 * i, CommonColors.WHITE, false);
         }
 
         for (int i = 0; i < Math.min(rarityList.size(), 11); i++) {
-            g.drawString(mc.font, rarityList.get(i), centerX + 203, centerY - 97 + 10 * i, CommonColors.WHITE, false);
+            g.text(mc.font, rarityList.get(i), centerX + 203, centerY - 97 + 10 * i, CommonColors.WHITE, false);
         }
     }
 
-    private void renderAuctionItems(GuiGraphics g, Minecraft mc, List<Slot> slots,
+    private void renderAuctionItems(GuiGraphicsExtractor g, Minecraft mc, List<Slot> slots,
             int centerX, int centerY, int mouseX, int mouseY) {
 
         // Auction item slots: 11-16, 20-25, 29-34, 38-43
@@ -253,26 +249,15 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
                         int itemX = (int) (baseX + expansion);
                         int itemY = baseY;
 
-                        g.renderItem(item, itemX, itemY);
-                        g.renderItemDecorations(mc.font, item, itemX, itemY);
+                        g.item(item, itemX, itemY);
+                        g.itemDecorations(mc.font, item, itemX, itemY);
 
                         boolean isHovered = mouseX >= itemX && mouseX <= itemX + 16 &&
                                 mouseY >= itemY && mouseY <= itemY + 16;
 
                         if (isHovered) {
                             g.fill(itemX, itemY, itemX + 16, itemY + 16, 0x80FFFFFF);
-                            //? if >= 1.21.7 {
                             g.setTooltipForNextFrame(mc.font, item, mouseX, mouseY);
-                            //?} else {
-                            /*List<Component> tooltip = Screen.getTooltipFromItem(mc, item);
-                            List<FormattedCharSequence> tooltipText = new ArrayList<>();
-                            for (Component line : tooltip) {
-                                tooltipText.add(line.getVisualOrderText());
-                            }
-
-                            mc.screen.setTooltipForNextRenderPass(tooltipText);
-                            *///?}
-
                         }
                     }
                 }
@@ -283,8 +268,13 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
     private void extractSearchTerm() {
 
         try {
-            if (Minecraft.getInstance().screen != null) {
+            //? if >= 26.2 {
+            if (Minecraft.getInstance().gui.screen() != null) {
+                Component title = Minecraft.getInstance().gui.screen().getTitle();
+            //?} else {
+            /*if (Minecraft.getInstance().screen != null) {
                 Component title = Minecraft.getInstance().screen.getTitle();
+             *///?}
                 String titleText = title.getString();
 
                 if (titleText.contains("\"")) {
@@ -482,13 +472,13 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
         return false;
     }
 
-    private void renderFallback(GuiGraphics g, Minecraft mc, int scaledWidth, int scaledHeight) {
+    private void renderFallback(GuiGraphicsExtractor g, Minecraft mc, int scaledWidth, int scaledHeight) {
 
         String fallbackText = "Auction House Loading...";
         int textWidth = mc.font.width(fallbackText);
         int textX = (scaledWidth - textWidth) / 2;
         int textY = scaledHeight / 2;
-        g.drawString(mc.font, fallbackText, textX, textY, CommonColors.WHITE, true);
+        g.text(mc.font, fallbackText, textX, textY, CommonColors.WHITE, true);
     }
 
     private void clickSlot(int slotIndex) {

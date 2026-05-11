@@ -17,7 +17,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Tuple;
+import uk.co.hexeption.apec.utils.Tuple;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
@@ -171,7 +171,11 @@ public class SkyBlockInfo implements SBAPI, MC {
         parseScoreboardData();
         parsePlayerStats();
         this.otherData = processOtherData(scoreboard);
-        this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.getTabList()).getFooter();
+        //? if >= 26.2 {
+        this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.hud.getTabList()).getFooter();
+        //?} else {
+        /*this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.getTabList()).getFooter();
+        *///?}
     }
 
     /**
@@ -715,15 +719,9 @@ public class SkyBlockInfo implements SBAPI, MC {
                 // Check ping
                 if (mc.player != null) {
                     int pingThreshold = 80;
-                    //? if > 1.21.8 {
                     int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().id()))
                                       .map(PlayerInfo::getLatency)
                                       .orElse(0);
-                    //?} else {
-                    /*int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()))
-                            .map(info -> info.getLatency())
-                            .orElse(0);
-                    *///?}
                     if (ping > pingThreshold) {
                         events.add(EventIDs.HIGH_PING);
                     }
@@ -870,11 +868,7 @@ public class SkyBlockInfo implements SBAPI, MC {
             return;
         }
 
-        //? if > 1.21.8 {
         Scoreboard scoreboard = mc.level.getScoreboard();
-        //?} else {
-        /*Scoreboard scoreboard = player.getScoreboard();
-        *///?}
         Objective displayObjective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
 
         if (displayObjective == null) {

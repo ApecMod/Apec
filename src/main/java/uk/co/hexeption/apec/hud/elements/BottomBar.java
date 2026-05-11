@@ -3,7 +3,7 @@ package uk.co.hexeption.apec.hud.elements;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -28,11 +28,15 @@ public class BottomBar extends Element {
     float yDecremetor = 0;
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
         Vector2f GuiPos = getCurrentAnchorPoint();
 
-        boolean isInChat = Minecraft.getInstance().screen instanceof ChatScreen;
+        //? if >= 26.2 {
+        boolean isInChat = Minecraft.getInstance().gui.screen() instanceof ChatScreen;
+        //?} else {
+        /*boolean isInChat = Minecraft.getInstance().screen instanceof ChatScreen;
+         *///?}
         float fps = Minecraft.getInstance().getFps();
         if (Apec.INSTANCE.settingsManager.getSettingState(SettingID.INFO_BOX_ANIMATION) && !Apec.INSTANCE.settingsManager.getSettingState(SettingID.BB_ON_TOP)) {
             // Calculating delta time for constant smooth velocity
@@ -95,14 +99,14 @@ public class BottomBar extends Element {
 
 //        String kuudraText = ChatFormatting.GOLD + ps.KuudraTieredBonus;
 
-        graphics.drawString(
+        graphics.text(
                 mc.font,
                 purseText,
                 (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(0).x() + (UseIcons ? 9 : 0)) * (1 / scale)),
                 (int) ((GuiPos.y + subElementDeltaPositions.get(0).y()) * (1 / scale)),
                 CommonColors.WHITE, false
         );
-        graphics.drawString(
+        graphics.text(
                 mc.font,
                 bitText,
                 (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(1).x() + (UseIcons ? 9 : 0)) * (1 / scale) + 120),
@@ -110,7 +114,7 @@ public class BottomBar extends Element {
                 CommonColors.WHITE, false
         );
         int zoneAddX = (inTheCatacombs ? 5 : 9);
-        graphics.drawString(
+        graphics.text(
                 mc.font,
                 zoneText,
                 (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(2).x() + (UseIcons ? zoneAddX : 0)) * (1 / scale) + 220),
@@ -119,7 +123,7 @@ public class BottomBar extends Element {
         );
 
         if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.USE_DEFENCE_OUT_OF_BB) || editMode) {
-            graphics.drawString(
+            graphics.text(
                     mc.font,
                     defenceText,
                     (int) (GuiPos.x + 20 + (subElementDeltaPositions.get(3).x() + (UseIcons ? 10 : 0)) * (1 / scale) + 360),
@@ -129,7 +133,7 @@ public class BottomBar extends Element {
         }
 
         if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.USE_GAME_MODE_OUT_OF_BB) || editMode) {
-            graphics.drawString(
+            graphics.text(
                     mc.font,
                     modeText,
                     (int) ((GuiPos.x + deltaPosition.x + subElementDeltaPositions.get(4).x()) * (1 / scale) + (Apec.INSTANCE.settingsManager.getSettingState(SettingID.USE_GAME_MODE_OUT_OF_BB) ? 100 : 480)),
@@ -157,7 +161,7 @@ public class BottomBar extends Element {
         ModeStringLength = mc.font.width(modeText);
 //        KuudraStringLength = mc.font.width((kuudraText);
 
-        graphics.drawString(
+        graphics.text(
                 mc.font,
                 sd.date() + " " + sd.Hour(),
                 (int) ((mc.getWindow().getGuiScaledWidth() - 15 + deltaPosition.x + subElementDeltaPositions.get(4).x()) * (1f / scale) - mc.font.width(sd.date() + " " + sd.Hour())),

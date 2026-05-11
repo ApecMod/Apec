@@ -1,7 +1,7 @@
 package uk.co.hexeption.apec.hud.elements.health;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.Element;
@@ -19,7 +19,7 @@ public class HPText extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
         if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.HP_TEXT) == false) {
             return;

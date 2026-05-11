@@ -2,7 +2,7 @@ package uk.co.hexeption.apec.hud;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.MC;
 import uk.co.hexeption.apec.utils.ApecUtils;
@@ -35,7 +35,7 @@ public class Element implements MC {
         this.menu = menu;
     }
 
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
     }
 

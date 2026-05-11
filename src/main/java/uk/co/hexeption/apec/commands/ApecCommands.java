@@ -6,7 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import java.util.Arrays;
 import java.util.List;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -32,18 +32,22 @@ public class ApecCommands implements MC {
      * Registers the apec command with the command dispatcher
      */
     public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-        LiteralArgumentBuilder<FabricClientCommandSource> apecCommand = ClientCommandManager.literal("apec");
+        LiteralArgumentBuilder<FabricClientCommandSource> apecCommand = ClientCommands.literal("apec");
 
         // Base command - opens settings menu
         apecCommand.executes((ctx) -> {
             ctx.getSource().sendFeedback(Component.literal(PREFIX +
                 ChatFormatting.YELLOW + "Opening settings menu..."));
-            mc.schedule(() -> mc.setScreen(new SettingsMenu(0)));
+            //? if >= 26.2 {
+            mc.schedule(() -> mc.gui.setScreen(new SettingsMenu(0)));
+            //?} else {
+            /*mc.schedule(() -> mc.setScreen(new SettingsMenu(0)));
+             *///?}
             return 1;
         });
 
         // Help command
-        apecCommand.then(ClientCommandManager.literal("help")
+        apecCommand.then(ClientCommands.literal("help")
             .executes(ctx -> {
                 ctx.getSource().sendFeedback(Component.literal(PREFIX +
                     ChatFormatting.WHITE + "Apec Commands Help"));
@@ -77,8 +81,8 @@ public class ApecCommands implements MC {
             }));
 
         // Toggle subcommand with setting argument
-        apecCommand.then(ClientCommandManager.literal("toggle")
-            .then(ClientCommandManager.argument("setting", StringArgumentType.word())
+        apecCommand.then(ClientCommands.literal("toggle")
+            .then(ClientCommands.argument("setting", StringArgumentType.word())
                 .suggests(SETTINGS_SUGGESTION_PROVIDER)
                 .executes(ctx -> {
                     String settingName = StringArgumentType.getString(ctx, "setting").toUpperCase();

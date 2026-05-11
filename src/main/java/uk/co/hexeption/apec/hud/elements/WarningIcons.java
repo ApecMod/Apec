@@ -1,7 +1,7 @@
 package uk.co.hexeption.apec.hud.elements;
 
 import java.util.ArrayList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.EventIDs;
@@ -19,7 +19,7 @@ public class WarningIcons extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
         var otherData = Apec.SKYBLOCK_INFO.getOtherData();
 
@@ -46,7 +46,7 @@ public class WarningIcons extends Element {
 
     }
 
-    private void drawIconForID(EventIDs eventID, int x, int y, GuiGraphics graphics) {
+    private void drawIconForID(EventIDs eventID, int x, int y, GuiGraphicsExtractor graphics) {
 
         var warningIconTexture = ApecTextures.ICONS;
         switch (eventID) {
