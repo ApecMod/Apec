@@ -249,6 +249,11 @@ public abstract class MixinGui implements MC {
             return original;
         }
 
+        if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.ITEM_HIGHLIGHT_TEXT)){
+            int textWidth = guiGraphics.guiWidth() - 2 * original;
+            return toolTipText.getXOffset(guiGraphics) + (mc.font.width("hello") - textWidth) / 2;
+        }
+
         return toolTipText.getXOffset(guiGraphics);
     }
 
