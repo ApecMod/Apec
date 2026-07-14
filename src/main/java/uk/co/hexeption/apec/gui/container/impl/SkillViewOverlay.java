@@ -1,9 +1,12 @@
 package uk.co.hexeption.apec.gui.container.impl;
 
+//? if >= 26.2 {
+import net.minecraft.references.BlockItemIds;
+//?}
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -79,7 +82,7 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
     }
 
     @Override
-    public void render(GuiGraphics g, int mouseX, int mouseY, float delta,
+    public void render(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta,
             int left, int top, int width, int height,
             Minecraft mc,
             AbstractContainerMenu menu,
@@ -104,7 +107,7 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
         renderButtons(g, mc, slots, scaledWidth, scaledHeight);
     }
 
-    private void renderSkillBoxes(GuiGraphics g, Minecraft mc, List<Slot> slots, int scaledWidth, int scaledHeight, int mouseX) {
+    private void renderSkillBoxes(GuiGraphicsExtractor g, Minecraft mc, List<Slot> slots, int scaledWidth, int scaledHeight, int mouseX) {
 
         int totalWidth = 15;
 
@@ -128,7 +131,7 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
             }
 
             for (int l = 0; l < tooltipComponents.size(); l++) {
-                g.drawString(mc.font, tooltipComponents.get(l), boxX, boxY + 1 + 10 * l, CommonColors.WHITE, false);
+                g.text(mc.font, tooltipComponents.get(l), boxX, boxY + 1 + 10 * l, CommonColors.WHITE, false);
             }
 
             totalWidth += boxWidth + 15;
@@ -165,22 +168,27 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
         }
     }
 
-    private void renderInfoText(GuiGraphics g, Minecraft mc, List<Slot> slots, int scaledWidth) {
+    private void renderInfoText(GuiGraphicsExtractor g, Minecraft mc, List<Slot> slots, int scaledWidth) {
 
         ItemStack introStack = slots.get(SKILL_XP_CONTAINER_SLOTS[0]).getItem();
         List<Component> introLines = getTooltipComponents(introStack);
         for (int k = 0; k < introLines.size(); k++) {
-            g.drawString(mc.font, introLines.get(k), 1, 1 + 10 * k, CommonColors.WHITE, false);
+            g.text(mc.font, introLines.get(k), 1, 1 + 10 * k, CommonColors.WHITE, false);
         }
 
         renderTopRightInfo(g, mc, slots, scaledWidth);
     }
 
-    private void renderTopRightInfo(GuiGraphics g, Minecraft mc, List<Slot> slots, int scaledWidth) {
+    private void renderTopRightInfo(GuiGraphicsExtractor g, Minecraft mc, List<Slot> slots, int scaledWidth) {
 
         if (slots.size() > 51) {
             ItemStack petStack = slots.get(51).getItem();
-            if (!petStack.isEmpty() && !petStack.is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+            //? if >= 26.2 {
+            if (!petStack.isEmpty() && !petStack.is(BlockItemIds.STAINED_GLASS_PANE.gray().item())) {
+            //?} else {
+            /*if (!petStack.isEmpty() && !petStack.is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+             *///?}
+
                 List<Component> petLines = getTooltipComponents(petStack);
                 renderRightAlignedText(g, mc, petLines, scaledWidth, 16);
                 return;
@@ -189,22 +197,26 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
 
         if (slots.size() > 45) {
             ItemStack farmingStack = slots.get(45).getItem();
-            if (!farmingStack.isEmpty() && !farmingStack.is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+            //? if >= 26.2 {
+            if (!farmingStack.isEmpty() && !farmingStack.is(BlockItemIds.STAINED_GLASS_PANE.gray().item())) {
+            //?} else {
+            /*if (!farmingStack.isEmpty() && !farmingStack.is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+             *///?}
                 List<Component> farmingLines = getTooltipComponents(farmingStack);
                 renderRightAlignedText(g, mc, farmingLines, scaledWidth, 16);
             }
         }
     }
 
-    private void renderRightAlignedText(GuiGraphics g, Minecraft mc, List<Component> lines, int scaledWidth, int startY) {
+    private void renderRightAlignedText(GuiGraphicsExtractor g, Minecraft mc, List<Component> lines, int scaledWidth, int startY) {
 
         for (int k = 0; k < lines.size(); k++) {
             int textWidth = mc.font.width(lines.get(k));
-            g.drawString(mc.font, lines.get(k), scaledWidth - 1 - textWidth, startY + 10 * k, CommonColors.WHITE, false);
+            g.text(mc.font, lines.get(k), scaledWidth - 1 - textWidth, startY + 10 * k, CommonColors.WHITE, false);
         }
     }
 
-    private void renderButtons(GuiGraphics g, Minecraft mc, List<Slot> slots, int scaledWidth, int scaledHeight) {
+    private void renderButtons(GuiGraphicsExtractor g, Minecraft mc, List<Slot> slots, int scaledWidth, int scaledHeight) {
 
         drawButton(g, mc, scaledWidth - 30, 0, 15, 15, Actions.BACK, slots);
         drawButton(g, mc, scaledWidth - 15, 0, 15, 15, Actions.CLOSE, slots);
@@ -317,7 +329,7 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
         return true;
     }
 
-    private void drawButton(GuiGraphics g, Minecraft mc, int x, int y, int width, int height, Actions action, List<Slot> slots) {
+    private void drawButton(GuiGraphicsExtractor g, Minecraft mc, int x, int y, int width, int height, Actions action, List<Slot> slots) {
 
         boolean isHovered = isInBounds(mc.mouseHandler.xpos() * mc.getWindow().getGuiScaledWidth() / mc.getWindow().getScreenWidth(),
                 mc.mouseHandler.ypos() * mc.getWindow().getGuiScaledHeight() / mc.getWindow().getScreenHeight(),
@@ -362,16 +374,16 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
         }
     }
 
-    private void drawButtonText(GuiGraphics g, Minecraft mc, List<Component> lines, int x, int y, boolean rightAlign) {
+    private void drawButtonText(GuiGraphicsExtractor g, Minecraft mc, List<Component> lines, int x, int y, boolean rightAlign) {
 
         drawButtonText(g, mc, lines, x, y, 0, rightAlign);
     }
 
-    private void drawButtonText(GuiGraphics g, Minecraft mc, List<Component> lines, int x, int y, int width, boolean rightAlign) {
+    private void drawButtonText(GuiGraphicsExtractor g, Minecraft mc, List<Component> lines, int x, int y, int width, boolean rightAlign) {
 
         for (int i = 0; i < lines.size(); i++) {
             int textX = rightAlign ? x + width - 5 - mc.font.width(lines.get(i)) : x + 5;
-            g.drawString(mc.font, lines.get(i), textX, y + 5 + i * 10, CommonColors.WHITE, false);
+            g.text(mc.font, lines.get(i), textX, y + 5 + i * 10, CommonColors.WHITE, false);
         }
     }
 
@@ -401,7 +413,11 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
     private List<Component> getSlayerText(List<Slot> slots) {
 
         try {
-            if (slots.size() > 41 && !slots.get(41).getItem().is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+            //? if >= 26.2 {
+            if (slots.size() > 41 && !slots.get(41).getItem().is(BlockItemIds.STAINED_GLASS_PANE.gray().item())) {
+            //?} else {
+            /*if (slots.size() > 41 && !slots.get(41).getItem().is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+             *///?}
                 List<Component> allText = getTooltipComponents(slots.get(41).getItem());
                 if (!allText.isEmpty()) {
                     List<Component> result = new ArrayList<>();
@@ -432,7 +448,11 @@ public class SkillViewOverlay implements ContainerGuiOverlay {
     private List<Component> getFirstAndLastLine(List<Slot> slots, int slotIndex) {
 
         try {
-            if (slots.size() > slotIndex && !slots.get(slotIndex).getItem().is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+            //? if >= 26.2 {
+            if (slots.size() > slotIndex && !slots.get(slotIndex).getItem().is(BlockItemIds.STAINED_GLASS_PANE.gray().item())) {
+            //?} else {
+            /*if (slots.size() > slotIndex && !slots.get(slotIndex).getItem().is(Blocks.GRAY_STAINED_GLASS_PANE.asItem())) {
+             *///?}
                 List<Component> allText = getTooltipComponents(slots.get(slotIndex).getItem());
                 if (!allText.isEmpty()) {
                     List<Component> result = new ArrayList<>();

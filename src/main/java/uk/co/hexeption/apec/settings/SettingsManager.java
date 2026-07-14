@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import net.minecraft.util.Tuple;
+import uk.co.hexeption.apec.utils.Tuple;
 import static uk.co.hexeption.apec.settings.SettingID.*;
 import uk.co.hexeption.apec.utils.ApecUtils;
 

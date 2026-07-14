@@ -1,7 +1,7 @@
 package uk.co.hexeption.apec.hud.elements;
 
 import java.util.ArrayList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 import org.joml.Vector2f;
@@ -16,7 +16,7 @@ public class ExtraInfo extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
         Vector2f ExtraScoreInfo = ApecUtils.scalarMultiply(getCurrentAnchorPoint(), 1f / scale);
 
         ArrayList<Component> ei = new ArrayList<Component>();

@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.hud.elements.mana;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecTextures;
@@ -17,7 +17,7 @@ public class MPBar extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
         if(!Apec.INSTANCE.settingsManager.getSettingState(SettingID.MP_BAR)) {
             return;

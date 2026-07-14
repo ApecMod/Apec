@@ -17,7 +17,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Tuple;
+import uk.co.hexeption.apec.utils.Tuple;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.scores.DisplaySlot;
 import net.minecraft.world.scores.Objective;
@@ -97,14 +97,14 @@ public class SkyBlockInfo implements SBAPI, MC {
         static final char HYDRA = '\u2051';
 
         // Rift symbol
-        static final char RIFT = 'ф';
+        static final char RIFT = '\uE020';
 
         // Health symbols
-        static final char HEALTH = '❤';
-        static final char DEFENSE = '❈';
-        static final char MANA = '✎';
+        static final char HEALTH = '\uE010';
+        static final char DEFENSE = '\uE008';
+        static final char MANA = '\uE003';
         static final char OVERFLOW_MANA = 'ʬ';
-        static final char PRESSURE = '❍';
+        static final char PRESSURE = '\uE01B';
     }
 
     /**
@@ -139,7 +139,7 @@ public class SkyBlockInfo implements SBAPI, MC {
         String message = component.getString();
 
         // Process overlay messages (health, mana, special events)
-        if (message.contains("❤") || message.contains("✎") ||
+        if (message.contains("\uE010") || message.contains("\uE003") ||
             message.contains(GameSymbols.REVIVE) ||
             message.contains(GameSymbols.CHICKEN_RACE) ||
             message.contains(GameSymbols.ARMADILLO)) {
@@ -171,7 +171,11 @@ public class SkyBlockInfo implements SBAPI, MC {
         parseScoreboardData();
         parsePlayerStats();
         this.otherData = processOtherData(scoreboard);
-        this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.getTabList()).getFooter();
+        //? if >= 26.2 {
+        this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.hud.getTabList()).getFooter();
+        //?} else {
+        /*this.clientTabFooter = ((PlayerTabOverlayAccessor) mc.gui.getTabList()).getFooter();
+        *///?}
     }
 
     /**
@@ -209,7 +213,7 @@ public class SkyBlockInfo implements SBAPI, MC {
                 date = ApecUtils.removeFirstSpaces(line);
             } else if (isTime(line)) {
                 hour = ApecUtils.removeFirstSpaces(line);
-            } else if (ApecUtils.containedByCharSequence(line, "⏣")) {
+            } else if (ApecUtils.containedByCharSequence(line, "\uE067")) {
                 zone = component;
             } else if (ApecUtils.containedByCharSequence(line, "Purse: ")) {
                 purse = component;
@@ -715,15 +719,9 @@ public class SkyBlockInfo implements SBAPI, MC {
                 // Check ping
                 if (mc.player != null) {
                     int pingThreshold = 80;
-                    //? if > 1.21.8 {
                     int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().id()))
                                       .map(PlayerInfo::getLatency)
                                       .orElse(0);
-                    //?} else {
-                    /*int ping = Optional.ofNullable(mc.player.connection.getPlayerInfo(mc.player.getGameProfile().getId()))
-                            .map(info -> info.getLatency())
-                            .orElse(0);
-                    *///?}
                     if (ping > pingThreshold) {
                         events.add(EventIDs.HIGH_PING);
                     }
@@ -870,11 +868,7 @@ public class SkyBlockInfo implements SBAPI, MC {
             return;
         }
 
-        //? if > 1.21.8 {
         Scoreboard scoreboard = mc.level.getScoreboard();
-        //?} else {
-        /*Scoreboard scoreboard = player.getScoreboard();
-        *///?}
         Objective displayObjective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
 
         if (displayObjective == null) {

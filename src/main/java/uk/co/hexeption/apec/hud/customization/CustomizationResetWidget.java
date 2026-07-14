@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.hud.customization;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -14,23 +14,14 @@ public class CustomizationResetWidget extends Button implements MC {
     }
 
     @Override
-    //? if >= 1.21.11 {
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
-    //?} else {
-    /*protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-    *///?}
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         } else {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x990a0a0a);
         }
 
-        int k = this.active ? 16777215 : 10526880;
-        //? if >= 1.21.11 {
-        this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
-        //?} else {
-        /*this.renderString(guiGraphics, mc.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
-        *///?}
+        this.extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
     }
 
 }

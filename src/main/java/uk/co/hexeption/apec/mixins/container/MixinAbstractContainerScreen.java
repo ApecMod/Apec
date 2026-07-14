@@ -1,16 +1,14 @@
 package uk.co.hexeption.apec.mixins.container;
 
-//? if > 1.21.8 {
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-//?}
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,7 +42,7 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
     protected AbstractContainerMenu menu;
 
     @Shadow
-    protected abstract void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type);
+    protected abstract void slotClicked(Slot slot, int slotId, int mouseButton, ContainerInput type);
 
     @Unique
     private ContainerGuiOverlay currentOverlay = null;
@@ -74,10 +72,10 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
             // Set up the slot click callback for the overlay
             if (currentOverlay instanceof SkillViewOverlay) {
                 ((SkillViewOverlay) currentOverlay).setSlotClickCallback(slotIndex ->
-                    apec$clickSlot(slotIndex, 0, ClickType.PICKUP));
+                        apec$clickSlot(slotIndex, 0, ContainerInput.PICKUP));
             } else if (currentOverlay instanceof AuctionHouseOverlay) {
                 ((AuctionHouseOverlay) currentOverlay).setSlotClickCallback(slotIndex ->
-                    apec$clickSlot(slotIndex, 0, ClickType.PICKUP));
+                        apec$clickSlot(slotIndex, 0, ContainerInput.PICKUP));
             }
         }
         return currentOverlay;
@@ -91,9 +89,8 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         }
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"), cancellable = true)
-    private void apec$renderOverlayHead(GuiGraphics g, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-
+    @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"), cancellable = true)
+    private void apec$renderOverlayHead(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
@@ -101,26 +98,22 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         ci.cancel();
     }
 
-    @Inject(method = "renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"), cancellable = true)
+    //TODO: renderBackground was removed from AbstractContainerScreen in 26.1+; reimplement to stop the inventory gui from rendering in auction/skill menus
+    /*@Inject(method = "renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"), cancellable = true, require = 1)
     private void apec$renderBackground(GuiGraphics g, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay != null) {
             ci.cancel();
         }
-    }
+    }*/
 
-    //? if > 1.21.8 {
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void apec$mouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
-    //?} else {
-    /*@Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"), cancellable = true)
-    private void apec$mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-    *///?}
 
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
-        boolean handled = overlay.mouseClicked(this.menu, slots, /*? if > 1.21.8 {*/event.x(), event.y(), event.button()/*?} else {*//*mouseX, mouseY, button*//*?}*/);
+        boolean handled = overlay.mouseClicked(this.menu, slots, event.x(), event.y(), event.button());
         if (handled) {
             cir.setReturnValue(true);
             cir.cancel();
@@ -131,18 +124,13 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         cir.cancel();
     }
 
-    //? if > 1.21.8 {
     @Inject(method = "mouseReleased", at = @At("HEAD"), cancellable = true)
     private void apec$mouseReleased(MouseButtonEvent event, CallbackInfoReturnable<Boolean> cir) {
-    //?} else {
-    /*@Inject(method = "mouseReleased(DDI)Z", at = @At("HEAD"), cancellable = true)
-    private void apec$mouseReleased(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-    *///?}
 
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
-        boolean handled = overlay.mouseReleased(this.menu, slots, /*? if > 1.21.8 {*/event.x(), event.y(), event.button()/*?} else {*//*mouseX, mouseY, button*//*?}*/);
+        boolean handled = overlay.mouseReleased(this.menu, slots, event.x(), event.y(), event.button());
         if (handled) {
             cir.setReturnValue(true);
             cir.cancel();
@@ -168,13 +156,8 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         cir.cancel();
     }
 
-    //? if > 1.21.8 {
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void apec$keyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
-    //?} else {
-    /*@Inject(method = "keyPressed(III)Z", at = @At("HEAD"), cancellable = true)
-    private void apec$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-    *///?}
 
         ContainerGuiOverlay overlay = apec$getOverlay();
         if (overlay == null) return;
@@ -193,7 +176,7 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
     }
 
     @Unique
-    public void apec$clickSlot(int slotId, int mouseButton, ClickType type) {
+    public void apec$clickSlot(int slotId, int mouseButton, ContainerInput type) {
 
         if (this.menu != null && slotId >= 0 && slotId < this.menu.slots.size()) {
             Slot slot = this.menu.slots.get(slotId);
@@ -207,3 +190,4 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
     }
 
 }
+

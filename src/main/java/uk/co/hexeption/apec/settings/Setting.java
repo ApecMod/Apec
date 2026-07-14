@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.settings;
 
-import net.minecraft.util.Tuple;
+import uk.co.hexeption.apec.utils.Tuple;
 import uk.co.hexeption.apec.Apec;
 
 public class Setting {

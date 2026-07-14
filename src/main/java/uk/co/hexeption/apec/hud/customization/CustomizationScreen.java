@@ -1,8 +1,6 @@
 package uk.co.hexeption.apec.hud.customization;
 
-//? if > 1.21.8 {
 import net.minecraft.client.input.MouseButtonEvent;
-//?}
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -12,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.joml.Vector2f;
@@ -73,7 +71,7 @@ public class CustomizationScreen extends Screen implements uk.co.hexeption.apec.
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
 
     }
 

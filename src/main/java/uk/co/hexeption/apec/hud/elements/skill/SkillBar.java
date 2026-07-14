@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.hud.elements.skill;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecTextures;
@@ -19,7 +19,7 @@ public class SkillBar extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
 
         var skillBarPos = ApecUtils.scalarMultiply(getCurrentAnchorPoint(), 1f / scale);
 

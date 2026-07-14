@@ -1,9 +1,7 @@
 package uk.co.hexeption.apec.hud.customization;
 
-//? if > 1.21.8 {
 import net.minecraft.client.input.MouseButtonEvent;
-//?}
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import org.joml.Vector2f;
@@ -28,11 +26,7 @@ public class CustomizationScaleWidget extends Button implements MC {
     }
 
     @Override
-    //? if >= 1.21.11 {
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
-    //?} else {
-    /*protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-     *///?}
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         if (this.isHovered) {
             guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0x1adddddd);
         } else {

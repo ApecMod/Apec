@@ -49,7 +49,7 @@ loom.runs {
 
         configureEach {
             vmArg("-javaagent:$mixinJarFile")
-            vmArg("-XX:+AllowEnhancedClassRedefinition")
+            //vmArg("-XX:+AllowEnhancedClassRedefinition")
 
             property("mixin.hotSwap", "true")
             property("mixin.debug.export", "true") // Puts mixin outputs in /run/.mixin.out
@@ -81,27 +81,16 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:${mc.version}")
 
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
-        // Mojmap mappings
-        officialMojangMappings()
-
-        // Parchment mappings (it adds parameter mappings & javadoc)
-        optionalProp("deps.parchment_version") {
-            parchment("org.parchmentmc.data:parchment-${mc.version}:$it@zip")
-        }
-    })
-
-    modImplementation(libs.fabricloader)
-    modRuntimeOnly(libs.devauth)
+    implementation(libs.fabricloader)
+    runtimeOnly(libs.devauth)
     include(implementation(libs.mixinconstraints.get())!!)!!
     include(implementation(annotationProcessor(libs.mixinsquared.get())!!)!!)
 
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${deps.fabricApiVersion}+${mc.version}")
-    modImplementation(fletchingTable.modrinth("modmenu", "${mc.version}", "fabric"))
+    implementation("net.fabricmc.fabric-api:fabric-api:${deps.fabricApiVersion}+${mc.version}")
+    implementation(fletchingTable.modrinth("modmenu", "${mc.version}", "fabric"))
 
     // REI integration - optional dependency
-    modCompileOnly(fletchingTable.modrinth("rei", "${mc.version}", "fabric"))
+    compileOnly(fletchingTable.modrinth("rei", "${mc.version}", "fabric"))
 }
 
 // mc_dep fields must be in the format 'x', '>=x', '>=x <=y'
@@ -117,7 +106,7 @@ val curseforgeId = findProperty("publish.curseforge")?.toString()?.takeIf { it.i
 // modrinth.token=
 // curseforge.token=
 publishMods {
-    file = project.tasks.remapJar.get().archiveFile
+    file = project.tasks.jar.get().archiveFile
 
     displayName = "${mod.name} ${mod.version}"
     this.version = mod.version.toString()
@@ -194,8 +183,8 @@ publishMods {
 
 java {
     // withSourcesJar() // Uncomment if you want sources
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 tasks.processResources {
@@ -226,13 +215,6 @@ if (stonecutter.current.isActive) {
 fun <T> optionalProp(property: String, block: (String) -> T?): T? =
     findProperty(property)?.toString()?.takeUnless { it.isBlank() }?.let(block)
 
-tasks.remapJar {
+tasks.jar {
     destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
-}
-
-stonecutter {
-    // Not sure why this is necessary, but it is as it should be using Mojo names
-    replacements.string(current.version == "1.21.11") {
-        replace("ResourceLocation", "Identifier")
-    }
 }

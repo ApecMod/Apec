@@ -1,7 +1,7 @@
 package uk.co.hexeption.apec.hud.elements.pressure;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
@@ -18,7 +18,7 @@ public class PressureBar extends Element {
     }
 
     @Override
-    public void drawText(GuiGraphics graphics, boolean editMode) {
+    public void drawText(GuiGraphicsExtractor graphics, boolean editMode) {
         if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.SHOW_PRESSURE_BAR)) {
             return;
         }

@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.hud.elements;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2f;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.hud.ApecMenu;
@@ -54,21 +54,14 @@ public class ToolTipText extends Element {
         return new Vector2f(x, y);
     }
 
-    public int getXOffset(GuiGraphics guiGraphics) {
-        var deltaH = itemHotBar.getDeltaPosition();
-        var scaleH = itemHotBar.getScale();
+    public int getXOffset(GuiGraphicsExtractor guiGraphics) {
 
-        var x = guiGraphics.guiWidth() + deltaH.x / scaleH - 185;
-        return (int) x;
+        return (int) getCurrentAnchorPoint().x;
     }
 
-    public int getYOffset(GuiGraphics guiGraphics) {
+    public int getYOffset(GuiGraphicsExtractor guiGraphics) {
 
-        var deltaH = itemHotBar.getDeltaPosition();
-        var scaleH = itemHotBar.getScale();
-
-        var y = guiGraphics.guiHeight() + deltaH.y / scaleH - 56;
-        return (int) y;
+        return (int) getCurrentAnchorPoint().y;
     }
 
 }

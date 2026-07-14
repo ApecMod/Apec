@@ -1,6 +1,6 @@
 package uk.co.hexeption.apec.utils;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import uk.co.hexeption.apec.MC;
 
 public class MultiColourText implements MC {
@@ -66,7 +66,7 @@ public class MultiColourText implements MC {
         return this.colorSet;
     }
 
-    public void render(GuiGraphics guiGraphics) {
+    public void render(GuiGraphicsExtractor guiGraphics) {
         int nowX = this.x;
         for (int i = 0; i < this.stringSet.length; i++) {
             ApecUtils.drawOutlineText(mc, guiGraphics, stringSet[i], nowX + this.shiftValue, this.y, GuiGraphicsUtils.fixColourAlpha(colorSet[i]));

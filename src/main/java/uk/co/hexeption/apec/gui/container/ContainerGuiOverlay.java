@@ -2,7 +2,7 @@ package uk.co.hexeption.apec.gui.container;
 
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -11,7 +11,7 @@ public interface ContainerGuiOverlay {
 
     boolean matchesTitle(Component title);
 
-    void render(GuiGraphics g, int mouseX, int mouseY, float delta,
+    void render(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta,
             int left, int top, int width, int height,
             Minecraft mc,
             AbstractContainerMenu menu,
