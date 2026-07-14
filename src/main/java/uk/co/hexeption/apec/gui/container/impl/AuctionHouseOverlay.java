@@ -78,9 +78,9 @@ public class AuctionHouseOverlay implements ContainerGuiOverlay {
 
         boolean isInOtherMenu = titleText.contains("View") || titleText.contains("Confirm");
 
-        ironmanMode = titleText.equals("Cosmetics Browser");
+        ironmanMode = titleText.endsWith("Cosmetics Browser");
 
-        return titleText.equals("Auctions Browser") || titleText.endsWith("Cosmetics Browser") && !isInOtherMenu;
+        return (titleText.startsWith("Auctions") || ironmanMode) && !isInOtherMenu;
     }
 
     @Override

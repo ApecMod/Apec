@@ -7,7 +7,8 @@
     "MixinGui",
     "accessors.PlayerTabOverlayAccessor",
     "accessors.ScreenAccessor",
-    "container.MixinAbstractContainerScreen"
+    "container.MixinAbstractContainerScreen",
+    "container.MixinContainerScreen"
   ],
   "mixins": [
   ],

@@ -22,12 +22,13 @@ import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
 import uk.co.hexeption.apec.gui.container.ContainerGuiManager;
 import uk.co.hexeption.apec.gui.container.ContainerGuiOverlay;
+import uk.co.hexeption.apec.gui.container.ContainerScreenBridge;
 import uk.co.hexeption.apec.gui.container.impl.AuctionHouseOverlay;
 import uk.co.hexeption.apec.gui.container.impl.SkillViewOverlay;
 import uk.co.hexeption.apec.settings.SettingID;
 
 @Mixin(AbstractContainerScreen.class)
-public abstract class MixinAbstractContainerScreen extends Screen implements MC {
+public abstract class MixinAbstractContainerScreen extends Screen implements MC, ContainerScreenBridge {
 
     @Shadow
     protected int leftPos;
@@ -52,14 +53,11 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         super(title);
     }
 
+    @Override
     @Unique
-    private ContainerGuiOverlay apec$getOverlay() {
+    public ContainerGuiOverlay apec$getOverlay() {
 
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
-            apec$clearOverlay();
-            return null;
-        }
-        if (!Apec.INSTANCE.settingsManager.getSettingState(SettingID.CUSTOM_SKILL_VIEW)) {
             apec$clearOverlay();
             return null;
         }
@@ -77,6 +75,11 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
                 ((AuctionHouseOverlay) currentOverlay).setSlotClickCallback(slotIndex ->
                         apec$clickSlot(slotIndex, 0, ContainerInput.PICKUP));
             }
+        }
+        if (currentOverlay instanceof SkillViewOverlay
+                && !Apec.INSTANCE.settingsManager.getSettingState(SettingID.CUSTOM_SKILL_VIEW)) {
+            apec$clearOverlay();
+            return null;
         }
         return currentOverlay;
     }
@@ -97,15 +100,6 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
         overlay.render(g, mouseX, mouseY, delta, leftPos, topPos, imageWidth, imageHeight, mc, this.menu, slots);
         ci.cancel();
     }
-
-    //TODO: renderBackground was removed from AbstractContainerScreen in 26.1+; reimplement to stop the inventory gui from rendering in auction/skill menus
-    /*@Inject(method = "renderBackground(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"), cancellable = true, require = 1)
-    private void apec$renderBackground(GuiGraphics g, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        ContainerGuiOverlay overlay = apec$getOverlay();
-        if (overlay != null) {
-            ci.cancel();
-        }
-    }*/
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void apec$mouseClicked(MouseButtonEvent event, boolean isDoubleClick, CallbackInfoReturnable<Boolean> cir) {
@@ -190,4 +184,3 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC 
     }
 
 }
-
