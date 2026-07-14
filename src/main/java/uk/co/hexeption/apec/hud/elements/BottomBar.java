@@ -221,7 +221,7 @@ public class BottomBar extends Element {
 
     public Component RemoveZoneText(Component s) {
 
-        return RemoveText(s, "\u23E3", "\u0444");
+        return RemoveText(s, "\uE067", "\uE020");
     }
 
     private Component RemoveText(Component s, String... strings) {
