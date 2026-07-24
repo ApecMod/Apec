@@ -161,7 +161,6 @@ publishMods {
         curseforge {
             projectId = property("publish.curseforge").toString()
             accessToken = findProperty("curseforge.token").toString()
-            client = true
 
             if (rangeRegex.matches(mc.dep)) {
                 val match = rangeRegex.find(mc.dep)!!
@@ -175,6 +174,9 @@ publishMods {
             } else if (exactVersionRegex.matches(mc.dep)) {
                 minecraftVersions.add(mc.dep)
             }
+
+            clientRequired.set(true)
+            serverRequired.set(false)
 
             requires("fabric-api")
             optional("modmenu")
