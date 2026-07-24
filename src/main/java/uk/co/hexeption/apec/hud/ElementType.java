@@ -9,6 +9,8 @@ public enum ElementType {
     MP_TEXT,
     XP_BAR,
     XP_TEXT,
+    VITALITY_BAR,
+    VITALITY_TEXT,
     AIR_BAR,
     AIR_TEXT,
     PRESSURE_BAR,

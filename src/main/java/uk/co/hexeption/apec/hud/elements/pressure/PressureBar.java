@@ -55,7 +55,7 @@ public class PressureBar extends Element {
 
     @Override
     public Vector2f getAnchorPointPosition() {
-        return menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190, 93));
+        return menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190, 110));
     }
 
     @Override

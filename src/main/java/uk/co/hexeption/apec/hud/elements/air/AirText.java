@@ -47,7 +47,7 @@ public class AirText extends Element {
 
     @Override
     public Vector2f getAnchorPointPosition() {
-        return menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190 + 112 + 70, 73));
+        return menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190 + 112 + 70, 91));
     }
 
     @Override

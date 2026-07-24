@@ -29,6 +29,8 @@ public class SettingsManager {
         add(new Setting(MP_TEXT,true));
         add(new Setting(XP_BAR,true));
         add(new Setting(XP_TEXT,true));
+        add(new Setting(VITALITY_BAR,true));
+        add(new Setting(VITALITY_TEXT,true));
         add(new Setting(DRILL_FUEL_BAR,true));
         add(new Setting(DRILL_FUEL_TEXT,true));
         add(new Setting(SHOW_AIR_BAR,true));
@@ -99,6 +101,7 @@ public class SettingsManager {
         put(HP_BAR,new Tuple<String, String>("Show HP Bar","Toggles on or off the hp bar"));
         put(MP_BAR,new Tuple<String, String>("Show MP Bar","Toggles on or off the mp bar"));
         put(XP_BAR,new Tuple<String, String>("Show XP Bar","Toggles on or off the xp bar"));
+        put(VITALITY_BAR,new Tuple<String, String>("Show Vitality Bar", "Toggles on or off the vitality bar"));
         put(HIDE_NIGHT_VISION,new Tuple<String, String>("Don't show night vision","Don't show the night vision effect in the effect list"));
         put(ALWAYS_SHOW_SKILL,new Tuple<String, String>("Always show skill xp","Constantly shows skill xp, using cached values when not normally shown"));
         put(SHOW_CACHED_PURSE_IN_DUNGEONS,new Tuple<String, String>("Show cached purse","Shows a cached value of the purse while in dungeons"));
@@ -112,6 +115,7 @@ public class SettingsManager {
         put(HP_TEXT,new Tuple<String, String>("Show HP Text","Shows the HP text"));
         put(MP_TEXT,new Tuple<String, String>("Show MP Text","Shows the MP text"));
         put(XP_TEXT,new Tuple<String, String>("Show XP Text","Shows the XP text"));
+        put(VITALITY_TEXT,new Tuple<String, String>("Show Vitality Text", "Toggles on or off the vitality text"));
         put(DRILL_FUEL_BAR,new Tuple<String, String>("Show Drill Fuel Bar","Shows the drill fuel bar"));
         put(DRILL_FUEL_TEXT,new Tuple<String, String>("Show Drill Fuel Text","Shows the drill fuel text"));
         put(AIR_TEXT,new Tuple<String, String>("Show Air text","Shows the air text"));

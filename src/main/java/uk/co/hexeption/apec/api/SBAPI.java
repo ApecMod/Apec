@@ -47,9 +47,11 @@ public interface SBAPI {
             String kuudraTieredBonus,
             int drillFuelRemaining,
             int drillFuelCapacity,
-            int pressure
+            int pressure,
+            int vitality,
+            int base_vitality
     ) {
-        public static final PlayerStats EMPTY = new PlayerStats(0, 0, 0, '0', 0, 0, 0, 0, 0, 0, 0, "", 0, false, false, "", 0,0, 0);
+        public static final PlayerStats EMPTY = new PlayerStats(0, 0, 0, '0', 0, 0, 0, 0, 0, 0, 0, "", 0, false, false, "", 0,0, 0, 0, 0);
     }
 
     PlayerStats getPlayerStats();
