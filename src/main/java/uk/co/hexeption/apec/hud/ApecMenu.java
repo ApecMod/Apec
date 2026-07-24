@@ -34,6 +34,8 @@ import uk.co.hexeption.apec.hud.elements.mana.MPBar;
 import uk.co.hexeption.apec.hud.elements.mana.MPText;
 import uk.co.hexeption.apec.hud.elements.skill.SkillBar;
 import uk.co.hexeption.apec.hud.elements.skill.SkillText;
+import uk.co.hexeption.apec.hud.elements.vitality.VitalityBar;
+import uk.co.hexeption.apec.hud.elements.vitality.VitalityText;
 import uk.co.hexeption.apec.hud.elements.xp.XPBar;
 import uk.co.hexeption.apec.hud.elements.xp.XPText;
 import uk.co.hexeption.apec.settings.SettingID;
@@ -54,6 +56,8 @@ public class ApecMenu implements MC, HudRenderLayer  {
                     new MPBar(),
                     new XPText(),
                     new XPBar(),
+                    new VitalityText(),
+                    new VitalityBar(),
                     new DrillFuelText(),
                     new DrillFuelBar(),
                     new AirText(),

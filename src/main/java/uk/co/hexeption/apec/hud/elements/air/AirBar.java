@@ -57,7 +57,7 @@ public class AirBar extends Element {
 
     @Override
     public Vector2f getAnchorPointPosition() {
-        return menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190, 73));
+        return menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190, 91));
     }
 
     @Override

@@ -47,7 +47,7 @@ public class DrillFuelBar extends Element {
 
     @Override
     public Vector2f getAnchorPointPosition() {
-        return this.menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190, 73));
+        return this.menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190, 91));
     }
 
     @Override

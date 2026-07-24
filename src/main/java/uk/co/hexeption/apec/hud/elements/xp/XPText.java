@@ -41,7 +41,7 @@ public class XPText extends Element {
 
     @Override
     public Vector2f getAnchorPointPosition() {
-        return this.menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190 + 112 + 70, 53));
+        return this.menu.applyGlobalChanges(this, new Vector2f(mc.getWindow().getGuiScaledWidth() - 190 + 112 + 70, 72));
     }
 
     @Override

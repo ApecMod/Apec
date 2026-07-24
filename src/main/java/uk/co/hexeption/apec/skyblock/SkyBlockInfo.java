@@ -66,6 +66,7 @@ public class SkyBlockInfo implements SBAPI, MC {
     private int baseAbsorption = 0;
     private int lastAbsorption = 1, lastBaseAbsorption = 1;
     private int baseOverflow = 1;
+    private int lastVitality = 1, lastBaseVitality = 1;
 
     // Additional data
     private OtherData otherData;
@@ -105,6 +106,7 @@ public class SkyBlockInfo implements SBAPI, MC {
         static final char MANA = '\uE003';
         static final char OVERFLOW_MANA = '\uE017';
         static final char PRESSURE = '\uE01B';
+        static final char VITALITY = '\uE028';
     }
 
     /**
@@ -295,6 +297,8 @@ public class SkyBlockInfo implements SBAPI, MC {
         int drillFuelRemaining = 0;
         int drillFuelCapacity = 0;
         int pressure = 0;
+        int vitality = 0;
+        int baseVitality = 0;
 
         // Parse health
         try {
@@ -418,6 +422,24 @@ public class SkyBlockInfo implements SBAPI, MC {
             defence = lastDefence;
         }
 
+        //parse vitality
+        try {
+            String segmentedString = ApecUtils.segmentString(actionBar, String.valueOf(GameSymbols.VITALITY), '§', GameSymbols.VITALITY, 1, 1);
+            if (segmentedString != null) {
+                Tuple<Integer, Integer> t = parseStringFraction(ApecUtils.removeAllColourCodes(segmentedString));
+                vitality = t.getA();
+                baseVitality = t.getB();
+                lastVitality = vitality;
+                lastBaseVitality = baseVitality;
+            } else {
+                vitality = lastVitality;
+                baseVitality = lastBaseVitality;
+            }
+        } catch (Exception err) {
+            vitality = lastVitality;
+            baseVitality = lastBaseVitality;
+        }
+
         // Parse ability text
         try {
             String segmentedString = ApecUtils.segmentString(actionBar, ")", '§', ' ', 3, 1);
@@ -531,7 +553,9 @@ public class SkyBlockInfo implements SBAPI, MC {
                 kuudraTieredBonus,
                 drillFuelRemaining,
                 drillFuelCapacity,
-                pressure);
+                pressure,
+                vitality,
+                baseVitality);
     }
 
     /**
