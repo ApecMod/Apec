@@ -103,7 +103,7 @@ public class SkyBlockInfo implements SBAPI, MC {
         static final char HEALTH = '\uE010';
         static final char DEFENSE = '\uE008';
         static final char MANA = '\uE003';
-        static final char OVERFLOW_MANA = 'ʬ';
+        static final char OVERFLOW_MANA = '\uE017';
         static final char PRESSURE = '\uE01B';
     }
 
@@ -213,7 +213,7 @@ public class SkyBlockInfo implements SBAPI, MC {
                 date = ApecUtils.removeFirstSpaces(line);
             } else if (isTime(line)) {
                 hour = ApecUtils.removeFirstSpaces(line);
-            } else if (ApecUtils.containedByCharSequence(line, "\uE067")) {
+            } else if (ApecUtils.containedByCharSequence(line, "\uE067") || ApecUtils.containedByCharSequence(line, String.valueOf(GameSymbols.RIFT))) {
                 zone = component;
             } else if (ApecUtils.containedByCharSequence(line, "Purse: ")) {
                 purse = component;
