@@ -34,7 +34,7 @@ public class HPBar extends Element {
         int width = (int) statBar.x;
         int height = (int) statBar.y;
 
-        boolean showAPBar = false;
+        boolean showAPBar = Apec.INSTANCE.settingsManager.getSettingState(SettingID.SHOW_ABSORPTION_BAR);
         if (showAPBar) {
             // Empty Bar
             graphics.blit(GuiGraphicsUtils.getGuiTextured(), hpBarTexture.getIdentifier(), width, height, 0, 60, 182, 5, hpBarTexture.getWidth(), hpBarTexture.getHeight());
