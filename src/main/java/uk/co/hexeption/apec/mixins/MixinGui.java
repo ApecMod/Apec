@@ -185,11 +185,15 @@ public abstract class MixinGui implements MC {
     @ModifyVariable(method = "extractSelectedItemName", at = @At(value = "STORE"), ordinal = 1)
     private int modifyXPosition(int original, GuiGraphicsExtractor guiGraphics) {
 
-        var toolTipText = (uk.co.hexeption.apec.hud.elements.ToolTipText) Apec.apecMenu.getGuiComponent(ElementType.TOOL_TIP_TEXT);
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return original;
         }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
+            return original;
+        }
+
+        var toolTipText = (uk.co.hexeption.apec.hud.elements.ToolTipText) Apec.apecMenu.getGuiComponent(ElementType.TOOL_TIP_TEXT);
 
         if(Apec.INSTANCE.settingsManager.getSettingState(SettingID.ITEM_HIGHLIGHT_TEXT)){
             int textWidth = guiGraphics.guiWidth() - 2 * original;
@@ -202,11 +206,15 @@ public abstract class MixinGui implements MC {
     @ModifyVariable(method = "extractSelectedItemName", at = @At(value = "STORE"), ordinal = 2)
     private int modifyYPosition(int original, GuiGraphicsExtractor guiGraphics) {
 
-        var toolTipText = (uk.co.hexeption.apec.hud.elements.ToolTipText) Apec.apecMenu.getGuiComponent(ElementType.TOOL_TIP_TEXT);
-
         if (!Apec.SKYBLOCK_INFO.isOnSkyblock()) {
             return original;
         }
+
+        if (!Apec.apecMenu.shouldShowHUD()) {
+            return original;
+        }
+
+        var toolTipText = (uk.co.hexeption.apec.hud.elements.ToolTipText) Apec.apecMenu.getGuiComponent(ElementType.TOOL_TIP_TEXT);
 
         return toolTipText.getYOffset(guiGraphics);
     }
