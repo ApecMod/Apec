@@ -151,6 +151,15 @@ public class CustomizationWidget extends Button implements MC {
         return super.mouseReleased(event);
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (subElementIndex == -1 && this.element.isScalable()) {
+            float mult = .05f * (mc.hasControlDown() ? .1f : 1f) *  (mc.hasShiftDown() ? 10f : 1f);
+            this.element.setScale(this.element.getScale() + (float) scrollY * mult);
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
     public void reset() {
         this.element.setDeltaPosition(new Vector2f(0, 0));
     }
