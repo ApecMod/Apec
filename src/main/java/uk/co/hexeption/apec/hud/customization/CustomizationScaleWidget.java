@@ -56,8 +56,8 @@ public class CustomizationScaleWidget extends Button implements MC {
         if(isUserDragging){
             Vector2f realAnchor = this.element.getCurrentAnchorPoint();
             Vector2f boundingPoint = this.element.getCurrentBoundingPoint();
-            int differenceX = (int) ((/*? if > 1.21.8 {*/mouseX/*?} else {*//*d*//*?}*/ - this.initialX) * (realAnchor.x < boundingPoint.x ? 1 : -1));
-            int differenceY = (int) ((/*? if > 1.21.8 {*/mouseY/*?} else {*//*e*//*?}*/ - this.initialY) * (realAnchor.y < boundingPoint.y ? 1 : -1));
+            int differenceX = (int) ((/*? if > 1.21.8 {*/event.x()/*?} else {*//*d*//*?}*/ - this.initialX) * (realAnchor.x < boundingPoint.x ? 1 : -1));
+            int differenceY = (int) ((/*? if > 1.21.8 {*/event.y()/*?} else {*//*e*//*?}*/ - this.initialY) * (realAnchor.y < boundingPoint.y ? 1 : -1));
 
             slideValue = (int)(100f * ((float)(differenceX + differenceY)/(float)50));
             this.element.setScale(initialScale + slideValue/280f);
