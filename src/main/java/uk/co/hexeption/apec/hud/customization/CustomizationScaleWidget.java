@@ -52,23 +52,23 @@ public class CustomizationScaleWidget extends Button implements MC {
 
 
     @Override
-    public boolean mouseDragged(/*? if > 1.21.8 {*/MouseButtonEvent event, double mouseX, double mouseY/*?} else {*//*double d, double e, int i, double f, double g*//*?}*/) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         if(isUserDragging){
             Vector2f realAnchor = this.element.getCurrentAnchorPoint();
             Vector2f boundingPoint = this.element.getCurrentBoundingPoint();
-            int differenceX = (int) ((/*? if > 1.21.8 {*/event.x()/*?} else {*//*d*//*?}*/ - this.initialX) * (realAnchor.x < boundingPoint.x ? 1 : -1));
-            int differenceY = (int) ((/*? if > 1.21.8 {*/event.y()/*?} else {*//*e*//*?}*/ - this.initialY) * (realAnchor.y < boundingPoint.y ? 1 : -1));
+            int differenceX = (int) ((event.x() - this.initialX) * (realAnchor.x < boundingPoint.x ? 1 : -1));
+            int differenceY = (int) ((event.y() - this.initialY) * (realAnchor.y < boundingPoint.y ? 1 : -1));
 
             slideValue = (int)(100f * ((float)(differenceX + differenceY)/(float)50));
             this.element.setScale(initialScale + slideValue/280f);
         }
-        return super.mouseDragged(/*? if > 1.21.8 {*/event, mouseX, mouseY/*?} else {*//*d, e, i, f, g*//*?}*/);
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseReleased(/*? if > 1.21.8 {*/MouseButtonEvent event/*?} else {*//*double d, double e, int i*//*?}*/) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         this.isUserDragging = false;
-        return super.mouseReleased(/*? if > 1.21.8 {*/event/*?} else {*//*d, e, i*//*?}*/);
+        return super.mouseReleased(event);
     }
 
 }

@@ -101,7 +101,7 @@ public class CustomizationWidget extends Button implements MC {
     }
 
     @Override
-    public boolean mouseDragged(/*? if > 1.21.8 {*/MouseButtonEvent event, double mouseX, double mouseY/*?} else {*//*double d, double e, int i, double f, double g*//*?}*/) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
         if (isUserDragging) {
             Vector2f anchor;
             anchor = this.element.getAnchorPointPosition();
@@ -109,18 +109,18 @@ public class CustomizationWidget extends Button implements MC {
             boolean isSnappedToPositionX = false;
             boolean isSnappedToPositionY = false;
 
-            SnapData SnapResult = IsSnapped(/*? if > 1.21.8 {*/event.x(), event.y()/*?} else {*//*d, e*//*?}*/, anchor);
+            SnapData SnapResult = IsSnapped(event.x(), event.y(), anchor);
 
             isSnappedToPositionX = SnapResult.xSnap;
             isSnappedToPositionY = SnapResult.ySnap;
 
             Vector2f Result = new Vector2f(
-                    isSnappedToPositionX ? SnapResult.vector.x + fineTuneOffset.x : (float) (/*? if > 1.21.8 {*/event.x()/*?} else {*//*d*//*?}*/ - anchor.x + fineTuneOffset.x + startingPos.x),
-                    (float) ((isSnappedToPositionY ? SnapResult.vector.y + fineTuneOffset.y : /*? if > 1.21.8 {*/event.y()/*?} else {*//*e*//*?}*/ - anchor.y + fineTuneOffset.y + startingPos.y) * (lockY ? 0 : 1))
+                    isSnappedToPositionX ? SnapResult.vector.x + fineTuneOffset.x : (float) (event.x() - anchor.x + fineTuneOffset.x + startingPos.x),
+                    (float) ((isSnappedToPositionY ? SnapResult.vector.y + fineTuneOffset.y : event.y() - anchor.y + fineTuneOffset.y + startingPos.y) * (lockY ? 0 : 1))
             );
             this.element.setDeltaPosition(Result);
         }
-        return super.mouseDragged(/*? if > 1.21.8 {*/event, mouseX, mouseY/*?} else {*//*d, e, i, f, g*//*?}*/);
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     private SnapData IsSnapped(double mouseX, double mouseY, Vector2f anchor) {
@@ -146,9 +146,9 @@ public class CustomizationWidget extends Button implements MC {
     }
 
     @Override
-    public boolean mouseReleased(/*? if > 1.21.8 {*/MouseButtonEvent event/*?} else {*//*double d, double e, int i*//*?}*/) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         this.isUserDragging = false;
-        return super.mouseReleased(/*? if > 1.21.8 {*/event/*?} else {*//*d, e, i*//*?}*/);
+        return super.mouseReleased(event);
     }
 
     public void reset() {
