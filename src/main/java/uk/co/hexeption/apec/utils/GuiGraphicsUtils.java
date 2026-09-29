@@ -1,6 +1,10 @@
 package uk.co.hexeption.apec.utils;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+//? if >= 26.3 {
+    import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+//?} else {
+    /*import com.mojang.blaze3d.pipeline.RenderPipeline;
+*///?}
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.ARGB;

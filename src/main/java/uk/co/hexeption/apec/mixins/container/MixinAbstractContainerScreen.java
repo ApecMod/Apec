@@ -158,7 +158,7 @@ public abstract class MixinAbstractContainerScreen extends Screen implements MC,
         // Allow ESC to close container
         if (event.key() == 256 /* GLFW.GLFW_KEY_ESCAPE */) return;
         List<Slot> slots = this.menu != null ? this.menu.slots : java.util.List.of();
-        boolean handled = overlay.keyPressed(this.menu, slots, event.key(), event.scancode(), event.modifiers());
+        boolean handled = overlay.keyPressed(this.menu, slots, event.key(), /*? if >= 26.3 {*/ event.keycode() /*?} else {*//*event.scancode() *//*?}*/, event.modifiers());
         if (handled) {
             cir.setReturnValue(true);
             cir.cancel();

@@ -3,4 +3,4 @@ plugins {
     alias(libs.plugins.publishing)
 }
 
-stonecutter active "26.2" /* [SC] DO NOT EDIT */
+stonecutter active "26.3" /* [SC] DO NOT EDIT */
