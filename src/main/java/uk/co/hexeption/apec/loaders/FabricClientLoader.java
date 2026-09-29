@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.glfw.GLFW;
 import uk.co.hexeption.apec.Apec;
 import uk.co.hexeption.apec.MC;
 import uk.co.hexeption.apec.commands.ApecCommands;
@@ -31,8 +30,8 @@ public class FabricClientLoader implements ClientModInitializer, MC {
         Apec.init();
 
         // Fabric-specific client initialization
-        settingKeybind = new KeyMapping("key.apec.open_menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_M, CATEGORY);
-        hudToggleKeybind = new KeyMapping("key.apec.toggle_hud", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_CONTROL, CATEGORY);
+        settingKeybind = new KeyMapping("key.apec.open_menu", /*? if >= 26.3 {*/ InputConstants.Type.KEYBOARD /*?} else {*/ /*InputConstants.Type.KEYSYM *//*?}*/, InputConstants.KEY_M, CATEGORY);
+        hudToggleKeybind = new KeyMapping("key.apec.toggle_hud", /*? if >= 26.3 {*/ InputConstants.Type.KEYBOARD /*?} else {*/ /*InputConstants.Type.KEYSYM *//*?}*/, InputConstants.KEY_RCONTROL, CATEGORY);
 
         // Use Fabric-specific registration
         KeyMappingHelper.registerKeyMapping(settingKeybind);
